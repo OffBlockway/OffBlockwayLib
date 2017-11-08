@@ -42,6 +42,8 @@ fn empty_tree()
 
     // Assert statement testing the validity of the empty tree's calculated hash
     assert_eq!( tree.hash(), empty_hash );
+    // Assert state testing that the empty tree in fact doesn't contain any elements
+    assert_eq!( tree.leaf_count(), 0 );
     
 }
  
@@ -63,7 +65,7 @@ fn simple_tree()
     let root_hash = &digest.leaf_hash( &"zac, ezra, zaid".as_bytes() );
 
     // Assert statement making sure that the Merkle Tree recognized this value as a leaf node
-    assert_eq!( tree.leaf_count(),  1);
+    assert_eq!( tree.leaf_count(),  1 );
     // Assert statement making sure that the Merkle Tree recorded the proper height when
     // given this element
     assert_eq!( tree.height(), 0 );
