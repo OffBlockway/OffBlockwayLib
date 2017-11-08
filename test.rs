@@ -6,12 +6,12 @@
 
 // Crate inclusion
 extern crate ring;
-extern crate OffBlockway;
+extern crate off_blockway;
 
 // Use statements
 use ring::digest::{ Algorithm, Context, SHA512 };
-use OffBlockway::merkle_tree::MerkleTree;
-use OffBlockway::hash_utilities::{ Hashable, HashUtilitiess };
+use off_blockway::merkle_tree::MerkleTree;
+use off_blockway::hash_utilities::{ Hashable, HashUtilitiess };
 
 // All Merkle Trees have an associated algorithm assigned to them at creation, dubbed
 // digest ( using SHA 512 ) in this instance
