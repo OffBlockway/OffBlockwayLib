@@ -1,3 +1,6 @@
+#![crate_id = "merkle_tree"]
+#![crate_type = "lib"]
+
 // Use statements
 use tree::{ Tree, LeavesIterator };
 use std::hash::{ Hash, Hasher };
