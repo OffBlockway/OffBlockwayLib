@@ -1,3 +1,6 @@
+// Flag indicating that this file should only be compiled and ran with cargo test
+#[cfg(test)]
+
 // Flag letting the compiler know to not throw warnings for unused imports
 #[warn(unused_imports)]
 
@@ -21,7 +24,7 @@ static digest: &'static Algorithm = &SHA512;
  *        use of "#[test]" flags denoting when the following method is to be used in testing.
  *
  *       - To run the test methods in the file compile with:
- *                                                         > cargo run
+ *                                                         > cargo test
  */
 
 // Test case flag
