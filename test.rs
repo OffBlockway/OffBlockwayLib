@@ -12,6 +12,8 @@ extern crate off_blockway;
 use ring::digest::{ Algorithm, Context, SHA512 };
 use off_blockway::merkle_tree::MerkleTree;
 use off_blockway::hash_utilities::{ Hashable, HashUtilitiess };
+use std::io;
+use std::assert_eq;
 
 // All Merkle Trees have an associated algorithm assigned to them at creation, dubbed
 // digest ( using SHA 512 ) in this instance
@@ -28,13 +30,15 @@ static digest: &'static Algorithm = &SHA512;
  */
 
 // Test mod
+#[test]
 mod test {
+
     // Test case flag
     #[test]
     // Unit test for an empty Merkle Tree
     fn empty_tree()
     {
-        
+
         // Sets an empty vector equal to values and initializes a new Merkle Tree with
         // the empty vector and hashing algorithm
         let values = vec![];
