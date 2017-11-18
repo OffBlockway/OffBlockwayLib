@@ -81,11 +81,13 @@ impl <T: ToString> Block<T>
 
     
 }
-/*
-Tests
-*/
-pub fn block_test() {
-    for x in 1..10 {
-        println!("UNIMPLEMENTED");
-    }
-} 
+
+#[cfg(test)]
+mod tests {
+    #[test]
+    pub fn block_test() {
+        for x in 1..10 {
+            println!("UNIMPLEMENTED");
+        }
+    } 
+}
