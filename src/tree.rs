@@ -1,6 +1,3 @@
-// Warns not to throw errors for unused code
-#[warn(dead_code)]
-
 // Use statements
 use ring::digest::{ Algorithm, Digest };
 use hash_utilities::{ Hashable, HashUtilities };
@@ -21,6 +18,7 @@ use hash_utilities::{ Hashable, HashUtilities };
  *
  */
 #[derive(Hash)]
+#[allow(dead_code)]
 pub enum Tree<T>
 {
     
@@ -48,6 +46,7 @@ pub enum Tree<T>
 }
 
 // Impl for the tree
+#[allow(dead_code)]
 impl<T> Tree<T>
 {
 
