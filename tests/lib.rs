@@ -1,3 +1,6 @@
 // Integration tests for the blockchain
-
-// TODO: build integration tests 
+#[test]
+fn it_works()
+{
+    assert!( true );
+}
