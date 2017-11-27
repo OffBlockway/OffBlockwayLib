@@ -1,13 +1,17 @@
 // Warns the compiler not to throw a message about unused imports
-#[warn(unused_imports)]
+//#[warn(unused_imports)]
 
 // Crate inclusion
 extern crate ring;
 
 // Use statements
+#[allow(unused_imports)]
 use std::io;
+#[allow(unused_imports)]
 use ring::digest::{ Algorithm, Context, SHA256 };
+#[allow(unused_imports)]
 use hash_utilities::{ Hashable, HashUtilities};
+#[allow(unused_imports)]
 use tree::Tree;
 
 // Mod statements
@@ -49,7 +53,7 @@ mod tests {
         let true_hash = digest.empty_hash().as_ref();
         // The true hash value is compared against the constructed tree's hash value to
         // ensure that the empty tree is being build correctly
-        assert_eq!( empty_tree.hash(), true_hash );
+        assert_eq!( empty_tree.hash().as_ref(), true_hash );
     }
     
 }
