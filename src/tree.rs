@@ -1,3 +1,6 @@
+// Warns not to throw errors for unused code
+#[warn(dead_code)]
+
 // Use statements
 use ring::digest::{ Algorithm, Digest };
 use hash_utilities::{ Hashable, HashUtilities };
@@ -10,7 +13,13 @@ use hash_utilities::{ Hashable, HashUtilities };
  *
  */
 
-// Enum for the tree
+/* Enum for the tree used for allowing multiple classifications of trees:
+ *
+ *    - An empty tree that contains only a hash 
+ *    - A tree leaf that contains a hash and a value
+ *    - A tree node ( or root node ) that contains a hash and left and right children
+ *
+ */
 #[derive(Hash)]
 pub enum Tree<T>
 {
@@ -28,6 +37,7 @@ pub enum Tree<T>
     },
     // Node definition ( Tree definition )
     // The node functions as the normal tree definition as it contains a hash field and two children
+    // Boxes are used for allocating memory on the heap for the left and right tree values
     Node
     {
         hash: Vec<u8>,
@@ -41,16 +51,14 @@ pub enum Tree<T>
 impl<T> Tree<T>
 {
 
+    // as_ref() used for converting to a reference 
     // Make an empty tree
     pub fn empty( hash: Digest ) -> Self
     {
         // Assigns hash
-        Tree::Empty
-        {
-            hash: hash.as_ref().into()
-        }
+        Tree::Empty{ hash: hash.as_ref().into() }
     }
-    // Make a new tree
+    // Constructs a new tree by assigning the hash and value fields
     pub fn new( hash: Digest, value: T ) -> Self
     {
         // Assigns hash and value
@@ -60,7 +68,8 @@ impl<T> Tree<T>
             value: value
         }
     }
-    // Make a new leaf
+    // Constructs a leaf by calling the hash algorithm on the input value and then calling the tree contstructor ( new() )
+    // with the hash and value
     pub fn new_leaf( algorithm: &'static Algorithm, value: T ) -> Tree<T>
         where
         T: Hashable,
@@ -79,74 +88,6 @@ impl<T> Tree<T>
             Tree::Empty { ref hash } => hash,
             Tree::Leaf { ref hash, .. } => hash,
             Tree::Node { ref hash, .. } => hash,
-        }
-    }
-    // Returns an iterator over the leaves of the tree
-    pub fn iter( &self ) -> LeavesIterator<T>
-    {
-        LeavesIterator::new_iterator( self )
-    }
-
-}
-
-// Struct for the leaf iterator
-pub struct LeavesIterator<'a, T>
-    where
-    T: 'a,
-{
-
-    // A leaf's current value
-    current: Option<&'a T>,
-    // The nodes to the right of the leaf
-    nodes: Vec<&'a Tree<T>>
-    
-}
-
-// Impl for the leaf iterator
-impl<'a, T> LeavesIterator<'a, T>
-{
-    
-    // Constructs a new leaf iterator
-    fn new_iterator( root: &'a Tree<T> ) -> Self
-    {
-        // Assigns base values to a new iterator with no current field and a new vector
-        let mut iterator = LeavesIterator
-        {
-            current: None,
-            nodes: Vec::new(),
-        };
-        // Creates iterator over the tree starting at the root
-        iterator.iterate( root );
-        iterator
-    }
-    // Iterates over the tree
-    fn iterate( &mut self, mut tree: &'a Tree<T> )
-    {
-        // Loop to continually traverse the tree
-        loop
-        {
-            // Match case for the classifications of trees that are encountered while iterating
-            match *tree
-            {
-                // Empty tree case, removes any value from current and breaks from the loop
-                Tree::Empty { .. } =>
-                {
-                    self.current = None;
-                    break;
-                }
-                // Leaf case, reassigns current and breaks from the loop
-                Tree::Leaf { ref value, .. } =>
-                {
-                    self.current = Some( value );
-                    break;
-                }
-                // Node case, pushes the right child to nodes vector and shifts tree to the left child 
-                Tree::Node { ref left, ref right, .. } =>
-                {
-                    self.nodes.push( right );
-                    tree = left;
-                }
-            }
         }
     }
 

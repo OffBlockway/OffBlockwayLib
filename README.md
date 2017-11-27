@@ -1,6 +1,6 @@
 ### Off Blockway
 
-A Rust implementation of a blockchain and Merkle Tree
+A Rust implementation of a blockchain using Merkle Tree verification
 
 ### Running
 
