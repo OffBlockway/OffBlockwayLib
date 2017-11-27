@@ -4,7 +4,9 @@ extern crate ring;
 // Use statements
 #[allow(unused_imports)]
 use std::io;
+#[allow(unused_imports)]
 use ring::digest::{ Algorithm, Context, SHA256, Digest, digest };
+#[allow(unused_imports)]
 use hash_utilities::{ Hashable, HashUtilities };
 #[allow(unused_imports)]
 use tree::Tree;
