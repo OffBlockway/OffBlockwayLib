@@ -7,9 +7,7 @@ extern crate ring;
 // Use statements
 #[allow(unused_imports)]
 use std::io;
-#[allow(unused_imports)]
-use ring::digest::{ Algorithm, Context, SHA256 };
-#[allow(unused_imports)]
+use ring::digest::{ Algorithm, Context, SHA256, digest };
 use hash_utilities::{ Hashable, HashUtilities};
 #[allow(unused_imports)]
 use tree::Tree;
@@ -17,15 +15,14 @@ use tree::Tree;
 // Mod statements
 mod tree;
 mod hash_utilities;
+mod block;
+
 
 // Global function declarations
 // All Merkle Trees have an associated algorithm assigned to them at creation, dubbed
 // digest ( using SHA 256 ) in this instance
 //
 // Flag used to allow lower cased globals to be compiled
-#[allow(non_upper_case_globals)]
-static digest: &'static Algorithm = &SHA256;
-
 /*
  *
  * Lib:
@@ -39,7 +36,6 @@ static digest: &'static Algorithm = &SHA256;
 #[cfg(test)]
 // Module for unit testing 
 mod tests {
-
     // Includes super directory
     use super::*;
     // Test flag indicating the next method is a test function
@@ -56,4 +52,13 @@ mod tests {
         assert_eq!( empty_tree.hash().as_ref(), true_hash );
     }
     
+    #[test]
+    fn create_block()
+    {
+
+        let block : block::Block<u8> = block::Block::new( 0, 0, digest( &SHA256, b"blockway") ); 
+        
+    }
+
+   
 }
