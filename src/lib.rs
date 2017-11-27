@@ -6,7 +6,7 @@ extern crate ring;
 
 // Use statements
 use std::io;
-use ring::digest::{ Algorithm, Context, SHA256 };
+use ring::digest::{ Algorithm, Context, SHA256, digest };
 use hash_utilities::{ Hashable, HashUtilities};
 use tree::Tree;
 
@@ -21,9 +21,6 @@ mod block;
 // digest ( using SHA 256 ) in this instance
 //
 // Flag used to allow lower cased globals to be compiled
-#[allow(non_upper_case_globals)]
-static digest: &'static Algorithm = &SHA256;
-
 /*
  *
  * Lib:
@@ -57,7 +54,7 @@ mod tests {
     fn create_block()
     {
 
-        let block : block::Block<u8> = block::Block::new( 0, 0, &[0] );
+        let block : block::Block<u8> = block::Block::new( 0, 0, digest( &SHA256, b"blockway") ); 
         
     }
 

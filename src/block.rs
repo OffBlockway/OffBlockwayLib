@@ -25,13 +25,11 @@ impl <T: ToString> Block<T>
 
     pub fn prep_fields( index: u64, data: T, previous_hash: Digest ) -> String
     {
-
-        String::new();
-        return String::format("{}{}{:?}{}", index.to_string(), data.to_string(), previous_hash, Utc::now() );
+        return index.to_string();
     }
     
     // Constructor 
-    pub fn new( index: u64, data: T, previous_hash: &[u8]  ) -> Block<T>
+    pub fn new( index: u64, data: T, previous_hash: Digest  ) -> Block<T>
     {
         let block = Block::<T>
         {
@@ -44,8 +42,6 @@ impl <T: ToString> Block<T>
             data: data,
             hash: digest( &SHA256, b"blockway"),
         };
-         let header = prep_fields( block.index, block.data, block.previous_hash );
-        block.hash = digest( &SHA256, header.to_bytes() );
         return block;
         
     }       
