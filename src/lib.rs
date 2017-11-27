@@ -67,3 +67,5 @@ mod block_tests
     }
     
 }
+
+// TODO: merkle tree tests 
