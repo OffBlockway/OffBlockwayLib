@@ -65,7 +65,7 @@ mod block_tests
     #[test]
     fn create_block()
     {
-        let block : block::Block<u8> = block::Block::new( 0, 0, digest( &SHA256, b"blockway") );
+        let block: block::Block<u8> = block::Block::new( 0, 0, digest( &SHA256, b"blockway") );
     }
     
 }
