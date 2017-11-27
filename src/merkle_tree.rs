@@ -1,3 +1,4 @@
+// Crate id statements
 #![crate_id = "merkle_tree"]
 #![crate_type = "lib"]
 
@@ -56,7 +57,7 @@ impl<T> MerkleTree<T>
         T: Hashable,
     
     {
-        // If the vector is empty -> construct a new Merkle Tree
+        // If the vector is empty -> construct a new empty Merkle Tree
         if values.is_empty()
         {
             // Creates an empty Merkle Tree and initializes fields to base values
@@ -73,7 +74,7 @@ impl<T> MerkleTree<T>
         // Height of the tree
         let mut height: usize = 0;
         // Current vector
-        let mut current  = Vec::with_capacity( count );
+        let mut current = Vec::with_capacity( count );
         // Iterate through the values in the vector and add the leaves
         for v in values
         {
@@ -84,16 +85,14 @@ impl<T> MerkleTree<T>
         // While current vector has a length greater than 1
         while current.len() > 1 
         {
-            // Holder next vector
+            // Next vector
             let mut next = Vec::new();
-            // While current vector has components
+            // While current vector is not empty
             while !current.is_empty()
             {
                 // If current vector has a length of 1, push the first item in current to next
                 if current.len() == 1
-                {
                     next.push( current.remove( 0 ) );
-                }
                 else
                 {
                     // Set left and right vectors to be the first two elements in current
@@ -137,7 +136,7 @@ impl<T> MerkleTree<T>
     {
         return self.height
     }
-    // Returns true if the tree is empty (has no leaves) and false otherwise
+    // Returns true if the tree is empty ( has no leaves ) and false otherwise
     pub fn is_empty( &self ) -> bool
     {
         return self.count == 0
