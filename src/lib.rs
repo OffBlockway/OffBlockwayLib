@@ -9,10 +9,12 @@ use ring::digest::{ Algorithm, Context, SHA256, Digest, digest };
 #[allow(unused_imports)]
 use hash_utilities::{ Hashable, HashUtilities };
 #[allow(unused_imports)]
-use tree::Tree;
+//use tree::Tree;
+use merkle::Tree;
 
 // Mod statements
 mod tree;
+mod merkle;
 mod hash_utilities;
 mod block;
 
@@ -37,21 +39,13 @@ mod tree_tests
     // Test flag indicating the next method is a test function
     #[test]
     // Unit test for an empty tree
-    /*
-    fn test_empty()
+    fn test_empty_tree()
     {
-        // Hashing algorithm 
-        let alg = &SHA256;
         let digest_hash = digest( &SHA256, &[] );
-        // Creates an empty tree using the constructor in the tree file
-        let empty_tree: Tree<u8> = Tree::empty( digest_hash );
-        // Calculates the true value of this algorithms empty has value
-        let true_hash = alg.empty_hash().as_ref();
-        // The true hash value is compared against the constructed tree's hash value to
-        // ensure that the empty tree is being build correctly
-        assert_eq!( empty_tree.hash().as_ref(), true_hash );
+        let empty_tree: tree::Tree<u8> = tree::Tree::empty( digest_hash );
+        assert_eq!( empty_tree.hash, digest_hash );
     }
-     */
+  
 
     // Test the creation of an arbitrary block
     #[test]

@@ -1,3 +1,4 @@
+#![feature(type_ascription)]
 // Use statements
 use ring::digest::{ Algorithm, Digest };
 use hash_utilities::{ Hashable, HashUtilities };
