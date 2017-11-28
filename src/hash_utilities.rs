@@ -20,6 +20,7 @@ pub trait Hashable
 // Hashable impl 
 impl<T: AsRef<[u8]>> Hashable for T
 {
+
     // Implementation of update context, puts self as context field
     fn update_context( &self, context: &mut Context)
     {

@@ -1,14 +1,13 @@
-// Warns the compiler not to throw a message about unused imports
-//#[warn(unused_imports)]
-
 // Crate inclusion
 extern crate ring;
 
 // Use statements
 #[allow(unused_imports)]
 use std::io;
-use ring::digest::{ Algorithm, Context, SHA256, digest };
-use hash_utilities::{ Hashable, HashUtilities};
+#[allow(unused_imports)]
+use ring::digest::{ Algorithm, Context, SHA256, Digest, digest };
+#[allow(unused_imports)]
+use hash_utilities::{ Hashable, HashUtilities };
 #[allow(unused_imports)]
 use tree::Tree;
 
@@ -17,11 +16,6 @@ mod tree;
 mod hash_utilities;
 mod block;
 
-
-// Global function declarations
-// All Merkle Trees have an associated algorithm assigned to them at creation, dubbed
-// digest ( using SHA 256 ) in this instance
-//
 // Flag used to allow lower cased globals to be compiled
 /*
  *
@@ -32,10 +26,12 @@ mod block;
  * 
  */
 
-// Test flag indicating this file contains test methods
+// Test flag indicating this module contains test methods
 #[cfg(test)]
 // Module for unit testing 
-mod tests {
+mod tree_tests
+{
+
     // Includes super directory
     use super::*;
     // Test flag indicating the next method is a test function
@@ -44,10 +40,13 @@ mod tests {
     /*
     fn test_empty()
     {
+        // Hashing algorithm 
+        let alg = &SHA256;
+        let digest_hash = digest( &SHA256, &[] );
         // Creates an empty tree using the constructor in the tree file
-        let empty_tree = Tree::empty( digest );
+        let empty_tree: Tree<u8> = Tree::empty( digest_hash );
         // Calculates the true value of this algorithms empty has value
-        let true_hash = digest.empty_hash().as_ref();
+        let true_hash = alg.empty_hash().as_ref();
         // The true hash value is compared against the constructed tree's hash value to
         // ensure that the empty tree is being build correctly
         assert_eq!( empty_tree.hash().as_ref(), true_hash );
@@ -74,6 +73,7 @@ mod tests {
         println!("{:?}", &block.hash );
         
     }
-
-   
+    
 }
+
+// TODO: merkle tree tests 

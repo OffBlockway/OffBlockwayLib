@@ -2,6 +2,7 @@
 extern crate chrono;
 extern crate ring;
 
+// Use statements
 use self::ring::digest::{ Digest, Algorithm, SHA256, digest };
 use self::chrono::{ DateTime, TimeZone, Utc };
 use std::io;
@@ -64,17 +65,14 @@ impl Block
 
 pub mod block
 {
-    use super::*;
     
+    use super::*;
     // Hash test
     pub fn hash( string: String )
-    {
-        
+    {    
         let hash = digest( &SHA256, string.as_bytes() ).as_ref().to_vec(); 
+        let hash = digest( &SHA256, string.as_bytes() ); 
         println!( "{:?}", hash );
-        
     }
     
 }
-    
-
