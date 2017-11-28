@@ -41,6 +41,7 @@ mod tests {
     // Test flag indicating the next method is a test function
     #[test]
     // Unit test for an empty tree
+    /*
     fn test_empty()
     {
         // Creates an empty tree using the constructor in the tree file
@@ -51,12 +52,26 @@ mod tests {
         // ensure that the empty tree is being build correctly
         assert_eq!( empty_tree.hash().as_ref(), true_hash );
     }
-    
+     */
+
+    // Test the creation of an arbitrary block
     #[test]
     fn create_block()
     {
+        
+        let mut block : block::Block = block::Block::new( 0, digest( &SHA256, b"blockway").as_ref().to_vec() );
+        block.hash = digest( &SHA256, block::Block::generate_header_string( &block ).as_bytes() ).as_ref().to_vec();
+        println!("{:?}\n{:?}", &block.hash, &block.previous_hash );
+        
+    }
 
-        let block : block::Block<u8> = block::Block::new( 0, 0, digest( &SHA256, b"blockway") ); 
+    // Test the creation of the origin block
+    #[test]
+    fn create_origin()
+    {
+
+        let block: block::Block = block::Block::origin();
+        println!("{:?}", &block.hash );
         
     }
 
