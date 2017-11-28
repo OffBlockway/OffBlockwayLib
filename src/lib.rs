@@ -45,22 +45,27 @@ mod tree_tests
         let empty_tree: tree::Tree<u8> = tree::Tree::empty( digest_hash );
         assert_eq!( empty_tree.hash, digest_hash );
     }
-    
-}
+  
 
-// Test flag indicating this module contains test methods
-#[cfg(test)]
-// Module for unit testing
-mod block_tests
-{
-
-    // Includes super directory
-    use super::*;
-    // Test flag indicating the next method is a test function
+    // Test the creation of an arbitrary block
     #[test]
     fn create_block()
     {
-        let block: block::Block<u8> = block::Block::new( 0, 0, digest( &SHA256, b"blockway") );
+        
+        let mut block : block::Block = block::Block::new( 0, digest( &SHA256, b"blockway").as_ref().to_vec() );
+        block.hash = digest( &SHA256, block::Block::generate_header_string( &block ).as_bytes() ).as_ref().to_vec();
+        println!("{:?}\n{:?}", &block.hash, &block.previous_hash );
+        
+    }
+
+    // Test the creation of the origin block
+    #[test]
+    fn create_origin()
+    {
+
+        let block: block::Block = block::Block::origin();
+        println!("{:?}", &block.hash );
+        
     }
     
 }
