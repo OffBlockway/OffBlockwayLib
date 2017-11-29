@@ -44,7 +44,6 @@ pub impl Merkle<T>
     // New Merkle Tree constructor
     pub fn new() -> Self
     {
-
         // The root of the tree, a new Merkle Tree will have an empty tree as its root
         root: Tree::empty();
         // The height of an empty tree
@@ -54,8 +53,7 @@ pub impl Merkle<T>
         // The hash of an empty tree
         hash: ,
         // The nodes of the empty tree
-        nodes: Vec::new()
-        
+        nodes: Vec::new()        
     }
     
 
