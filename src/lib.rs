@@ -10,15 +10,16 @@ use ring::digest::{ Algorithm, Context, SHA256, Digest, digest };
 #[allow(unused_imports)]
 use hash_utilities::{ Hashable, HashUtilities };
 #[allow(unused_imports)]
-// Gives access to the tree
+// Gives access to the binary tree file
 use tree::Tree;
+// Gives acces to the Merkle Tree file
+//use merkle::Merkle;
 
 // Mod statements
 mod tree;
 mod hash_utilities;
 mod block;
 
-// Flag used to allow lower cased globals to be compiled
 /*
  *
  * Lib:
