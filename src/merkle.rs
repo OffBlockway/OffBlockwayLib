@@ -56,7 +56,7 @@ impl<T> Merkle<T>
             // The leaf count of an empty tree
             leaf_count: 0,
             // The hash of an empty tree
-            hash: hash_util::empty_hash::<u8>(),
+            hash: ::hash_util::empty_hash::<u8>(),
             // The nodes of the empty tree
             nodes: Vec::new()
         }

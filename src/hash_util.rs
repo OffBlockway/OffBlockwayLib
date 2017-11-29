@@ -20,7 +20,7 @@ use std::string::{ ToString, String };
 // Create a hash of 0 
 pub fn empty_hash< T: ToString >() -> Vec<u8>
 {
-
+    
     // Create a leaf hash of the null byte
     create_leaf_hash( &0 )
 

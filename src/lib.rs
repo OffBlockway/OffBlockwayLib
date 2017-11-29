@@ -46,11 +46,11 @@ mod tree_tests
     {
         
         // The hash value for an empty byte array 
-        let digest_hash = digest( &SHA256, &[] );
+        let digest_hash = hash_util::empty_hash::<u8>();
         // The empty tree constructed with this hash 
-        let empty_tree: tree::Tree<u8> = tree::Tree::empty( digest_hash );
+        let empty_tree: tree::Tree<u8> = tree::Tree::empty( );
         // Compaing the tree's hash with the computed hash
-        assert_eq!( *empty_tree.hash(), digest_hash.as_ref().to_vec() );
+        assert_eq!( *empty_tree.hash(), digest_hash );
 
     }
 
@@ -61,13 +61,13 @@ mod tree_tests
     {
 
         // The hash value for the leaf
-        let digest_hash = digest( &SHA256, b"zac" );
+        let digest_hash = hash_util::create_leaf_hash::<u8>( &9 );;
         // Arbitrary u8 value for the leaf  
         let value: u8 = 0; 
         // The tree leaf constructed with this hash and value 
         let tree_leaf: tree::Tree<u8> = tree::Tree::leaf( digest_hash, value );
         // Comparing the tree's hash with the computed hash
-        assert_eq!( *tree_leaf.hash(), digest_hash.as_ref().to_vec() );
+        assert_eq!( *tree_leaf.hash(), digest_hash );
 
     }
 
@@ -78,24 +78,24 @@ mod tree_tests
     {
 
         // The hash value for the node
-        let digest_hash = digest( &SHA256, b"leftright" );
+        let digest_hash = hash_util::create_leaf_hash::<u8>( &01 );
         // The left and right children's hash values
-        let left_hash = digest( &SHA256, b"left" );
-        let right_hash = digest( &SHA256, b"right" );
+        let left_hash = hash_util::create_leaf_hash::<u8>( &0 );
+        let right_hash = hash_util::create_leaf_hash::<u8>( &1 );
         // Arbitrary u8 values for the left and right children
         let left_value: u8 = 0;
         let right_value: u8 = 1;
         // The tree's left and right children 
         let left_child: tree::Tree<u8> = tree::Tree::leaf( left_hash, left_value );
         // Comparing the left child's hash with its computed hash
-        assert_eq!( *left_child.hash(), left_hash.as_ref().to_vec() );
+        assert_eq!( *left_child.hash(), left_hash );
         let right_child: tree::Tree<u8> = tree::Tree::leaf( right_hash, right_value );
         // Comparing the right child's hash with its computed hash
-        assert_eq!( *right_child.hash(), right_hash.as_ref().to_vec() );
+        assert_eq!( *right_child.hash(), right_hash );
         // The root node with the calculated hash and left and right children 
         let root_node: tree::Tree<u8> = tree::Tree::node( digest_hash, left_child, right_child );
         // Comparing the root's hash with the computed hash 
-        assert_eq!( *root_node.hash(), digest_hash.as_ref().to_vec() );
+        assert_eq!( *root_node.hash(), digest_hash );
 
     }
 
