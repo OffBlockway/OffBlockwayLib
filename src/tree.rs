@@ -3,7 +3,7 @@
 extern crate ring;
 
 // Use statements
-use std::io;
+use std::*;
 use self::ring::digest::{ Digest, Algorithm, SHA256, digest };
 
 /*
@@ -74,14 +74,15 @@ impl<T> Tree<T>
         }
     }
     // Tree node constructor
-    pub fn node( hash: Digest, left: Box<Tree<T>>, right: Box<Tree<T>> ) -> Self
+    pub fn node( hash: Digest, left: Tree<T>, right: Tree<T> ) -> Self
     {
-        // Returns a tree node with the given hash and left and right children
+        // Returns a tree node with the given hash and
+        // allocates memory for the left and right children 
         Tree::Node
         {
             hash: hash.as_ref().to_vec(),
-            left: left,
-            right: right
+            left: Box::new(left),
+            right: Box::new(right)
         }   
     }
     // Retrieve the hash of a given tree
