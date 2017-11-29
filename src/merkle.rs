@@ -60,12 +60,9 @@ impl<T> Tree<T>
     // Empty tree constructor
     pub fn empty( hash: Digest ) -> Self
     {
-
         // Returns an empty tree with the given hash
         Tree::Empty{ hash: hash.as_ref().to_vec() }
-
     }
-    
     // Leaf node constructor
     pub fn leaf( hash: Digest, value: T ) -> Self
     {
@@ -75,9 +72,7 @@ impl<T> Tree<T>
             hash: hash.as_ref().to_vec(),
             value: value
         }
-
     }
-    
     // Tree node constructor
     pub fn node( hash: Digest, left: Box<Tree<T>>, right: Box<Tree<T>> ) -> Self
     {
@@ -87,10 +82,8 @@ impl<T> Tree<T>
             hash: hash.as_ref().to_vec(),
             left: left,
             right: right
-        }
-        
+        }   
     }
-
     // Retrieve the hash of a given tree
     pub fn hash( &self ) -> &Vec<u8>
     {
@@ -98,14 +91,14 @@ impl<T> Tree<T>
         // Match self to enum type
         match *self
         {
-            // If empty
+            // ref allows us to reference a field of the enum 
+            // If it's an empty tree
             Empty { ref hash } => hash,
-            // If node
+            // If it's a tree node
             Node { ref hash, .. } => hash,
-            // If leaf
+            // If it's a leaf node 
             Leaf { ref hash, .. } => hash
-        }
-        
+        }        
     }
     
 }
