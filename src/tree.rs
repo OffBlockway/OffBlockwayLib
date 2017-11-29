@@ -3,7 +3,7 @@
 extern crate ring;
 
 // Use statements
-use std::io;
+use std::*;
 use self::ring::digest::{ Digest, Algorithm, SHA256, digest };
 
 /*
