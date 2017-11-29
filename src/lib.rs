@@ -8,17 +8,18 @@ use std::*;
 #[allow(unused_imports)]
 use ring::digest::{ Algorithm, Context, SHA256, Digest, digest };
 #[allow(unused_imports)]
-use hash_utilities::{ Hashable, HashUtilities };
-#[allow(unused_imports)]
 // Gives access to the binary tree file
 use tree::Tree;
 // Gives acces to the Merkle Tree file
-//use merkle::Merkle;
+use merkle::Merkle;
+// Gives acces to the hash utilities
+use hash_util::*;
 
 // Mod statements
 mod tree;
-mod hash_utilities;
+mod hash_util;
 mod block;
+mod merkle;
 
 /*
  *
@@ -37,23 +38,28 @@ mod tree_tests
 
     // Includes super directory
     use super::*;
+
     // Test flag indicating the next method is a test function
     #[test]
     // Unit test for an empty tree
     fn test_empty_tree()
     {
+        
         // The hash value for an empty byte array 
         let digest_hash = digest( &SHA256, &[] );
         // The empty tree constructed with this hash 
         let empty_tree: tree::Tree<u8> = tree::Tree::empty( digest_hash );
         // Compaing the tree's hash with the computed hash
         assert_eq!( *empty_tree.hash(), digest_hash.as_ref().to_vec() );
+
     }
+
     // Test flag indicating the next method is a test function
     #[test]
     // Unit test for a tree leaf
     fn test_tree_leaf()
     {
+
         // The hash value for the leaf
         let digest_hash = digest( &SHA256, b"zac" );
         // Arbitrary u8 value for the leaf  
@@ -62,12 +68,15 @@ mod tree_tests
         let tree_leaf: tree::Tree<u8> = tree::Tree::leaf( digest_hash, value );
         // Comparing the tree's hash with the computed hash
         assert_eq!( *tree_leaf.hash(), digest_hash.as_ref().to_vec() );
+
     }
+
     // Test flag indicating the next method is a test function
     #[test]
     // Unit test for a tree node
     fn test_tree_node()
     {
+
         // The hash value for the node
         let digest_hash = digest( &SHA256, b"leftright" );
         // The left and right children's hash values
@@ -87,6 +96,7 @@ mod tree_tests
         let root_node: tree::Tree<u8> = tree::Tree::node( digest_hash, left_child, right_child );
         // Comparing the root's hash with the computed hash 
         assert_eq!( *root_node.hash(), digest_hash.as_ref().to_vec() );
+
     }
 
 }
@@ -99,20 +109,67 @@ mod block_tests
 
     // Includes super directory 
     use super::*;
+    
     // Test the creation of an arbitrary block
     #[test]
     fn create_block()
     {
-        let mut block : block::Block = block::Block::new( 0, digest( &SHA256, b"blockway").as_ref().to_vec() );
+        
+        let mut block : block::Block = block::Block::new( 0, [0].to_vec() );
         block.hash = digest( &SHA256, block::Block::generate_header_string( &block ).as_bytes() ).as_ref().to_vec();
-        println!( "{:?}\n{:?}", &block.hash, &block.previous_hash );    
+        println!("Block hash: {:?}\nBlock Previous {:?}", &block.hash, &block.previous_hash );
+        
     }
+    
     // Test the creation of the origin block
     #[test]
     fn create_origin()
     {
+
         let block: block::Block = block::Block::origin();
         println!( "{:?}", &block.hash );
+
+    }
+    
+}
+
+// Test flag indicating this module contains test methods
+#[cfg(test)]
+// Hash utilities tests
+mod hash_util_tests
+{
+
+    // Includes super directory
+    use super::*;
+
+    // Test the creation of an empty hash (hash of a nullptr)
+    #[test]
+    fn empty_hash_test() -> ()
+    {
+        
+        let vec = hash_util::empty_hash::<u8>();
+        let nullptr = &0;
+        assert_eq!( vec, digest( &SHA256, nullptr.to_string().as_ref() ).as_ref().to_vec() );
+        
+    }
+
+    // Test the creation of a hash for a value
+    #[test]
+    fn leaf_hash_test() -> ()
+    {
+        
+        let vec = hash_util::create_leaf_hash::<u8>( &9 );
+        let ptr = &9;
+        assert_eq!( vec, digest( &SHA256, ptr.to_string().as_ref() ).as_ref().to_vec() );
+
+    }
+
+    #[test]
+    fn node_hash_test() -> ()
+    {
+
+        println!( "NOT IMPLEMENTED" );
+        
     }
     
 }
