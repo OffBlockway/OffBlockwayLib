@@ -8,7 +8,9 @@ use std::*;
 // Using ring for algorithm ( SHA256 ) and digest
 use ring::digest::{ Algorithm, Context, SHA256, Digest, digest };
 // Using tree for the skeleton of the Merkle Tree
-use tree::Tree;
+use tree::*;
+// Using hash utilities for the node hash
+use hash_util::*;
 
 /*
  *
@@ -38,25 +40,27 @@ pub struct Merkle<T>
 
 // Merkle Tree impl, defines the methods associated with constructing Merkle Trees
 // and extracting information from them.
-pub impl Merkle<T>
+impl<T> Merkle<T>
 {
 
     // New Merkle Tree constructor
     pub fn new() -> Self
     {
-        // The root of the tree, a new Merkle Tree will have an empty tree as its root
-        root: Tree::empty();
-        // The height of an empty tree
-        heigh: 0,
-        // The leaf count of an empty tree
-        count: 0,
-        // The hash of an empty tree
-        hash: ,
-        // The nodes of the empty tree
-        nodes: Vec::new()        
+
+        Merkle
+        {
+            // The root of the tree, a new Merkle Tree will have an empty tree as its root
+            root: Tree::empty(),
+            // The height of an empty tree
+            height: 0,
+            // The leaf count of an empty tree
+            leaf_count: 0,
+            // The hash of an empty tree
+            hash: hash_util::empty_hash::<u8>(),
+            // The nodes of the empty tree
+            nodes: Vec::new()
+        }
+
     }
-    
-
-
-    
+        
 }

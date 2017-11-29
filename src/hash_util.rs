@@ -1,6 +1,8 @@
-/** Functions used for generalizing hash utilities */
-
+// Crate inclusion 
 extern crate ring;
+
+// Use statements
+//
 // For hashing using SHA256 
 use ring::digest::{ digest, SHA256 };
 // For storing the hash as a vector of bytes
@@ -8,6 +10,12 @@ use std::vec::Vec;
 // For enforcing the trait ToString and for general String functionality
 use std::string::{ ToString, String };
 
+/*
+ *
+ * Hash utilities:
+ *       - Contains functions used for generalizing hash utilities
+ *
+ */
 
 // Create a hash of 0 
 pub fn empty_hash< T: ToString >() -> Vec<u8>
