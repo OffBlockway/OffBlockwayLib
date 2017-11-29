@@ -12,6 +12,7 @@ use std::vec::Vec;
 // Block struct
 pub struct Block
 {
+
     // TODO make proper setters and getters for safety 
     pub index: u64,
     pub previous_hash: Vec<u8>,
@@ -73,6 +74,7 @@ pub mod block
 {
     
     use super::*;
+
     // Hash test
     pub fn hash( string: String )
     {    
