@@ -43,9 +43,10 @@ mod tree_tests
     {
         let digest_hash = digest( &SHA256, &[] );
         let empty_tree: tree::Tree<u8> = tree::Tree::empty( digest_hash );
-        assert_eq!( empty_tree.hash, digest_hash );
+        assert_eq!( *empty_tree.hash(), digest_hash.as_ref().to_vec() );
     }
-  
+
+    
 
     // Test the creation of an arbitrary block
     #[test]
