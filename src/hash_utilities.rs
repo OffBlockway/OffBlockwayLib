@@ -1,80 +1,42 @@
-// Use statements
-use ring::digest::{ Algorithm, Context, Digest, digest };
+/** Functions used for generalizing hash utilities */
 
+extern crate ring;
+// For hashing using SHA256 
+use ring::digest::{ digest, SHA256 };
+// For storing the hash as a vector of bytes
+use std::vec::Vec;
+// For enforcing the trait ToString and for general String functionality
+use std::string::{ ToString, String };
+
+
+// Create a hash of 0 
+pub fn empty_hash< T: ToString >() -> Vec<u8>
+{
+
+    // Create a leaf hash of the null byte
+    create_leaf_hash( &0 )
+
+}
+
+// Create a hash of a leaf
+pub fn create_leaf_hash< T: ToString >( value: &T ) -> Vec<u8>
+{
+
+    // Hash the value in a leaf
+    digest( &SHA256, &value.to_string().as_ref() ).as_ref().to_vec()
+    
+}
+
+// TODO: Replace with SHA3 library 
+// Creat a hash of a node
 /*
- * Hash Utilities:
- *     
- *      - This file implements methods used in hashing using traits and impls 
- *
- */
-
-// Hashable trait 
-pub trait Hashable
+pub fn creat_node_hash< T: ToString >( left: &T, right: &T ) -> Vec<u8>
 {
 
-    // Uses self for given context
-    fn update_context( &self, context: &mut Context );
-
-}
-
-// Hashable impl 
-impl<T: AsRef<[u8]>> Hashable for T
-{
-
-    // Implementation of update context, puts self as context field
-    fn update_context( &self, context: &mut Context)
-    {
-        context.update(self.as_ref());
-    }
+    let mut temp = String::new();
+    temp += digest( &SHA256, &left.to_string().as_ref() );
+    temp += format("{}"digest( &SHA256, &right.to_string().as_ref() );
+    digest( &SHA256, temp.as_ref() ).as_ref().to_vec() )
     
 }
-
-// Hash utilities trait
-pub trait HashUtilities
-{
-
-    // Hashes an empty string
-    fn empty_hash( &'static self ) -> Digest;
-    // Hashes a leaf
-    fn leaf_hash<T>( &'static self, bytes: &T ) -> Digest
-        where
-        T: Hashable;
-    // Hashes two nodes together ( left and right children of some parent node )
-    fn node_hash<T>( &'static self, left: &T, right: &T ) -> Digest
-        where
-        T: Hashable;
-    
-}
-
-// Hash utilities impl
-impl HashUtilities for Algorithm
-{
-
-    // Calls hash function on an empty string 
-    fn empty_hash( &'static self ) -> Digest
-    {
-        digest( self, &[] )
-    }
-    // Updates the context of the leaf
-    fn leaf_hash<T>( &'static self, leaf: &T ) -> Digest
-        where
-        T: Hashable,
-    {
-        let mut context = Context::new( self );
-        context.update( &[0x00] );
-        leaf.update_context( &mut context );
-        context.finish()
-    }
-    // Updates the context of the node and calls the function to update the children's contexts
-    fn node_hash<T>( &'static self, left: &T, right: &T ) -> Digest
-        where
-        T: Hashable,
-    {
-        let mut context = Context::new( self );
-        context.update( &[0x01] );
-        left.update_context( &mut context );
-        right.update_context( &mut context );
-        context.finish()
-    }
-    
-}
+*/

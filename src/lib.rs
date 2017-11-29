@@ -7,13 +7,10 @@ use std::io;
 #[allow(unused_imports)]
 use ring::digest::{ Algorithm, Context, SHA256, Digest, digest };
 #[allow(unused_imports)]
-use hash_utilities::{ Hashable, HashUtilities };
-#[allow(unused_imports)]
 //use tree::Tree;
 use merkle::Tree;
 
 // Mod statements
-mod tree;
 mod merkle;
 mod hash_utilities;
 mod block;
@@ -42,7 +39,7 @@ mod tree_tests
     fn test_empty_tree()
     {
         let digest_hash = digest( &SHA256, &[] );
-        let empty_tree: tree::Tree<u8> = tree::Tree::empty( digest_hash );
+        let empty_tree: merkle::Tree<u8> = merkle::Tree::empty( digest_hash );
         assert_eq!( *empty_tree.hash(), digest_hash.as_ref().to_vec() );
     }
 
@@ -53,9 +50,9 @@ mod tree_tests
     fn create_block()
     {
         
-        let mut block : block::Block = block::Block::new( 0, digest( &SHA256, b"blockway").as_ref().to_vec() );
+        let mut block : block::Block = block::Block::new( 0, [0].to_vec() );
         block.hash = digest( &SHA256, block::Block::generate_header_string( &block ).as_bytes() ).as_ref().to_vec();
-        println!("{:?}\n{:?}", &block.hash, &block.previous_hash );
+        println!("Block hash: {:?}\nBlock Previous {:?}", &block.hash, &block.previous_hash );
         
     }
 
@@ -71,4 +68,41 @@ mod tree_tests
     
 }
 
-// TODO: merkle tree tests 
+// Hash utilities tests
+mod hash_util_tests
+{
+    
+    use super::*;
+
+    // Test the creation of an empty hash (hash of a nullptr)
+    #[test]
+    fn empty_hash_test() -> ()
+    {
+        
+        let vec = hash_utilities::empty_hash::<u8>();
+        let nullptr = &0;
+        assert_eq!( vec, digest( &SHA256, nullptr.to_string().as_ref() ).as_ref().to_vec() );
+        
+    }
+
+    // Test the creation of a hash for a value
+    #[test]
+    fn leaf_hash_test() -> ()
+    {
+        
+        let vec = hash_utilities::create_leaf_hash::<u8>( &9 );
+        let ptr = &9;
+        assert_eq!( vec, digest( &SHA256, ptr.to_string().as_ref() ).as_ref().to_vec() );
+
+    }
+
+    #[test]
+    fn node_hash_test() -> ()
+    {
+
+        println!( "NOT IMPLEMENTED" );
+        
+    }
+    
+    
+}
