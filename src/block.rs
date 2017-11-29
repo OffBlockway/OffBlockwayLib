@@ -1,12 +1,11 @@
+#[allow(dead_code)]
 // Included crates
 extern crate chrono;
 extern crate ring;
 
 // Use statements
-use self::ring::digest::{ Digest, Algorithm, SHA256, digest };
-use self::chrono::{ DateTime, TimeZone, Utc };
-use std::io;
-use std::fmt;
+use self::ring::digest::{ SHA256, digest };
+use self::chrono::{ DateTime, Utc };
 use std::string::String;
 use std::vec::Vec;
 
@@ -71,7 +70,6 @@ pub mod block
     pub fn hash( string: String )
     {    
         let hash = digest( &SHA256, string.as_bytes() ).as_ref().to_vec(); 
-        let hash = digest( &SHA256, string.as_bytes() ); 
         println!( "{:?}", hash );
     }
     
