@@ -67,7 +67,7 @@ impl<T> Tree<T>
     {
 
         // Returns an empty tree with the given hash
-        Tree::Empty{ hash: hash_util::empty_hash::<u8>() }
+        Tree::Empty{ hash: ::hash_util::empty_hash::<u8>() }
 
     }
     
