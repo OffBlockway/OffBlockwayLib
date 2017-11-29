@@ -62,5 +62,37 @@ impl<T> Merkle<T>
         }
 
     }
+
+    // Determines whether or not the Merkle Tree is empty
+    pub fn is_empty( &self ) -> bool
+    {
+
+        self.nodes.is_empty()
         
+    }
+
+    // Returns the height of the tree
+    pub fn height( &self ) -> usize
+    {
+        
+        self.height 
+
+    }
+
+    // Returns the leaf count of the tree
+    pub fn leaf_count( &self ) -> usize
+    {
+
+        self.leaf_count
+        
+    }
+
+    // Returns the root hash of a given tree
+    pub fn root_hash( &self ) -> &Vec<u8>
+    {
+
+        self.root.hash()
+        
+    }
+    
 }
