@@ -61,13 +61,15 @@ mod tree_tests
     {
 
         // The hash value for the leaf
-        let digest_hash = hash_util::create_leaf_hash::<u8>( &9 );;
+        let digest_hash = hash_util::create_leaf_hash::<u8>( &9 );
+        // Copy hash used for assert statements
+        let digest_copy = digest_hash.clone();
         // Arbitrary u8 value for the leaf  
         let value: u8 = 0; 
         // The tree leaf constructed with this hash and value 
         let tree_leaf: tree::Tree<u8> = tree::Tree::leaf( digest_hash, value );
         // Comparing the tree's hash with the computed hash
-        assert_eq!( *tree_leaf.hash(), digest_hash );
+        assert_eq!( *tree_leaf.hash(), digest_copy );
 
     }
 
@@ -79,23 +81,29 @@ mod tree_tests
 
         // The hash value for the node
         let digest_hash = hash_util::create_leaf_hash::<u8>( &01 );
+        // Copy hash used for assert statements
+        let digest_copy = digest_hash.clone();
         // The left and right children's hash values
         let left_hash = hash_util::create_leaf_hash::<u8>( &0 );
         let right_hash = hash_util::create_leaf_hash::<u8>( &1 );
+        // Copy hash used for assert statements
+        let left_copy = left_hash.clone();
+        // Copy hash used for assert statements
+        let right_copy = right_hash.clone();
         // Arbitrary u8 values for the left and right children
         let left_value: u8 = 0;
         let right_value: u8 = 1;
         // The tree's left and right children 
         let left_child: tree::Tree<u8> = tree::Tree::leaf( left_hash, left_value );
         // Comparing the left child's hash with its computed hash
-        assert_eq!( *left_child.hash(), left_hash );
+        assert_eq!( *left_child.hash(), left_copy );
         let right_child: tree::Tree<u8> = tree::Tree::leaf( right_hash, right_value );
         // Comparing the right child's hash with its computed hash
-        assert_eq!( *right_child.hash(), right_hash );
+        assert_eq!( *right_child.hash(), right_copy );
         // The root node with the calculated hash and left and right children 
         let root_node: tree::Tree<u8> = tree::Tree::node( digest_hash, left_child, right_child );
         // Comparing the root's hash with the computed hash 
-        assert_eq!( *root_node.hash(), digest_hash );
+        assert_eq!( *root_node.hash(), digest_copy );
 
     }
 
@@ -174,14 +182,68 @@ mod hash_util_tests
     
 }
 
-/* 
-TODO: merkle tree tests 
 // Test flag indicating this module contains test methods
 #[cfg(test)]
 //Module for merkle tree unit testing
 mod merkle_tests
 {
 
+    // Includes super directory
+    use super::*;
 
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Unit test for the height of an empty merkle tree
+    fn test_empty_height()
+    {
+
+        // Creates a new type u8 Merkle Tree 
+        let merkle: merkle::Merkle<u8> = merkle::Merkle::new();
+        // Confirms the height method returns 0 
+        assert_eq!( 0, merkle.height() );
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Unit test for the leaf count of an empty merkle tree
+    fn test_empty_count()
+    {
+
+        // Creates a new type u8 Merkle Tree
+        let merkle: merkle::Merkle<u8> = merkle::Merkle::new();
+        // Confirms the leaf_count method returns 0
+        assert_eq!( 0, merkle.leaf_count() );
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Unit test for verifying an empty tree is empty
+    fn verify_empty()
+    {
+
+        // Creates a new type u8 Merkle Tree
+        let merkle: merkle::Merkle<u8> = merkle::Merkle::new();
+        // Confirms that is_empty returns true
+        assert_eq!( true, merkle.is_empty() );
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Unit test for verifying the construction and hash of an empty
+    // Merkle Tree
+    fn test_empty_merkle()
+    {
+
+        // Creates a new type u8 Merkle Tree
+        let merkle: merkle::Merkle<u8> = merkle::Merkle::new();
+        // Creates an empty hash
+        let empty_hash = hash_util::empty_hash::<u8>();
+        // Confirms that the tree's hash is the same as a calculated empty hash
+        assert_eq!( *merkle.root_hash(), empty_hash );
+        
+    }
+    
 }
-*/
