@@ -118,6 +118,12 @@ impl<T> Merkle<T>
             
             
         }
+        else
+        {
+            
+            self.root
+
+        }
         
     }
     
