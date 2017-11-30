@@ -198,7 +198,7 @@ mod merkle_tests
     {
 
         // Creates a new type u8 Merkle Tree 
-        let merkle: merkle::Merkle<u8> = merkle::Merkle::new();
+        let merkle: merkle::Merkle<u8> = merkle::Merkle::empty();
         // Confirms the height method returns 0 
         assert_eq!( 0, merkle.height() );
         
@@ -211,7 +211,7 @@ mod merkle_tests
     {
 
         // Creates a new type u8 Merkle Tree
-        let merkle: merkle::Merkle<u8> = merkle::Merkle::new();
+        let merkle: merkle::Merkle<u8> = merkle::Merkle::empty();
         // Confirms the leaf_count method returns 0
         assert_eq!( 0, merkle.leaf_count() );
         
@@ -224,7 +224,7 @@ mod merkle_tests
     {
 
         // Creates a new type u8 Merkle Tree
-        let merkle: merkle::Merkle<u8> = merkle::Merkle::new();
+        let merkle: merkle::Merkle<u8> = merkle::Merkle::empty();
         // Confirms that is_empty returns true
         assert_eq!( true, merkle.is_empty() );
         
@@ -238,7 +238,7 @@ mod merkle_tests
     {
 
         // Creates a new type u8 Merkle Tree
-        let merkle: merkle::Merkle<u8> = merkle::Merkle::new();
+        let merkle: merkle::Merkle<u8> = merkle::Merkle::empty();
         // Creates an empty hash
         let empty_hash = hash_util::empty_hash::<u8>();
         // Confirms that the tree's hash is the same as a calculated empty hash

@@ -13,18 +13,22 @@ use std::vec::Vec;
 pub struct Block
 {
 
-    // TODO make proper setters and getters for safety 
+    // The index of the block
     pub index: u64,
+    // The block's previous hash 
     pub previous_hash: Vec<u8>,
+    // The time the block was created 
     pub timestamp: DateTime<Utc>,
+    // The block's hash
     pub hash: Vec<u8>,
 
 }
 
- // Block
+ // Block impl
 impl Block
 {
 
+    // Generates a header string
     pub fn generate_header_string( block: &Block ) -> String
     {
         
@@ -39,12 +43,13 @@ impl Block
         
     }
     
-    // Constructor 
+    // Constructor for a new block
     pub fn new( index: u64, previous_hash: Vec<u8>  ) -> Block
     {
         
         let block = Block
         {
+            
             // Sets the index, previous hash, and data of the block to the information given
             // to the constructor, timestamps the block with the current time and gives the
             // block a new hash.
@@ -52,6 +57,7 @@ impl Block
             previous_hash: previous_hash,
             timestamp: Utc::now(),
             hash: digest( &SHA256, b"blockway").as_ref().to_vec(),
+
         };
         return block;        
 
@@ -77,9 +83,11 @@ pub mod block
 
     // Hash test
     pub fn hash( string: String )
-    {    
+    {
+        
         let hash = digest( &SHA256, string.as_bytes() ).as_ref().to_vec(); 
         println!( "{:?}", hash );
+
     }
     
 }
