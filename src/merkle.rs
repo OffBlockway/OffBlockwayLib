@@ -179,22 +179,6 @@ impl<T> Merkle<T>
 
     }
 
-    // Returns all the nodes in the Merkle Tree
-    pub fn get_nodes( &self ) -> Vec<T>
-    {
-
-        // If there are nodes in the tree return the nodes
-        if( self.nodes.len() > 0 )
-        {
-
-            return self.nodes;
-
-        }
-        // Otherwise return an empty vector 
-        return Vec::new();
-        
-    }
-    
     // Determines whether or not the Merkle Tree is empty
     pub fn is_empty( &self ) -> bool
     {
