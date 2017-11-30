@@ -109,7 +109,7 @@ impl<T> Merkle<T>
     {
 
         self.leaf_count = self.nodes.len();
-        self.height = self.calculate_height( self.nodes );
+        self.height = self.calculate_height();
         self.root = Tree::empty();
         let mut buffer: Vec<T> = Vec::new();
         if( !self.is_empty() )
@@ -122,17 +122,17 @@ impl<T> Merkle<T>
     }
     
     // Calculates the height of the tree given the leaves
-    pub fn calculate_height( &self, nodes: Vec<T> ) -> usize
+    pub fn calculate_height( &self ) -> usize
     {
 
         // The number of leaf nodes
         let mut num_nodes: usize = 0;
         // If there are an even number of leaf nodes then all the leaves in the
         // tree have data. 
-        if( nodes.len() % 2 == 0 )
+        if( self.nodes.len() % 2 == 0 )
         {
 
-            num_nodes = nodes.len();
+            num_nodes = self.nodes.len();
 
         }
         // Otherwise, there is an empty leaf as seen below:
@@ -151,10 +151,10 @@ impl<T> Merkle<T>
          * number of leaves for the logarithmic heigh calculation  *
          * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
         // Number of nodes is recalculated if there are an odd number of leaf nodes
-        else if( nodes.len() % 2 == 1 )
+        else if( self.nodes.len() % 2 == 1 )
         {
 
-            num_nodes = nodes.len() + 1;
+            num_nodes = self.nodes.len() + 1;
 
         }
         // The tree of the height is then set to the natural log ( base 2 ) of the number
