@@ -1,4 +1,6 @@
+// Tells the compiler not to throw warnings for unused code
 #[allow(dead_code)]
+
 // Included crates
 extern crate ring;
 
@@ -32,15 +34,19 @@ pub enum Tree<T>
     // Empty tree definition
     Empty
     {
+        
         // Empty trees only contain a hash
         hash: Vec<u8>
+
     },
     // Leaf definition
     Leaf
     {
+
         // Leaves act as a node with a hash and value but no children
         hash: Vec<u8>,
         value: T
+
     },
     // Node ( tree definiton )
     // The node functions as the normal tree definition as it contains a hash field
@@ -50,10 +56,12 @@ pub enum Tree<T>
     // values.
     Node
     {
+
         // Nodes have a hash and left and right children 
         hash: Vec<u8>,
         left: Box<Tree<T>>,
         right: Box<Tree<T>>
+
     }
 
 }
@@ -78,8 +86,10 @@ impl<T> Tree<T>
         // Returns a tree leaf with the given hash and value
         Tree::Leaf
         {
+
             hash: hash,
             value: value
+
         }
         
     }
@@ -91,9 +101,11 @@ impl<T> Tree<T>
         // allocates memory for the left and right children 
         Tree::Node
         {
+
             hash: hash,
             left: Box::new(left),
             right: Box::new(right)
+
         }   
 
     }
