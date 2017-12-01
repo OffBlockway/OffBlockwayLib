@@ -43,7 +43,7 @@ pub struct Merkle<T>
 
 // Merkle Tree impl, defines the methods associated with constructing Merkle Trees
 // and extracting information from them.
-impl<T> Merkle<T>
+impl<T: Clone> Merkle<T>
 {
 
     // New empty Merkle Tree constructor
@@ -158,7 +158,7 @@ impl<T> Merkle<T>
         self.leaf_count = self.nodes.len();
         self.height = self.calculate_height();
         self.root = Tree::empty();
-        let mut buffer: Vec<T> = self.nodes.clone();
+        let mut buffer = self.nodes.clone();
         if( !self.is_empty() )
         {
             
