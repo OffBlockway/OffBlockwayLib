@@ -75,11 +75,12 @@ impl<T> Merkle<T>
         // If the input nodes are empty, the empty tree constructor is called 
         if( nodes.is_empty() )
         {
-            
+
+            // Return self by calling the empty tree constructor 
             Self::empty()
 
         }
-        // Otheriwse, a new Merkle Tree is constructed with the given nodes
+        // Otheriwse, a new Merkle Tree instance is constructed with the given nodes
         else
         {
 
@@ -103,18 +104,63 @@ impl<T> Merkle<T>
 
     }
 
-    // Constructs the Merkle Tree given a Merkle Tree instance with only the nodes
-    // value set
+    /*
+     * Constructs the Merkle Tree given a Merkle Tree instance with only the nodes
+     * value already set. 
+     *
+     * Given an input set of tree leaves, the merkle tree can be constructed as follows:
+     * 
+     * Say the leaves vector contains nodes with the hashes [ 1, 2, 3, 4, 5, 6, 7, 8 ]
+     *
+     * The construction algorithm:
+     *
+     * Check to see how many nodes are in the node buffer, if there is only one, then the
+     * algorithm terminates as this is the root node ( trivial case ). 
+     *
+     * If there are 2 or more nodes in the node buffer, pull nodes out two at a time until 
+     * the buffer has been emptied. At each pulling stage, fuse the two nodes together by making
+     * a tree node be the parent of both nodes with the parent hash being the concatenation of 
+     * the children's hashes. 
+     *
+     * Repeat the process until the trivial case is hit. 
+     *
+     * First pass:
+     * [ 12,  34,  56,  78 ]  
+     *  /\    /\   /\   /\ 
+     * 1  2  3  4 5  6 7  8
+     *
+     * Second pass:
+     * [ 1234,   5678 ]
+     *    /\      /\
+     *  12  34  56 78
+     *
+     * Third ( final ) pass:
+     * [ 12345678 ]
+     *      /   \
+     *  1234     5678
+     *   / \      / \
+     * 12  34   56   78
+     * /\  /\   /\   /\
+     *1 2 3  4 5 6  7  8
+     *
+     * Note: The root node of each tree is the only part of the tree stored in the vector, 
+     *       the children of each node are shown above for explanatory purposes but are not
+     *       explicitly stored in the vector. They are however stored as child fields of the 
+     *       nodes stored within the vector. 
+     *
+     * The root node is now set to the only node in the buffer and the tree construction 
+     * concludes.
+     *
+     */
     pub fn construct_tree( &mut self )
     {
 
         self.leaf_count = self.nodes.len();
         self.height = self.calculate_height();
         self.root = Tree::empty();
-        let mut buffer: Vec<T> = Vec::new();
+        let mut buffer: Vec<T> = self.nodes.clone();
         if( !self.is_empty() )
         {
-
             
             
         }
@@ -165,6 +211,12 @@ impl<T> Merkle<T>
         }
         // The tree of the height is then set to the natural log ( base 2 ) of the number
         // of leaf nodes. This value is then returned.
+        //
+        // Temp and temp_nodes are used in the logarithmic calculation because the library
+        // we use for this ( std::f32 ) has functionality for floats of size 32, unfortunately
+        // this library doesn't have functionality for usize integers, so to make the natural
+        // log calculation we temporarily compute with floats of size 32 and then transfer the
+        // value back into a usize integer. 
         let mut temp_nodes = num_nodes as f32;
         let mut temp: f32 = temp_nodes.ln();
         let mut tree_height: usize  = temp as usize;
