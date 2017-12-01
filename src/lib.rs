@@ -67,7 +67,7 @@ mod tree_tests
         // Arbitrary u8 value for the leaf  
         let value: u8 = 0; 
         // The tree leaf constructed with this hash and value 
-        let tree_leaf: tree::Tree<u8> = tree::Tree::leaf( digest_hash, value );
+        let tree_leaf: tree::Tree<u8> = tree::Tree::leaf( value );
         // Comparing the tree's hash with the computed hash
         assert_eq!( *tree_leaf.hash(), digest_copy );
 
@@ -94,14 +94,14 @@ mod tree_tests
         let left_value: u8 = 0;
         let right_value: u8 = 1;
         // The tree's left and right children 
-        let left_child: tree::Tree<u8> = tree::Tree::leaf( left_hash, left_value );
+        let left_child: tree::Tree<u8> = tree::Tree::leaf( left_value );
         // Comparing the left child's hash with its computed hash
         assert_eq!( *left_child.hash(), left_copy );
-        let right_child: tree::Tree<u8> = tree::Tree::leaf( right_hash, right_value );
+        let right_child: tree::Tree<u8> = tree::Tree::leaf( right_value );
         // Comparing the right child's hash with its computed hash
         assert_eq!( *right_child.hash(), right_copy );
         // The root node with the calculated hash and left and right children 
-        let root_node: tree::Tree<u8> = tree::Tree::node( digest_hash, left_child, right_child );
+        let root_node: tree::Tree<u8> = tree::Tree::node( left_child, right_child );
         // Comparing the root's hash with the computed hash 
         assert_eq!( *root_node.hash(), digest_copy );
 

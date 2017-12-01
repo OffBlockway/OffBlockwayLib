@@ -103,7 +103,7 @@ impl<T: fmt::Display> Tree<T>
         // Creates the node hash using the children's hashes.
         // Passes in the reference to the left and write hashes by
         // using unwrap()
-        let node_hash = create_node_hash( left.hash().unwrap(), right.hash().unwrap() );
+        let node_hash = create_node_hash( left.hash(), right.hash() );
         // Returns a tree node with the given hash and
         // allocates memory for the left and right children 
         Tree::Node

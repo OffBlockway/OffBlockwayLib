@@ -14,6 +14,8 @@ use hash_util::*;
 // Used for taking the natural logarithm of a number, we make use of this when calculating
 // the height of the tree given the number of nodes 
 use std::f32;
+// Used for vector queue when loading nodes in to a temporary buffer for building the tree
+use std::collections::VecDeque;
 
 /*
  *
@@ -46,7 +48,7 @@ pub struct Merkle<T>
 //
 // T: Clone is added to the generics here so that we can clone the nodes vector when
 // constructing the tree. 
-impl<T: Clone> Merkle<T>
+impl<T: Clone + fmt::Display> Merkle<T>
 {
 
     // New empty Merkle Tree constructor
@@ -158,20 +160,69 @@ impl<T: Clone> Merkle<T>
     pub fn construct_tree( &mut self )
     {
 
+        // Sets the number of leaves to the length of the leaf nodes vector
         self.leaf_count = self.nodes.len();
+        // Calculates the height based on the number of leaves
         self.height = self.calculate_height();
+        // Sets the root to be an empty tree, if there are nodes in the leaf vector this will
+        // be reset to the root node after the tree is built, if not the tree is empty and this
+        // root will stay the same. 
         self.root = Tree::empty();
-        let mut buffer = self.nodes.clone();
+        // The current level of the tree that's being constructed ( initially this is the leaf
+        // leve ).
+        let mut current_level = self.height;
+        // If there are leaf nodes, execute the tree building algorithm 
         if( !self.is_empty() )
         {
-            
-            
-        }
-        else
-        {
-            
-            self.root
 
+            // Buffer is a temporary queue of nodes that represents the nodes on the current
+            // that are to be constructed 
+            let mut buffer = VecDeque::new();
+            // Iterates through the leaf nodes and adds them to buffer, push_back adds to the
+            // end of the queue
+            for node in &self.nodes
+            {
+
+                // Sets the current node to be a clone of the node in the leaf vector and
+                // places it in the queue
+                let current_node = Tree::leaf( node.clone() );
+                buffer.push_back( current_node );
+                
+            }
+            // Tree construction algorithm ( detailed above ), executes until the root level
+            // is reached. 
+            while( current_level > 0 )
+            {
+
+                // The current row that is going to be constructed out of the 
+                let mut row = VecDeque::new();
+                // Iterates through the current level's nodes, the step is set to 2 because
+                // two nodes are pulled from the queue at each iteration 
+                for i in ( 0 .. buffer.len() ).step_by( 2 )
+                {
+
+                    // Gets the left and right children by pulling from the queue at i
+                    // and i + 1
+                    let left = buffer.get( i );
+                    let right = buffer.get( i + 1 );
+                    // Sets the combined node to be a node made out of the left and right
+                    // children accessed above
+                    let combined = Tree::node( left, right );
+                    // Pushes the new combined node to the row buffer
+                    row.push_back( combined );
+                        
+                }
+                // Clears the previous row buffer
+                buffer.clear();
+                // Sets the row buffer to the recently calculated queue of combined nodes
+                buffer = row;
+                // Decreases the level value 
+                current_level -= 1;
+                
+            }
+            // Sets the root to the only element remaining in the queue
+            self.root = buffer.pop_front();
+            
         }
         
     }
