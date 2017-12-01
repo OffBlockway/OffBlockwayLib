@@ -243,6 +243,145 @@ mod merkle_tests
         let empty_hash = hash_util::empty_hash::<u8>();
         // Confirms that the tree's hash is the same as a calculated empty hash
         assert_eq!( *merkle.root_hash(), empty_hash );
+        // Confirms that the tree is empty
+        assert_eq!( true, merkle.is_empty() );
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Unit test for verifying the construction and hash of a full Merkle Tree
+    fn test_full_merkle()
+    {
+
+        // Creates a list of values to be hashed and constructed into a Merkle Tree
+        let mut values = Vec::new();
+        // Pushes the numbers 0 through 7 to the vector
+        for i in ( 0 .. 8 )
+        {
+
+            values.push(i);
+            
+        }
+        // Creates a new full Merkle Tree with these values
+        let merkle = merkle::Merkle::new( values );
+        assert_eq!( false, merkle.is_empty() );
+        assert_eq!( 3, merkle.height() );
+        assert_eq!( 8, merkle.leaf_count() );
+        // TODO: VERIFY HASH
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Unit test for verifying that if an empty vector is passed to the Merkle constructor
+    // an empty Merkle is returned
+    fn test_merkle_with_empty()
+    {
+
+        // Creates an empty vector to be input into the constructor
+        let values = Vec::new();
+        // Passes it to the constructor and makes a Merkle Tree
+        let merkle = merkle::Merkle::new( values );
+        // Verifies it created an empty Merkle Tree by checking the size and
+        // the hash
+        assert_eq!( *merkle.root_hash(), empty_hash );
+        assert_eq!( true, merkle.is_empty() );
+        
+    }
+    
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Unit test for verifying the calculated height of a full Merkle Tree
+    fn test_calculate_height()
+    {
+
+        // Creates a list of values to be hashed and constructed into a Merkle Tree
+        let mut values = Vec::new();
+        // Pushes the numbers 0 through 7 to the vector
+        for i in ( 0 .. 8 )
+        {
+            
+            values.push(i);
+            
+        }
+        // Creates a new full Merkle Tree with these values
+        let merkle = merkle::Merkle::new( values );
+        assert_eq!( 3, merkle.height() );
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Unit test for verifying that a full Merkle Tree isn't empty
+    fn test_not_empty()
+    {
+
+        // Creates a list of values to be hashed and constructed into a Merkle Tree
+        let mut values = Vec::new();
+        // Pushes the numbers 0 through 7 to the vector
+        for i in ( 0 .. 8 )
+        {
+            
+            values.push(i);
+            
+        }
+        // Creates a new full Merkle Tree with these values
+        let merkle = merkle::Merkle::new( values );
+        assert_eq!( false, merkle.is_empty() );
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[tes]
+    // Unit test for verifying that the get function works
+    fn test_get()
+    {
+
+        // Creates a list of values to be hashed and constructed into a Merkle Tree
+        let mut values = Vec::new();
+        // Pushes the numbers 0 through 7 to the vector
+        for i in ( 0 .. 8 )
+        {
+            
+            values.push(i);
+            
+        }
+        // Creates a new full Merkle Tree with these values
+        let merkle = merkle::Merkle::new( values );
+        // Makes sure the values can be accessed through get correctly 
+        for i in ( 0 .. 8 )
+        {
+
+            // At each step in the iteration we assert that the value from get is
+            // the same as the value of the i ( the for loop iterator )
+            assert_eq!( i, merkle.get( i ) );
+            
+        }
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Unit test for verifying that the insert function works
+    fn test_insert()
+    {
+
+        // Creates a new empty Merkle Tree
+        let merkle = merkle::Merkle::new( values );
+        // Verifies that it was constructed correctly
+        assert_eq!( true, merkle.is_empty() );
+        // Inserts two elements into the tree
+        merkle.insert( 1 );
+        merkle.insert( 2 );
+        // Verifies the tree isn't empty
+        assert_eq!( false, merkle.is_empty() );
+        // Verifies that the values were entered correctly
+        assert_eq!( 1, merkle.get( 0 ) );
+        assert_eq!( 2, merkle.get( 1 ) );
+        // Verifies the height was recalculated
+        assert_eq!( 1, merkle.height() );
+        // TODO: VERIFY HASH 
         
     }
     
