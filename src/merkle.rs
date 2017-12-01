@@ -1,3 +1,5 @@
+#[allow(iterator_step_by)]
+
 // Crate inclusion
 extern crate ring;
 
@@ -198,13 +200,17 @@ impl<T: Clone + fmt::Display> Merkle<T>
                 let mut row = VecDeque::new();
                 // Iterates through the current level's nodes, the step is set to 2 because
                 // two nodes are pulled from the queue at each iteration 
-                for i in ( 0 .. buffer.len() ).step_by( 2 )
+                for i in ( 0 .. buffer.len() ).map(|i| i * 2)
                 {
 
                     // Gets the left and right children by pulling from the queue at i
                     // and i + 1
-                    let left = buffer.get( i );
-                    let right = buffer.get( i + 1 );
+                    //
+                    // dereferencing the .unwrap() of the buffer.get( ) is used because
+                    // buffer.get( ) is returning an Option and the .unwrap() returns a
+                    // reference to that option. 
+                    let left = *buffer.get( i ).unwrap();
+                    let right = *buffer.get( i + 1 ).unwrap();
                     // Sets the combined node to be a node made out of the left and right
                     // children accessed above
                     let combined = Tree::node( left, right );
@@ -221,7 +227,10 @@ impl<T: Clone + fmt::Display> Merkle<T>
                 
             }
             // Sets the root to the only element remaining in the queue
-            self.root = buffer.pop_front();
+            //
+            // .unwrap() is used becasue buffer.pop_front() returns an Option type
+            // over the tree, this function gets rid of that. 
+            self.root = buffer.pop_front().unwrap();
             
         }
         
@@ -275,6 +284,20 @@ impl<T: Clone + fmt::Display> Merkle<T>
         let mut temp: f32 = temp_nodes.ln();
         let mut tree_height: usize  = temp as usize;
         return tree_height;
+        
+    }
+
+    // Inserts a node into the Merkle Tree
+    pub fn insert( &mut self, value: T )
+    {
+
+        // Inserts the new value into the nodes at the last index ( # of leaves currently
+        // in the vector )
+        self.nodes.insert( self.leaf_count(), value );
+        // Sets the leaf count to the new length of the nodes vector
+        self.leaf_count = self.nodes.len();
+        // Reconstructs the tree with the new node 
+        self.construct_tree();
         
     }
     
