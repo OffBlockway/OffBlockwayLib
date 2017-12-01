@@ -165,6 +165,12 @@ impl<T> Merkle<T>
         }
         // The tree of the height is then set to the natural log ( base 2 ) of the number
         // of leaf nodes. This value is then returned.
+        //
+        // Temp and temp_nodes are used in the logarithmic calculation because the library
+        // we use for this ( std::f32 ) has functionality for floats of size 32, unfortunately
+        // this library doesn't have functionality for usize integers, so to make the natural
+        // log calculation we temporarily compute with floats of size 32 and then transfer the
+        // value back into a usize integer. 
         let mut temp_nodes = num_nodes as f32;
         let mut temp: f32 = temp_nodes.ln();
         let mut tree_height: usize  = temp as usize;
