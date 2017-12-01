@@ -67,7 +67,7 @@ pub enum Tree<T>
 }
 
 // Tree impl 
-impl<T> Tree<T>
+impl<T: fmt::Display> Tree<T>
 {
 
     // Empty tree constructor
@@ -80,29 +80,36 @@ impl<T> Tree<T>
     }
     
     // Leaf node constructor
-    pub fn leaf( hash: Vec<u8>, value: T ) -> Self
+    pub fn leaf( value: T ) -> Tree<T>
     {
 
+        // Creates the hash given the leaf's value, create_leaf_hash() takes in
+        // a reference to the value so we pass in value.as_ref()
+        let leaf_hash = create_leaf_hash( &value );
         // Returns a tree leaf with the given hash and value
         Tree::Leaf
         {
 
-            hash: hash,
+            hash: leaf_hash,
             value: value
 
         }
         
     }
     // Tree node constructor
-    pub fn node( hash: Vec<u8>, left: Tree<T>, right: Tree<T> ) -> Self
+    pub fn node( left: Tree<T>, right: Tree<T> ) -> Tree<T>
     {
 
+        // Creates the node hash using the children's hashes.
+        // Passes in the reference to the left and write hashes by
+        // using unwrap()
+        let node_hash = create_node_hash( left.hash().unwrap(), right.hash().unwrap() );
         // Returns a tree node with the given hash and
         // allocates memory for the left and right children 
         Tree::Node
         {
 
-            hash: hash,
+            hash: node_hash,
             left: Box::new(left),
             right: Box::new(right)
 

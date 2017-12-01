@@ -43,6 +43,9 @@ pub struct Merkle<T>
 
 // Merkle Tree impl, defines the methods associated with constructing Merkle Trees
 // and extracting information from them.
+//
+// T: Clone is added to the generics here so that we can clone the nodes vector when
+// constructing the tree. 
 impl<T: Clone> Merkle<T>
 {
 
