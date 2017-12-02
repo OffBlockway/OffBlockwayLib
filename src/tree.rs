@@ -1,15 +1,10 @@
 // Tells the compiler not to throw warnings for unused code
 #[allow(dead_code)]
 
-// Included crates
-extern crate ring;
-
 // Use statements
 //
 // Standard library
 use std::*;
-// Ring library 
-use self::ring::digest::{ Digest, Algorithm, SHA256, digest };
 // Gives access to hash utilities 
 use hash_util::*;
 
@@ -85,7 +80,7 @@ impl<T: fmt::Display> Tree<T>
 
         // Creates the hash given the leaf's value, create_leaf_hash() takes in
         // a reference to the value so we pass in value.as_ref()
-        let leaf_hash = create_leaf_hash( &value );
+        let leaf_hash = create_leaf_hash::<T>( &value );
         // Returns a tree leaf with the given hash and value
         Tree::Leaf
         {
@@ -103,7 +98,7 @@ impl<T: fmt::Display> Tree<T>
         // Creates the node hash using the children's hashes.
         // Passes in the reference to the left and write hashes by
         // using unwrap()
-        let node_hash = create_node_hash( left.hash(), right.hash() );
+        let node_hash = create_node_hash( left.hash().as_hex(), right.hash() );
         // Returns a tree node with the given hash and
         // allocates memory for the left and right children 
         Tree::Node

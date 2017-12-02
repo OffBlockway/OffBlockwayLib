@@ -1,14 +1,7 @@
-#[allow(iterator_step_by)]
-
-// Crate inclusion
-extern crate ring;
-
 // Use statements
 //
 // Standard library
 use std::*;
-// Using ring for algorithm ( SHA256 ) and digest
-use ring::digest::{ Algorithm, Context, SHA256, Digest, digest };
 // Using tree for the skeleton of the Merkle Tree
 use tree::*;
 // Using hash utilities for the node hash

@@ -1,10 +1,10 @@
 // Crate inclusion 
-extern crate ring;
+extern crate sha3;
+extern crate hex_slice;
 
 // Use statements
-//
 // For hashing using SHA256 
-use ring::digest::{ digest, SHA256 };
+use sha3::{ Digest, Sha3_256 };
 // For storing the hash as a vector of bytes
 use std::vec::Vec;
 // For enforcing the trait ToString and for general String functionality
@@ -30,21 +30,27 @@ pub fn empty_hash< T: ToString >() -> Vec<u8>
 pub fn create_leaf_hash< T: ToString >( value: &T ) -> Vec<u8>
 {
 
-    // Hash the value in a leaf
-    digest( &SHA256, &value.to_string().as_ref() ).as_ref().to_vec()
-    
+    // Initialize a hasher and input the value as a byte array ref
+    let mut hasher = Sha3_256::default();
+    hasher.input( &value.to_string().as_bytes() );
+    // Return the hash of the value as a vector
+    hasher.result().to_vec()
+        
 }
 
-// TODO: Replace with SHA3 library 
 // Creat a hash of a node
-/*
-pub fn creat_node_hash< T: ToString >( left: &T, right: &T ) -> Vec<u8>
+pub fn create_node_hash< T: ToString >( left: &T, right: &T ) -> Vec<u8>
 {
 
-    let mut temp = String::new();
-    temp += digest( &SHA256, &left.to_string().as_ref() );
-    temp += format("{}"digest( &SHA256, &right.to_string().as_ref() );
-    digest( &SHA256, temp.as_ref() ).as_ref().to_vec() )
+    // Initiate hasher
+    let mut hasher = Sha3_256::default();
+    // Feed the hasher the two children strings
+    hasher.input( &left.to_string().as_bytes() );
+    hasher.input( &right.to_string().as_bytes() );
+    // Return the hash as a vector
+    hasher.result().as_ref().to_vec()
     
 }
-*/
+
+
+
