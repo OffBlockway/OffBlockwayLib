@@ -3,11 +3,13 @@
 extern crate chrono;
 
 // Use statements
+//
+// Used for timestamping 
 use self::chrono::{ DateTime, Utc };
+// Standard libraries used for Strings and Vectors
 use std::string::String;
 use std::vec::Vec;
-
-// For hashing necessities
+// Used for hashing necessities
 use hash_util::*;
 
 // Block struct
@@ -25,7 +27,7 @@ pub struct Block
 
 }
 
- // Block impl
+// Block impl
 impl Block
 {
 

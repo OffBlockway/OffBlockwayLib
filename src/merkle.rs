@@ -32,7 +32,7 @@ pub struct Merkle<T>
     // The number of leaves in the tree
     leaf_count: usize,
     // The hash of the root node
-    hash: Vec<u8>,
+    hash: String,
     // A vector of nodes representing the leaves of the tree
     nodes: Vec<T>
     
@@ -60,7 +60,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
             // The leaf count of an empty tree
             leaf_count: 0,
             // The hash of an empty tree
-            hash: ::hash_util::empty_hash::<u8>(),
+            hash: ::hash_util::empty_hash(),
             // The nodes of the empty tree
             nodes: Vec::new()
 
@@ -92,7 +92,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
                 root: Tree::empty(),
                 height: 0,
                 leaf_count: 0,
-                hash: ::hash_util::empty_hash::<u8>(),
+                hash: ::hash_util::empty_hash(),
                 nodes: nodes
                 
             };
@@ -193,24 +193,24 @@ impl<T: Clone + fmt::Display> Merkle<T>
                 let mut row = VecDeque::new();
                 // Iterates through the current level's nodes, the step is set to 2 because
                 // two nodes are pulled from the queue at each iteration 
-                for i in ( 0 .. buffer.len() ).map(|i| i * 2)
+                let mut i = 0;
+                while i < buffer.len()
                 {
-
                     // Gets the left and right children by pulling from the queue at i
                     // and i + 1
                     //
                     // dereferencing the .unwrap() of the buffer.get( ) is used because
                     // buffer.get( ) is returning an Option and the .unwrap() returns a
                     // reference to that option. 
-                    let left = *buffer.get( i ).unwrap();
-                    let right = *buffer.get( i + 1 ).unwrap();
+                    let left = buffer.get( i ).unwrap();
+                    let right = buffer.get( i + 1 ).unwrap_or( left );
                     // Sets the combined node to be a node made out of the left and right
                     // children accessed above
-                    let combined = Tree::node( left, right );
+                    let combined = Tree::node( left.clone(), right.clone() );
                     // Pushes the new combined node to the row buffer
                     row.push_back( combined );
-                        
-                }
+                    i += 2;
+                }   
                 // Clears the previous row buffer
                 buffer.clear();
                 // Sets the row buffer to the recently calculated queue of combined nodes
@@ -232,51 +232,53 @@ impl<T: Clone + fmt::Display> Merkle<T>
     // Calculates the height of the tree given the leaves
     pub fn calculate_height( &self ) -> usize
     {
-
-        // The number of leaf nodes
-        let mut num_nodes: usize = 0;
-        // If there are an even number of leaf nodes then all the leaves in the
-        // tree have data. 
-        if( self.nodes.len() % 2 == 0 )
+        
+        // The number of leaves in the tree
+        let leaf_count = self.leaf_count();
+        // If there are leaves in the tree, calculate the height 
+        if( leaf_count > 0 )
         {
+            // Sets the height to be the base 2 logarithm ( natural log ) of the number
+            // of leaves in the tree 
+            let tree_height = ( leaf_count as f64 ).log2();
+            if tree_height - tree_height.floor() > 0.0
+            {
+                
+                /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+                 *                  root node                                *
+                 *                 /        \                                *
+                 *          tree node        tree node                       * 
+                 *           /    \           /     \                        *
+                 *      tree node tree node tree node tree node              *
+                 *        /    \     /    \    /     \    /    \             * 
+                 *      leaf leaf leaf   leaf leaf  leaf leaf  EMPTY         *
+                 *                                                           *
+                 * If there are an odd number of input nodes ( seen above )  *
+                   or if the number of leaves was not a power of 2           * 
+                 * we use the input nodes + 1 to get the overall possible    *
+                 * calculated height                                         *
+                 * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+                // 1 is added to the height and the 64 sized float is converted back
+                // to usize 
+                ( tree_height + 1.0 ) as usize
+                
+            }
+            // If there were an even number of leaves in the tree then 
+            else
+            {
 
-            num_nodes = self.nodes.len();
-
+                tree_height as usize
+                
+            }
+            
         }
-        // Otherwise, there is an empty leaf as seen below:
-        //
-        /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-         *                  root node                              *
-         *                 /        \                              *
-         *          tree node        tree node                     *
-         *           /    \           /     \                      *
-         *      tree node tree node tree node tree node            *
-         *        /    \     /    \    /     \    /    \           *
-         *      leaf leaf leaf   leaf leaf  leaf leaf  EMPTY       *
-         *                                                         *
-         * If there are an odd number of input nodes then          *
-         * we use the input nodes + 1 to get the overall possible  *
-         * number of leaves for the logarithmic heigh calculation  *
-         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-        // Number of nodes is recalculated if there are an odd number of leaf nodes
-        else if( self.nodes.len() % 2 == 1 )
+        // Otherwise the height is 0 
+        else
         {
-
-            num_nodes = self.nodes.len() + 1;
-
+            
+            0
+                
         }
-        // The tree of the height is then set to the natural log ( base 2 ) of the number
-        // of leaf nodes. This value is then returned.
-        //
-        // Temp and temp_nodes are used in the logarithmic calculation because the library
-        // we use for this ( std::f32 ) has functionality for floats of size 32, unfortunately
-        // this library doesn't have functionality for usize integers, so to make the natural
-        // log calculation we temporarily compute with floats of size 32 and then transfer the
-        // value back into a usize integer. 
-        let mut temp_nodes = num_nodes as f32;
-        let mut temp: f32 = temp_nodes.ln();
-        let mut tree_height: usize  = temp as usize;
-        return tree_height;
         
     }
 
@@ -286,7 +288,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
 
         // Inserts the new value into the nodes at the last index ( # of leaves currently
         // in the vector )
-        self.nodes.insert( self.leaf_count(), value );
+        self.nodes.push( value );
         // Sets the leaf count to the new length of the nodes vector
         self.leaf_count = self.nodes.len();
         // Reconstructs the tree with the new node 
@@ -303,7 +305,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
         // Some ( ... ) because if the value from get exists ( the index was valid ) then we
         // can return it and otherwise if the index wasn't valid the return was None. Unwrap
         // is then used to return the correct Option of this. 
-        Some( self.nodes.get( index ) ).unwrap()
+        Some( self.nodes.get( index ) ).unwrap() 
 
     }
 
@@ -332,7 +334,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Returns the root hash of a given tree
-    pub fn root_hash( &self ) -> &Vec<u8>
+    pub fn root_hash( &self ) -> &String
     {
 
         self.root.hash()
