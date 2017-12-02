@@ -21,7 +21,7 @@ pub fn empty_hash< T: ToString >() -> String
 {
     
     // Create a leaf hash of the null byte
-    create_leaf_hash( &"Hello" )
+    create_leaf_hash( &0 )
 
 }
 

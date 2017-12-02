@@ -153,7 +153,7 @@ mod hash_util_tests
     {
         
         let hash = hash_util::empty_hash::<u8>();
-        assert_eq!( hash, "5d53469f20fef4f8eab52b88044ede69c77a6a68a60728609fc4a65ff531e7d0".to_string() );
+        assert_eq!( hash, "f9e2eaaa42d9fe9e558a9b8ef1bf366f190aacaa83bad2641ee106e9041096e4".to_string() );
         
     }
 
@@ -163,7 +163,7 @@ mod hash_util_tests
     {
         
         let hash = hash_util::create_leaf_hash::<u8>( &9 );
-        assert_eq!( hash , "2299019d2c50f7525fc39a05256f802de6e9d05328c903d298b03d9d".to_string() );
+        assert_eq!( hash , "7609430974b087595488c154bf5c079887ead0e8efd4055cd136fda96a5ccbf8".to_string() );
     }
 
     #[test]
