@@ -4,11 +4,6 @@
 use std::*;
 // Using tree for the skeleton of the Merkle Tree
 use tree::*;
-// Using hash utilities for the node hash
-use hash_util::*;
-// Used for taking the natural logarithm of a number, we make use of this when calculating
-// the height of the tree given the number of nodes 
-use std::f32;
 // Used for vector queue when loading nodes in to a temporary buffer for building the tree
 use std::collections::VecDeque;
 
@@ -22,6 +17,7 @@ use std::collections::VecDeque;
  */
 
 // Merkle Tree struct, defines the elements needed for each instance
+#[allow(dead_code)]
 pub struct Merkle<T>
 {
 
@@ -47,6 +43,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
 {
 
     // New empty Merkle Tree constructor
+    #[allow(dead_code)]
     pub fn empty() -> Self
     {
 
@@ -69,11 +66,12 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Constructs a new Merkle tree with the given nodes
+    #[allow(dead_code)]
     pub fn new( nodes: Vec<T> ) -> Self
     {
 
         // If the input nodes are empty, the empty tree constructor is called 
-        if( nodes.is_empty() )
+        if nodes.is_empty() 
         {
 
             // Return self by calling the empty tree constructor 
@@ -152,6 +150,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
      * concludes.                                                                              *
      *                                                                                         *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    #[allow(dead_code)]
     pub fn construct_tree( &mut self )
     {
 
@@ -167,7 +166,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
         // leve ).
         let mut current_level = self.height;
         // If there are leaf nodes, execute the tree building algorithm 
-        if( !self.is_empty() )
+        if !self.is_empty() 
         {
 
             // Buffer is a temporary queue of nodes that represents the nodes on the current
@@ -186,7 +185,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
             }
             // Tree construction algorithm ( detailed above ), executes until the root level
             // is reached. 
-            while( current_level > 0 )
+            while current_level > 0 
             {
 
                 // The current row that is going to be constructed out of the 
@@ -230,13 +229,14 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
     
     // Calculates the height of the tree given the leaves
+    #[allow(dead_code)]
     pub fn calculate_height( &self ) -> usize
     {
         
         // The number of leaves in the tree
         let leaf_count = self.leaf_count();
         // If there are leaves in the tree, calculate the height 
-        if( leaf_count > 0 )
+        if leaf_count > 0 
         {
             // Sets the height to be the base 2 logarithm ( natural log ) of the number
             // of leaves in the tree 
@@ -283,11 +283,12 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Removes a leaf node from the Merkle Tree, returns true if successful and false otherwise
+    #[allow(dead_code)]
     pub fn remove( &mut self, index: usize ) -> bool
     {
 
         // If the index of the node to remove is within the length of the vector 
-        if( index < self.leaf_count() )
+        if index < self.leaf_count() 
         {
 
             // Remove the node
@@ -310,6 +311,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
     
     // Inserts a node into the Merkle Tree
+    #[allow(dead_code)]
     pub fn insert( &mut self, value: T )
     {
 
@@ -324,6 +326,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
     
     // Gets the leaf corresponding with an input index
+    #[allow(dead_code)]
     pub fn get( &self, index: usize ) -> Option<&T>
     {
 
@@ -337,6 +340,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Determines whether or not the Merkle Tree is empty
+    #[allow(dead_code)]
     pub fn is_empty( &self ) -> bool
     {
 
@@ -345,6 +349,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Returns the height of the tree
+    #[allow(dead_code)]
     pub fn height( &self ) -> usize
     {
         
@@ -353,14 +358,16 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Returns the leaf count of the tree
+    #[allow(dead_code)]
     pub fn leaf_count( &self ) -> usize
     {
 
         self.leaf_count
         
     }
-
+    
     // Returns the root hash of a given tree
+    #[allow(dead_code)]
     pub fn root_hash( &self ) -> &String
     {
 

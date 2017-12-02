@@ -271,7 +271,7 @@ mod merkle_tests
         // Creates a list of values to be hashed and constructed into a Merkle Tree
         let mut values = Vec::new();
         // Pushes the numbers 0 through 7 to the vector
-        for i in ( 0 .. 16 )
+        for i in 0 .. 16 
         {
             
             values.push(i);
@@ -320,7 +320,7 @@ mod merkle_tests
         // Creates a list of values to be hashed and constructed into a Merkle Tree
         let mut values = Vec::new();
         // Pushes the numbers 0 through 7 to the vector
-        for i in ( 0 .. 8 )
+        for i in 0 .. 8 
         {
             
             values.push(i);
@@ -341,7 +341,7 @@ mod merkle_tests
         // Creates a list of values to be hashed and constructed into a Merkle Tree
         let mut values = Vec::new();
         // Pushes the numbers 0 through 7 to the vector
-        for i in ( 0 .. 8 )
+        for i in 0 .. 8
         {
             
             values.push(i);
@@ -362,7 +362,7 @@ mod merkle_tests
         // Creates a list of values to be hashed and constructed into a Merkle Tree
         let mut values = Vec::new();
         // Pushes the numbers 0 through 7 to the vector
-        for i in ( 0 .. 8 )
+        for i in 0 .. 8 
         {
             
             values.push(i);
@@ -371,7 +371,7 @@ mod merkle_tests
         // Creates a new full Merkle Tree with these values
         let merkle = merkle::Merkle::new( values );
         // Makes sure the values can be accessed through get correctly 
-        for i in ( 0 .. 8 )
+        for i in 0 .. 8 
         {
 
             // At each step in the iteration we assert that the value from get is
@@ -389,18 +389,18 @@ mod merkle_tests
     {
 
         // Creates a list of values to be hashed and constructed into a Merkle Tree
-        let mut values = Vec::new();
+        let values = Vec::new();
         // Creates a new full Merkle Tree with these values
         let mut merkle = merkle::Merkle::new( values );
         // Inserts values into the Merkle Tree
-        for i in ( 0 .. 8 )
+        for i in 0 .. 8 
         {
 
             merkle.insert( i );
             
         }
         // Makes sure the values can be accessed correctly 
-        for i in ( 0 .. 8 )
+        for i in 0 .. 8
         {
             
             // At each step in the iteration we assert that the value from get is
@@ -422,11 +422,11 @@ mod merkle_tests
     {
 
         // Creates a list of values to be hashed and constructed into a Merkle Tree
-        let mut values = Vec::new();
+        let values = Vec::new();
         // Creates a new full Merkle Tree with these values
         let mut merkle = merkle::Merkle::new( values );
         // Inserts values into the Merkle Tree
-        for i in ( 0 .. 8 )
+        for i in 0 .. 8
         {
             
             merkle.insert( i );
@@ -436,7 +436,8 @@ mod merkle_tests
         let false_return = merkle.remove( 10 );
         assert_eq!( false, false_return );
         // Removes all the values and asserts that they were removed correclty
-        for i in ( 0 .. 8 )
+        #[allow(unused_variables)]
+        for i in 0 .. 8 
         {
 
             let return_val = merkle.remove( 0 );
