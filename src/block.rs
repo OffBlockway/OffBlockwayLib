@@ -36,6 +36,7 @@ impl Block
 {   
 
     // Constructor for a new block
+    #[allow(dead_code)]
     pub fn new( index: u64, merkle_root: String,  previous_hash: String  ) -> Block
     {
         
@@ -54,16 +55,18 @@ impl Block
     }
 
     // Constructor for the origin block (first block in the chain with hash 0)
+    #[allow(dead_code)]
     pub fn origin() -> Block
     {
         
         // Create a new block and make the hash equal the empty hash
-        let mut block : Block = Block::new( 0, empty_hash(), empty_hash() );
+        let block : Block = Block::new( 0, empty_hash(), empty_hash() );
         return block;
 
     }
 
-    // Getters 
+    // Getters
+    #[allow(dead_code)]
     pub fn index( &self ) -> &u64
     {
 
@@ -71,6 +74,7 @@ impl Block
         
     }
 
+    #[allow(dead_code)]
     pub fn timestamp( &self ) -> &DateTime<Utc>
     {
         
@@ -78,6 +82,7 @@ impl Block
         
     }
 
+    #[allow(dead_code)]
     pub fn previous_hash( &self ) -> &String
     {
 
@@ -85,6 +90,7 @@ impl Block
         
     }
 
+    #[allow(dead_code)]
     pub fn merkle_root( &self ) -> &String
     {
 
@@ -92,6 +98,7 @@ impl Block
         
     }
 
+    #[allow(dead_code)]
     pub fn hash( &self ) -> &String
     {
 

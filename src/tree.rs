@@ -67,6 +67,7 @@ impl<T: fmt::Display> Tree<T>
 {
 
     // Empty tree constructor
+    #[allow(dead_code)]
     pub fn empty( ) -> Self
     {
 
@@ -76,6 +77,7 @@ impl<T: fmt::Display> Tree<T>
     }
     
     // Leaf node constructor
+    #[allow(dead_code)]
     pub fn leaf( value: T ) -> Tree<T>
     {
 
@@ -93,6 +95,7 @@ impl<T: fmt::Display> Tree<T>
         
     }
     // Tree node constructor
+    #[allow(dead_code)]
     pub fn node( left: Tree<T>, right: Tree<T> ) -> Tree<T>
     {
 
@@ -113,6 +116,7 @@ impl<T: fmt::Display> Tree<T>
 
     }
     // Retrieve the hash of a given tree
+    #[allow(dead_code)]
     pub fn hash( &self ) -> &String
     {
 
