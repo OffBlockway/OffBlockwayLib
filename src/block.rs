@@ -57,7 +57,7 @@ impl Block
             index: index,
             previous_hash: previous_hash,
             timestamp: Utc::now(),
-            hash: empty_hash::<u8>()
+            hash: empty_hash()
 
         };
         return block;        
@@ -69,8 +69,8 @@ impl Block
     {
         
         // Create a new block and make the hash equal the empty hash
-        let mut block : Block = Block::new( 0, empty_hash::<u8>() );
-        block.hash = empty_hash::<u8>();
+        let mut block : Block = Block::new( 0, empty_hash() );
+        block.hash = empty_hash();
         return block;
 
     }

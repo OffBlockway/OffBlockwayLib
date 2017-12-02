@@ -1,5 +1,4 @@
 extern crate sha3;
-extern crate hex_slice;
 
 // Use statements
 #[allow(unused_imports)]
@@ -152,7 +151,7 @@ mod hash_util_tests
     fn empty_hash_test() -> ()
     {
         
-        let hash = hash_util::empty_hash::<u8>();
+        let hash = hash_util::empty_hash();
         assert_eq!( hash, "f9e2eaaa42d9fe9e558a9b8ef1bf366f190aacaa83bad2641ee106e9041096e4".to_string() );
         
     }
@@ -162,7 +161,7 @@ mod hash_util_tests
     fn leaf_hash_test() -> ()
     {
         
-        let hash = hash_util::create_leaf_hash::<u8>( &9 );
+        let hash = hash_util::create_leaf_hash( &9 );
         assert_eq!( hash , "7609430974b087595488c154bf5c079887ead0e8efd4055cd136fda96a5ccbf8".to_string() );
     }
 
