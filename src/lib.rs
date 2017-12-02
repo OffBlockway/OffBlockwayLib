@@ -1,25 +1,23 @@
-// Crate inclusion
-extern crate ring;
+extern crate sha3;
+extern crate hex_slice;
 
 // Use statements
 #[allow(unused_imports)]
 // Standard library
 use std::*;
 #[allow(unused_imports)]
-use ring::digest::{ Algorithm, Context, SHA256, Digest, digest };
-#[allow(unused_imports)]
 // Gives access to the binary tree file
-use tree::Tree;
+//use tree::Tree;
 // Gives acces to the Merkle Tree file
-use merkle::Merkle;
+//use merkle::Merkle;
 // Gives acces to the hash utilities
 use hash_util::*;
 
 // Mod statements
-mod tree;
+//mod tree;
 mod hash_util;
 mod block;
-mod merkle;
+//mod merkle;
 
 /*
  *
@@ -33,6 +31,7 @@ mod merkle;
 // Test flag indicating this module contains test methods
 #[cfg(test)]
 // Module for tree unit testing 
+/*
 mod tree_tests
 {
 
@@ -108,6 +107,8 @@ mod tree_tests
     }
 
 }
+*/
+use hex_slice::AsHex;
 
 // Test flag indicating this module contains test methods
 #[cfg(test)]
@@ -123,9 +124,7 @@ mod block_tests
     fn create_block()
     {
         
-        let mut block : block::Block = block::Block::new( 0, [0].to_vec() );
-        block.hash = digest( &SHA256, block::Block::generate_header_string( &block ).as_bytes() ).as_ref().to_vec();
-        println!("Block hash: {:?}\nBlock Previous {:?}", &block.hash, &block.previous_hash );
+        println!("UNIMPLEMENTED");
         
     }
     
@@ -134,9 +133,8 @@ mod block_tests
     fn create_origin()
     {
 
-        let block: block::Block = block::Block::origin();
-        println!( "{:?}", &block.hash );
-
+        println!("UNIMPLEMENTED");
+        
     }
     
 }
@@ -157,7 +155,7 @@ mod hash_util_tests
         
         let vec = hash_util::empty_hash::<u8>();
         let nullptr = &0;
-        assert_eq!( vec, digest( &SHA256, nullptr.to_string().as_ref() ).as_ref().to_vec() );
+        assert_eq!( format!("{:x}", vec.as_hex()), "5d53469f20fef4f8eab52b88044ede69c77a6a68a60728609fc4a65ff531e7d0".to_string() );
         
     }
 
@@ -168,8 +166,7 @@ mod hash_util_tests
         
         let vec = hash_util::create_leaf_hash::<u8>( &9 );
         let ptr = &9;
-        assert_eq!( vec, digest( &SHA256, ptr.to_string().as_ref() ).as_ref().to_vec() );
-
+        assert_eq!( format!("{:x}", vec.as_hex() ), "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824".to_string() );
     }
 
     #[test]
@@ -181,7 +178,7 @@ mod hash_util_tests
     }
     
 }
-
+/*
 // Test flag indicating this module contains test methods
 #[cfg(test)]
 //Module for merkle tree unit testing
@@ -333,7 +330,7 @@ mod merkle_tests
     }
 
     // Test flag indicating the next function contains tests
-    #[tes]
+    #[test]
     // Unit test for verifying that the get function works
     fn test_get()
     {
@@ -386,3 +383,4 @@ mod merkle_tests
     }
     
 }
+*/
