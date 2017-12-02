@@ -117,20 +117,11 @@ mod block_tests
     fn create_block()
     {
         
-        println!("UNIMPLEMENTED");
+        let block = block::Block::new( 0, create_leaf_hash( &9 ), empty_hash() );
+        assert_eq!( block.merkle_root, "7609430974b087595488c154bf5c079887ead0e8efd4055cd136fda96a5ccbf8" );
         
     }
 
-    // Test flag indicating the next function contains tests
-    #[test]
-    // Test the creation of the origin block
-    fn create_origin()
-    {
-
-        println!("UNIMPLEMENTED");
-        
-    }
-    
 }
 
 // Test flag indicating this module contains test methods
@@ -173,7 +164,8 @@ mod hash_util_tests
     fn node_hash_test() -> ()
     {
 
-        println!( "NOT IMPLEMENTED" );
+        let hash = hash_util::create_node_hash( &"f9e2eaaa42d9fe9e558a9b8ef1bf366f190aacaa83bad2641ee106e9041096e4", &"67b176705b46206614219f47a05aee7ae6a3edbe850bbbe214c536b989aea4d2" );
+        assert_eq!( hash, "b6698473bbe17ece4f1bdb6ade7218f775c4a53120c5d98c0ec0e354806f8c7f".to_string() );
         
     }
     
@@ -249,7 +241,7 @@ mod merkle_tests
     // Test flag indicating the next function contains tests
     #[test]
     // Unit test for verifying the construction and hash of a full Merkle Tree
-    fn test_full_merkle()
+    fn test_small_full_merkle()
     {
 
         // Creates a list of values to be hashed and constructed into a Merkle Tree
@@ -259,13 +251,46 @@ mod merkle_tests
         values.push( "ezra" );
         // Creates a new full Merkle Tree with these values
         let merkle = merkle::Merkle::new( values );
+        // Makes sure the Merkle Tree isn't empty 
         assert_eq!( false, merkle.is_empty() );
+        // Verifies the height 
         assert_eq!( 1, merkle.height() );
+        // Verifies the leaf count
         assert_eq!( 2, merkle.leaf_count() );
+        // Verifies the root hash ( thereby verifying the hashes on all other levels )
         assert_eq!( "a380ecb83540c785c01d5e19dd821907a5170482983a1bf7338b354e92fe92b7", merkle.root_hash() );
         
     }
-     
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Unit test for verifying the construction of a medium-size Merkle Tree
+    fn test_full_merkle()
+    {
+
+        // Creates a list of values to be hashed and constructed into a Merkle Tree
+        let mut values = Vec::new();
+        // Pushes the numbers 0 through 7 to the vector
+        for i in ( 0 .. 16 )
+        {
+            
+            values.push(i);
+            
+        }
+        // Creates a new full Merkle Tree with these values
+        let merkle = merkle::Merkle::new( values );
+        // Makes sure the Merkle Tree isn't empty
+        assert_eq!( false, merkle.is_empty() );
+        // Verifies the height
+        assert_eq!( 4, merkle.height() );
+        // Verifies the leaf count
+        assert_eq!( 16, merkle.leaf_count() );
+        // Verifies the root hash ( thereby verifying the hashes on all other levels )
+        assert_eq!( "27da51063c03ad6fb6278a7ccb129a68d069be396550eedf5f2369603524e7e0",
+      merkle.root_hash() );
+        
+    }
+    
     // Test flag indicating the next function contains tests
     #[test]
     // Unit test for verifying that if an empty vector is passed to the Merkle constructor
@@ -383,6 +408,49 @@ mod merkle_tests
             assert_eq!( i, *merkle.get( i ).unwrap() );
                
         }
+        // Makes sure the height is correct
+        assert_eq!( 3, merkle.height() );
+        // Makes sure there are 8 leaves
+        assert_eq!( 8, merkle.leaf_count() );
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Tests whether the remove function is working
+    fn test_remove()
+    {
+
+        // Creates a list of values to be hashed and constructed into a Merkle Tree
+        let mut values = Vec::new();
+        // Creates a new full Merkle Tree with these values
+        let mut merkle = merkle::Merkle::new( values );
+        // Inserts values into the Merkle Tree
+        for i in ( 0 .. 8 )
+        {
+            
+            merkle.insert( i );
+            
+        }
+        // Makes sure false is returned for invalid indicies
+        let false_return = merkle.remove( 10 );
+        assert_eq!( false, false_return );
+        // Removes all the values and asserts that they were removed correclty
+        for i in ( 0 .. 8 )
+        {
+
+            let return_val = merkle.remove( 0 );
+            assert_eq!( true, return_val );
+            
+        }
+        // Empty hash to compare with Merkle hash 
+        let empty_hash = hash_util::empty_hash();
+        // Makes sure the Merkle Tree is now an empty Merkle Treee
+        assert_eq!( empty_hash, *merkle.root_hash() );
+        // Makes sure there are no leaves
+        assert_eq!( 0, merkle.leaf_count() );
+        // Makes sure the height is 0 
+        assert_eq!( 0, merkle.height() );
         
     }
 

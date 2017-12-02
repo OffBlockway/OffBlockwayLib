@@ -282,6 +282,33 @@ impl<T: Clone + fmt::Display> Merkle<T>
         
     }
 
+    // Removes a leaf node from the Merkle Tree, returns true if successful and false otherwise
+    pub fn remove( &mut self, index: usize ) -> bool
+    {
+
+        // If the index of the node to remove is within the length of the vector 
+        if( index < self.leaf_count() )
+        {
+
+            // Remove the node
+            self.nodes.remove( index );
+            // Reconstruct the tree with the node removed
+            self.construct_tree();
+            // Return true
+            true
+            
+        }
+        // Otherwise, the index was invalid for the given vector
+        else
+        {
+
+            // False is then returned 
+            false
+            
+        }
+        
+    }
+    
     // Inserts a node into the Merkle Tree
     pub fn insert( &mut self, value: T )
     {

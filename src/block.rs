@@ -8,11 +8,13 @@ extern crate chrono;
 use self::chrono::{ DateTime, Utc };
 // Standard libraries used for Strings and Vectors
 use std::string::String;
-use std::vec::Vec;
-// Used for hashing necessities
+// For hashing necessities
 use hash_util::*;
+// For merkle root
+
 
 // Block struct
+#[derive(Clone)]
 pub struct Block
 {
 
@@ -22,6 +24,8 @@ pub struct Block
     pub previous_hash: String,
     // The time the block was created 
     pub timestamp: DateTime<Utc>,
+    // Merkle Root
+    pub merkle_root: String,
     // The block's hash
     pub hash: String,
 
@@ -29,41 +33,24 @@ pub struct Block
 
 // Block impl
 impl Block
-{
+{   
 
-    // Generates a header string
-    pub fn generate_header_string( block: &Block ) -> String
-    {
-        
-        // Create a new string to add everything to
-        let mut temp : String = String::new();
-        // Concat the items of the block
-        temp += &block.index.to_string();
-        temp += &block.timestamp.to_string();
-        temp += &format!( "{:?}", block.previous_hash );
-        // Return the concatenated string
-        return temp;
-        
-    }
-    
     // Constructor for a new block
-    pub fn new( index: u64, previous_hash: String  ) -> Block
+    pub fn new( index: u64, merkle_root: String,  previous_hash: String  ) -> Block
     {
         
-        let block = Block
-        {
-            
-            // Sets the index, previous hash, and data of the block to the information given
-            // to the constructor, timestamps the block with the current time and gives the
-            // block a new hash.
+        let mut block = Block{
             index: index,
             previous_hash: previous_hash,
             timestamp: Utc::now(),
-            hash: empty_hash()
-
+            merkle_root: merkle_root,
+            hash: empty_hash(),
         };
-        return block;        
 
+        block.hash = generate_header_hash( &block );
+        
+        return block;
+        
     }
 
     // Constructor for the origin block (first block in the chain with hash 0)
@@ -71,10 +58,45 @@ impl Block
     {
         
         // Create a new block and make the hash equal the empty hash
-        let mut block : Block = Block::new( 0, empty_hash() );
-        block.hash = empty_hash();
+        let mut block : Block = Block::new( 0, empty_hash(), empty_hash() );
         return block;
 
     }
 
+    // Getters 
+    pub fn index( &self ) -> &u64
+    {
+
+        &self.index
+        
+    }
+
+    pub fn timestamp( &self ) -> &DateTime<Utc>
+    {
+        
+        &self.timestamp
+        
+    }
+
+    pub fn previous_hash( &self ) -> &String
+    {
+
+        &self.previous_hash
+        
+    }
+
+    pub fn merkle_root( &self ) -> &String
+    {
+
+        &self.merkle_root
+        
+    }
+
+    pub fn hash( &self ) -> &String
+    {
+
+        &self.hash
+        
+    }
+    
 }
