@@ -108,7 +108,6 @@ mod tree_tests
 
 }
 */
-use hex_slice::AsHex;
 
 // Test flag indicating this module contains test methods
 #[cfg(test)]
@@ -153,9 +152,8 @@ mod hash_util_tests
     fn empty_hash_test() -> ()
     {
         
-        let vec = hash_util::empty_hash::<u8>();
-        let nullptr = &0;
-        assert_eq!( format!("{:x}", vec.as_hex()), "5d53469f20fef4f8eab52b88044ede69c77a6a68a60728609fc4a65ff531e7d0".to_string() );
+        let hash = hash_util::empty_hash::<u8>();
+        assert_eq!( hash, "5d53469f20fef4f8eab52b88044ede69c77a6a68a60728609fc4a65ff531e7d0".to_string() );
         
     }
 
@@ -164,9 +162,8 @@ mod hash_util_tests
     fn leaf_hash_test() -> ()
     {
         
-        let vec = hash_util::create_leaf_hash::<u8>( &9 );
-        let ptr = &9;
-        assert_eq!( format!("{:x}", vec.as_hex() ), "2cf24dba5fb0a30e26e83b2ac5b9e29e1b161e5c1fa7425e73043362938b9824".to_string() );
+        let hash = hash_util::create_leaf_hash::<u8>( &9 );
+        assert_eq!( hash , "2299019d2c50f7525fc39a05256f802de6e9d05328c903d298b03d9d".to_string() );
     }
 
     #[test]

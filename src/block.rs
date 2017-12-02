@@ -17,11 +17,11 @@ pub struct Block
     // The index of the block
     pub index: u64,
     // The block's previous hash 
-    pub previous_hash: Vec<u8>,
+    pub previous_hash: String,
     // The time the block was created 
     pub timestamp: DateTime<Utc>,
     // The block's hash
-    pub hash: Vec<u8>,
+    pub hash: String,
 
 }
 
@@ -45,7 +45,7 @@ impl Block
     }
     
     // Constructor for a new block
-    pub fn new( index: u64, previous_hash: Vec<u8>  ) -> Block
+    pub fn new( index: u64, previous_hash: String  ) -> Block
     {
         
         let block = Block
@@ -57,7 +57,7 @@ impl Block
             index: index,
             previous_hash: previous_hash,
             timestamp: Utc::now(),
-            hash: [0].to_vec()
+            hash: empty_hash::<u8>()
 
         };
         return block;        
