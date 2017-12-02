@@ -104,54 +104,54 @@ impl<T: Clone + fmt::Display> Merkle<T>
 
     }
 
-    /*
-     * Constructs the Merkle Tree given a Merkle Tree instance with only the nodes
-     * value already set. 
-     *
-     * Given an input set of tree leaves, the merkle tree can be constructed as follows:
-     * 
-     * Say the leaves vector contains nodes with the hashes [ 1, 2, 3, 4, 5, 6, 7, 8 ]
-     *
-     * The construction algorithm:
-     *
-     * Check to see how many nodes are in the node buffer, if there is only one, then the
-     * algorithm terminates as this is the root node ( trivial case ). 
-     *
-     * If there are 2 or more nodes in the node buffer, pull nodes out two at a time until 
-     * the buffer has been emptied. At each pulling stage, fuse the two nodes together by making
-     * a tree node be the parent of both nodes with the parent hash being the concatenation of 
-     * the children's hashes. 
-     *
-     * Repeat the process until the trivial case is hit. 
-     *
-     * First pass:
-     * [ 12,  34,  56,  78 ]  
-     *  /\    /\   /\   /\ 
-     * 1  2  3  4 5  6 7  8
-     *
-     * Second pass:
-     * [ 1234,   5678 ]
-     *    /\      /\
-     *  12  34  56 78
-     *
-     * Third ( final ) pass:
-     * [ 12345678 ]
-     *      /   \
-     *  1234     5678
-     *   / \      / \
-     * 12  34   56   78
-     * /\  /\   /\   /\
-     *1 2 3  4 5 6  7  8
-     *
-     * Note: The root node of each tree is the only part of the tree stored in the vector, 
-     *       the children of each node are shown above for explanatory purposes but are not
-     *       explicitly stored in the vector. They are however stored as child fields of the 
-     *       nodes stored within the vector. 
-     *
-     * The root node is now set to the only node in the buffer and the tree construction 
-     * concludes.
-     *
-     */
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * 
+     * Constructs the Merkle Tree given a Merkle Tree instance with only the nodes             *
+     * value already set.                                                                      *
+     *                                                                                         *
+     * Given an input set of tree leaves, the merkle tree can be constructed as follows:       *
+     *                                                                                         *
+     * Say the leaves vector contains nodes with the hashes [ 1, 2, 3, 4, 5, 6, 7, 8 ]         *
+     *                                                                                         *
+     * The construction algorithm:                                                             *
+     *                                                                                         *
+     * Check to see how many nodes are in the node buffer, if there is only one, then the      *
+     * algorithm terminates as this is the root node ( trivial case ).                         *
+     *                                                                                         *
+     * If there are 2 or more nodes in the node buffer, pull nodes out two at a time until     *
+     * the buffer has been emptied. At each pulling stage, fuse the two nodes together, making * 
+     * a tree node be the parent of both nodes with the parent hash being the concatenation of *
+     * the children's hashes.                                                                  *
+     *                                                                                         *
+     * Repeat the process until the trivial case is hit.                                       *
+     *                                                                                         *
+     * First pass:                                                                             *
+     * [ 12,  34,  56,  78 ]                                                                   *
+     *  /\    /\   /\   /\                                                                     *
+     * 1  2  3  4 5  6 7  8                                                                    *
+     *                                                                                         *
+     * Second pass:                                                                            *
+     * [ 1234,   5678 ]                                                                        *
+     *    /\      /\                                                                           *
+     *  12  34  56 78                                                                          *
+     *                                                                                         *
+     * Third ( final ) pass:                                                                   *
+     * [ 12345678 ]                                                                            *
+     *      /   \                                                                              *
+     *  1234     5678                                                                          *
+     *   / \      / \                                                                          *
+     * 12  34   56   78                                                                        *
+     * /\  /\   /\   /\                                                                        *
+     *1 2 3  4 5 6  7  8                                                                       *
+     *                                                                                         *
+     * Note: The root node of each tree is the only part of the tree stored in the vector,     * 
+     *       the children of each node are shown above for explanatory purposes but are not    * 
+     *       explicitly stored in the vector. They are however stored as child fields of the   * 
+     *       nodes stored within the vector.                                                   *
+     *                                                                                         *
+     * The root node is now set to the only node in the buffer and the tree construction       *
+     * concludes.                                                                              *
+     *                                                                                         *
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     pub fn construct_tree( &mut self )
     {
 
