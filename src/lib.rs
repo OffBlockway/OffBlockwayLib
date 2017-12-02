@@ -1,17 +1,15 @@
-// Crate inclusion
-extern crate ring;
+// Extern crate inclusion 
+extern crate sha3;
 
 // Use statements
 #[allow(unused_imports)]
 // Standard library
 use std::*;
 #[allow(unused_imports)]
-use ring::digest::{ Algorithm, Context, SHA256, Digest, digest };
-#[allow(unused_imports)]
 // Gives access to the binary tree file
-use tree::Tree;
+//use tree::Tree;
 // Gives acces to the Merkle Tree file
-use merkle::Merkle;
+//use merkle::Merkle;
 // Gives acces to the hash utilities
 use hash_util::*;
 
@@ -30,6 +28,7 @@ mod merkle;
  * 
  */
 
+
 // Test flag indicating this module contains test methods
 #[cfg(test)]
 // Module for tree unit testing 
@@ -46,7 +45,7 @@ mod tree_tests
     {
         
         // The hash value for an empty byte array 
-        let digest_hash = hash_util::empty_hash::<u8>();
+        let digest_hash = hash_util::empty_hash();
         // The empty tree constructed with this hash 
         let empty_tree: tree::Tree<u8> = tree::Tree::empty( );
         // Compaing the tree's hash with the computed hash
@@ -61,15 +60,13 @@ mod tree_tests
     {
 
         // The hash value for the leaf
-        let digest_hash = hash_util::create_leaf_hash::<u8>( &9 );
-        // Copy hash used for assert statements
-        let digest_copy = digest_hash.clone();
+        let digest_hash = hash_util::create_leaf_hash( &9 );
         // Arbitrary u8 value for the leaf  
-        let value: u8 = 0; 
+        let value: u8 = 9; 
         // The tree leaf constructed with this hash and value 
         let tree_leaf: tree::Tree<u8> = tree::Tree::leaf( value );
         // Comparing the tree's hash with the computed hash
-        assert_eq!( *tree_leaf.hash(), digest_copy );
+        assert_eq!( *tree_leaf.hash(), digest_hash );
 
     }
 
@@ -79,35 +76,31 @@ mod tree_tests
     fn test_tree_node()
     {
 
-        // The hash value for the node
-        let digest_hash = hash_util::create_leaf_hash::<u8>( &01 );
-        // Copy hash used for assert statements
-        let digest_copy = digest_hash.clone();
         // The left and right children's hash values
-        let left_hash = hash_util::create_leaf_hash::<u8>( &0 );
-        let right_hash = hash_util::create_leaf_hash::<u8>( &1 );
-        // Copy hash used for assert statements
-        let left_copy = left_hash.clone();
-        // Copy hash used for assert statements
-        let right_copy = right_hash.clone();
+        let left_hash = hash_util::create_leaf_hash( &0 );
+        let right_hash = hash_util::create_leaf_hash( &1 );
+        // The hash value for the node
+        let digest_hash = hash_util::create_node_hash( &left_hash, &right_hash );
         // Arbitrary u8 values for the left and right children
         let left_value: u8 = 0;
         let right_value: u8 = 1;
         // The tree's left and right children 
         let left_child: tree::Tree<u8> = tree::Tree::leaf( left_value );
         // Comparing the left child's hash with its computed hash
-        assert_eq!( *left_child.hash(), left_copy );
+        assert_eq!( *left_child.hash(), left_hash );
         let right_child: tree::Tree<u8> = tree::Tree::leaf( right_value );
         // Comparing the right child's hash with its computed hash
-        assert_eq!( *right_child.hash(), right_copy );
+        assert_eq!( *right_child.hash(), right_hash );
         // The root node with the calculated hash and left and right children 
         let root_node: tree::Tree<u8> = tree::Tree::node( left_child, right_child );
         // Comparing the root's hash with the computed hash 
-        assert_eq!( *root_node.hash(), digest_copy );
+        assert_eq!( *root_node.hash(), digest_hash );
 
     }
 
 }
+
+
 
 // Test flag indicating this module contains test methods
 #[cfg(test)]
@@ -117,62 +110,66 @@ mod block_tests
 
     // Includes super directory 
     use super::*;
-    
-    // Test the creation of an arbitrary block
+
+    // Test flag indicating the next function contains tests
     #[test]
+    // Test the creation of an arbitrary block
     fn create_block()
     {
         
-        let mut block : block::Block = block::Block::new( 0, [0].to_vec() );
-        block.hash = digest( &SHA256, block::Block::generate_header_string( &block ).as_bytes() ).as_ref().to_vec();
-        println!("Block hash: {:?}\nBlock Previous {:?}", &block.hash, &block.previous_hash );
+        println!("UNIMPLEMENTED");
         
     }
-    
-    // Test the creation of the origin block
+
+    // Test flag indicating the next function contains tests
     #[test]
+    // Test the creation of the origin block
     fn create_origin()
     {
 
-        let block: block::Block = block::Block::origin();
-        println!( "{:?}", &block.hash );
-
+        println!("UNIMPLEMENTED");
+        
     }
     
 }
 
 // Test flag indicating this module contains test methods
 #[cfg(test)]
-// Hash utilities tests
+// Module for hash utilities unit tests
 mod hash_util_tests
 {
 
     // Includes super directory
     use super::*;
 
-    // Test the creation of an empty hash (hash of a nullptr)
+    // Test flag indicating the next function contains tests
     #[test]
+    // Test the creation of an empty hash (hash of a nullptr)
     fn empty_hash_test() -> ()
     {
-        
-        let vec = hash_util::empty_hash::<u8>();
-        let nullptr = &0;
-        assert_eq!( vec, digest( &SHA256, nullptr.to_string().as_ref() ).as_ref().to_vec() );
+
+        // Creates an empty hash value 
+        let hash = hash_util::empty_hash();
+        // Asserts that this is equal with the predetermined hash value
+        assert_eq!( hash, "f9e2eaaa42d9fe9e558a9b8ef1bf366f190aacaa83bad2641ee106e9041096e4".to_string() );
         
     }
 
-    // Test the creation of a hash for a value
+    // Test flag indicating the next function contains tests
     #[test]
+    // Test the creation of a hash for a value
     fn leaf_hash_test() -> ()
     {
-        
-        let vec = hash_util::create_leaf_hash::<u8>( &9 );
-        let ptr = &9;
-        assert_eq!( vec, digest( &SHA256, ptr.to_string().as_ref() ).as_ref().to_vec() );
 
+        // Creates a hash with the value 9 
+        let hash = hash_util::create_leaf_hash( &9 );
+        // Asserts that this is equal with the predetermined hash value 
+        assert_eq!( hash , "7609430974b087595488c154bf5c079887ead0e8efd4055cd136fda96a5ccbf8".to_string() );
     }
 
+    // Test flag indicating the next function contains tests
     #[test]
+    // Tests the creation of a node hash 
     fn node_hash_test() -> ()
     {
 
@@ -181,6 +178,7 @@ mod hash_util_tests
     }
     
 }
+
 
 // Test flag indicating this module contains test methods
 #[cfg(test)]
@@ -240,14 +238,14 @@ mod merkle_tests
         // Creates a new type u8 Merkle Tree
         let merkle: merkle::Merkle<u8> = merkle::Merkle::empty();
         // Creates an empty hash
-        let empty_hash = hash_util::empty_hash::<u8>();
+        let empty_hash = hash_util::empty_hash();
         // Confirms that the tree's hash is the same as a calculated empty hash
         assert_eq!( *merkle.root_hash(), empty_hash );
         // Confirms that the tree is empty
         assert_eq!( true, merkle.is_empty() );
         
     }
-
+    
     // Test flag indicating the next function contains tests
     #[test]
     // Unit test for verifying the construction and hash of a full Merkle Tree
@@ -256,22 +254,18 @@ mod merkle_tests
 
         // Creates a list of values to be hashed and constructed into a Merkle Tree
         let mut values = Vec::new();
-        // Pushes the numbers 0 through 7 to the vector
-        for i in ( 0 .. 8 )
-        {
-
-            values.push(i);
-            
-        }
+        // Pushes our names ( zac and ezra ) to the vector 
+        values.push( "zac" );
+        values.push( "ezra" );
         // Creates a new full Merkle Tree with these values
         let merkle = merkle::Merkle::new( values );
         assert_eq!( false, merkle.is_empty() );
-        assert_eq!( 3, merkle.height() );
-        assert_eq!( 8, merkle.leaf_count() );
-        // TODO: VERIFY HASH
+        assert_eq!( 1, merkle.height() );
+        assert_eq!( 2, merkle.leaf_count() );
+        assert_eq!( "a380ecb83540c785c01d5e19dd821907a5170482983a1bf7338b354e92fe92b7", merkle.root_hash() );
         
     }
-
+     
     // Test flag indicating the next function contains tests
     #[test]
     // Unit test for verifying that if an empty vector is passed to the Merkle constructor
@@ -279,8 +273,10 @@ mod merkle_tests
     fn test_merkle_with_empty()
     {
 
+        // Creates an empty hash
+        let empty_hash = hash_util::empty_hash();
         // Creates an empty vector to be input into the constructor
-        let values = Vec::new();
+        let values: Vec<u8> = Vec::new();
         // Passes it to the constructor and makes a Merkle Tree
         let merkle = merkle::Merkle::new( values );
         // Verifies it created an empty Merkle Tree by checking the size and
@@ -333,7 +329,7 @@ mod merkle_tests
     }
 
     // Test flag indicating the next function contains tests
-    #[tes]
+    #[test]
     // Unit test for verifying that the get function works
     fn test_get()
     {
@@ -355,7 +351,7 @@ mod merkle_tests
 
             // At each step in the iteration we assert that the value from get is
             // the same as the value of the i ( the for loop iterator )
-            assert_eq!( i, merkle.get( i ) );
+            assert_eq!( i, *merkle.get( i ).unwrap() );
             
         }
         
@@ -363,26 +359,31 @@ mod merkle_tests
 
     // Test flag indicating the next function contains tests
     #[test]
-    // Unit test for verifying that the insert function works
+    // Tests whether the insert function is working
     fn test_insert()
     {
 
-        // Creates a new empty Merkle Tree
-        let merkle = merkle::Merkle::new( values );
-        // Verifies that it was constructed correctly
-        assert_eq!( true, merkle.is_empty() );
-        // Inserts two elements into the tree
-        merkle.insert( 1 );
-        merkle.insert( 2 );
-        // Verifies the tree isn't empty
-        assert_eq!( false, merkle.is_empty() );
-        // Verifies that the values were entered correctly
-        assert_eq!( 1, merkle.get( 0 ) );
-        assert_eq!( 2, merkle.get( 1 ) );
-        // Verifies the height was recalculated
-        assert_eq!( 1, merkle.height() );
-        // TODO: VERIFY HASH 
+        // Creates a list of values to be hashed and constructed into a Merkle Tree
+        let mut values = Vec::new();
+        // Creates a new full Merkle Tree with these values
+        let mut merkle = merkle::Merkle::new( values );
+        // Inserts values into the Merkle Tree
+        for i in ( 0 .. 8 )
+        {
+
+            merkle.insert( i );
+            
+        }
+        // Makes sure the values can be accessed correctly 
+        for i in ( 0 .. 8 )
+        {
+            
+            // At each step in the iteration we assert that the value from get is
+            // the same as the value of the i ( the for loop iterator )
+            assert_eq!( i, *merkle.get( i ).unwrap() );
+               
+        }
         
     }
-    
+
 }

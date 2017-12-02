@@ -1,13 +1,16 @@
 #[allow(dead_code)]
 // Included crates
 extern crate chrono;
-extern crate ring;
 
 // Use statements
-use self::ring::digest::{ SHA256, digest };
+//
+// Used for timestamping 
 use self::chrono::{ DateTime, Utc };
+// Standard libraries used for Strings and Vectors
 use std::string::String;
 use std::vec::Vec;
+// Used for hashing necessities
+use hash_util::*;
 
 // Block struct
 pub struct Block
@@ -16,15 +19,15 @@ pub struct Block
     // The index of the block
     pub index: u64,
     // The block's previous hash 
-    pub previous_hash: Vec<u8>,
+    pub previous_hash: String,
     // The time the block was created 
     pub timestamp: DateTime<Utc>,
     // The block's hash
-    pub hash: Vec<u8>,
+    pub hash: String,
 
 }
 
- // Block impl
+// Block impl
 impl Block
 {
 
@@ -44,7 +47,7 @@ impl Block
     }
     
     // Constructor for a new block
-    pub fn new( index: u64, previous_hash: Vec<u8>  ) -> Block
+    pub fn new( index: u64, previous_hash: String  ) -> Block
     {
         
         let block = Block
@@ -56,7 +59,7 @@ impl Block
             index: index,
             previous_hash: previous_hash,
             timestamp: Utc::now(),
-            hash: digest( &SHA256, b"blockway").as_ref().to_vec(),
+            hash: empty_hash()
 
         };
         return block;        
@@ -68,26 +71,10 @@ impl Block
     {
         
         // Create a new block and make the hash equal the empty hash
-        let mut block : Block = Block::new( 0, [0].to_vec() );
-        block.hash = [0].to_vec();
+        let mut block : Block = Block::new( 0, empty_hash() );
+        block.hash = empty_hash();
         return block;
 
     }
 
-}
-
-pub mod block
-{
-    
-    use super::*;
-
-    // Hash test
-    pub fn hash( string: String )
-    {
-        
-        let hash = digest( &SHA256, string.as_bytes() ).as_ref().to_vec(); 
-        println!( "{:?}", hash );
-
-    }
-    
 }
