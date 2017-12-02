@@ -23,6 +23,7 @@ use hash_util::*;
  *     - A tree node ( or root node ) that contains a hash and left and right children
  *
  */
+#[derive(Clone)]
 pub enum Tree<T>
 {
 
@@ -31,7 +32,7 @@ pub enum Tree<T>
     {
         
         // Empty trees only contain a hash
-        hash: Vec<u8>
+        hash: String
 
     },
     // Leaf definition
@@ -39,7 +40,7 @@ pub enum Tree<T>
     {
 
         // Leaves act as a node with a hash and value but no children
-        hash: Vec<u8>,
+        hash: String,
         value: T
 
     },
@@ -53,7 +54,7 @@ pub enum Tree<T>
     {
 
         // Nodes have a hash and left and right children 
-        hash: Vec<u8>,
+        hash: String,
         left: Box<Tree<T>>,
         right: Box<Tree<T>>
 
@@ -70,7 +71,7 @@ impl<T: fmt::Display> Tree<T>
     {
 
         // Returns an empty tree with the given hash
-        Tree::Empty{ hash: ::hash_util::empty_hash::<u8>() }
+        Tree::Empty{ hash: ::hash_util::empty_hash() }
 
     }
     
@@ -80,7 +81,7 @@ impl<T: fmt::Display> Tree<T>
 
         // Creates the hash given the leaf's value, create_leaf_hash() takes in
         // a reference to the value so we pass in value.as_ref()
-        let leaf_hash = create_leaf_hash::<T>( &value );
+        let leaf_hash = create_leaf_hash( &value );
         // Returns a tree leaf with the given hash and value
         Tree::Leaf
         {
@@ -98,7 +99,7 @@ impl<T: fmt::Display> Tree<T>
         // Creates the node hash using the children's hashes.
         // Passes in the reference to the left and write hashes by
         // using unwrap()
-        let node_hash = create_node_hash( left.hash().as_hex(), right.hash() );
+        let node_hash = create_node_hash( left.hash(), right.hash() );
         // Returns a tree node with the given hash and
         // allocates memory for the left and right children 
         Tree::Node
@@ -112,11 +113,11 @@ impl<T: fmt::Display> Tree<T>
 
     }
     // Retrieve the hash of a given tree
-    pub fn hash( &self ) -> &Vec<u8>
+    pub fn hash( &self ) -> &String
     {
 
         // Includes tree
-        use Tree::*;
+        use self::*;
 
         // Match self to enum type
         match *self
@@ -124,11 +125,11 @@ impl<T: fmt::Display> Tree<T>
             
             // ref allows us to reference a field of the enum 
             // If it's an empty tree
-            Empty { ref hash } => hash,
+            Tree::Empty { ref hash } => hash,
             // If it's a tree node
-            Node { ref hash, .. } => hash,
+            Tree::Node { ref hash, .. } => hash,
             // If it's a leaf node 
-            Leaf { ref hash, .. } => hash
+            Tree::Leaf { ref hash, .. } => hash
                 
         }        
 
