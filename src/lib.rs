@@ -117,20 +117,11 @@ mod block_tests
     fn create_block()
     {
         
-        println!("UNIMPLEMENTED");
+        let block = block::Block::new( 0, create_leaf_hash( &9 ), empty_hash() );
+        assert_eq!( block.merkle_root, "7609430974b087595488c154bf5c079887ead0e8efd4055cd136fda96a5ccbf8" );
         
     }
 
-    // Test flag indicating the next function contains tests
-    #[test]
-    // Test the creation of the origin block
-    fn create_origin()
-    {
-
-        println!("UNIMPLEMENTED");
-        
-    }
-    
 }
 
 // Test flag indicating this module contains test methods
@@ -173,7 +164,8 @@ mod hash_util_tests
     fn node_hash_test() -> ()
     {
 
-        println!( "NOT IMPLEMENTED" );
+        let hash = hash_util::create_node_hash( &"f9e2eaaa42d9fe9e558a9b8ef1bf366f190aacaa83bad2641ee106e9041096e4", &"67b176705b46206614219f47a05aee7ae6a3edbe850bbbe214c536b989aea4d2" );
+        assert_eq!( hash, "b6698473bbe17ece4f1bdb6ade7218f775c4a53120c5d98c0ec0e354806f8c7f".to_string() );
         
     }
     
