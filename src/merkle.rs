@@ -4,13 +4,10 @@
 use std::*;
 // Using tree for the skeleton of the Merkle Tree
 use tree::*;
-// Using hash utilities for the node hash
-use hash_util::*;
-// Used for taking the natural logarithm of a number, we make use of this when calculating
-// the height of the tree given the number of nodes 
-use std::f32;
 // Used for vector queue when loading nodes in to a temporary buffer for building the tree
 use std::collections::VecDeque;
+// Used for the hash map the represents the hashes on each level of the tree
+use std::collections::BTreeMap;
 
 /*
  *
@@ -22,6 +19,7 @@ use std::collections::VecDeque;
  */
 
 // Merkle Tree struct, defines the elements needed for each instance
+#[allow(dead_code)]
 pub struct Merkle<T>
 {
 
@@ -34,7 +32,9 @@ pub struct Merkle<T>
     // The hash of the root node
     hash: String,
     // A vector of nodes representing the leaves of the tree
-    nodes: Vec<T>
+    nodes: Vec<T>,
+    // A hash map of the hashes on each level of the tree
+    map: BTreeMap<usize, VecDeque<Tree<T>>>
     
 }
 
@@ -47,6 +47,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
 {
 
     // New empty Merkle Tree constructor
+    #[allow(dead_code)]
     pub fn empty() -> Self
     {
 
@@ -62,18 +63,21 @@ impl<T: Clone + fmt::Display> Merkle<T>
             // The hash of an empty tree
             hash: ::hash_util::empty_hash(),
             // The nodes of the empty tree
-            nodes: Vec::new()
+            nodes: Vec::new(),
+            // The hash map of hashes on each level of the tree
+            map: BTreeMap::new()
 
         }
 
     }
 
     // Constructs a new Merkle tree with the given nodes
+    #[allow(dead_code)]
     pub fn new( nodes: Vec<T> ) -> Self
     {
 
         // If the input nodes are empty, the empty tree constructor is called 
-        if( nodes.is_empty() )
+        if nodes.is_empty() 
         {
 
             // Return self by calling the empty tree constructor 
@@ -93,7 +97,8 @@ impl<T: Clone + fmt::Display> Merkle<T>
                 height: 0,
                 leaf_count: 0,
                 hash: ::hash_util::empty_hash(),
-                nodes: nodes
+                nodes: nodes,
+                map: BTreeMap::new(),
                 
             };
             // Constructs and returns the tree
@@ -152,6 +157,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
      * concludes.                                                                              *
      *                                                                                         *
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+    #[allow(dead_code)]
     pub fn construct_tree( &mut self )
     {
 
@@ -166,8 +172,10 @@ impl<T: Clone + fmt::Display> Merkle<T>
         // The current level of the tree that's being constructed ( initially this is the leaf
         // leve ).
         let mut current_level = self.height;
+        // Clears the hash map
+        self.map.clear();
         // If there are leaf nodes, execute the tree building algorithm 
-        if( !self.is_empty() )
+        if !self.is_empty() 
         {
 
             // Buffer is a temporary queue of nodes that represents the nodes on the current
@@ -184,59 +192,75 @@ impl<T: Clone + fmt::Display> Merkle<T>
                 buffer.push_back( current_node );
                 
             }
+            // 
+            self.map.insert( current_level, buffer );
             // Tree construction algorithm ( detailed above ), executes until the root level
             // is reached. 
-            while( current_level > 0 )
+            while current_level > 0 
             {
 
-                // The current row that is going to be constructed out of the 
-                let mut row = VecDeque::new();
-                // Iterates through the current level's nodes, the step is set to 2 because
-                // two nodes are pulled from the queue at each iteration 
-                let mut i = 0;
-                while i < buffer.len()
+                // The level above the current one
+                let above_level = current_level - 1;
+                // The row of hashes above the current one 
+                let above_row =
                 {
-                    // Gets the left and right children by pulling from the queue at i
-                    // and i + 1
-                    //
-                    // dereferencing the .unwrap() of the buffer.get( ) is used because
-                    // buffer.get( ) is returning an Option and the .unwrap() returns a
-                    // reference to that option. 
-                    let left = buffer.get( i ).unwrap();
-                    let right = buffer.get( i + 1 ).unwrap_or( left );
-                    // Sets the combined node to be a node made out of the left and right
-                    // children accessed above
-                    let combined = Tree::node( left.clone(), right.clone() );
-                    // Pushes the new combined node to the row buffer
-                    row.push_back( combined );
-                    i += 2;
-                }   
-                // Clears the previous row buffer
-                buffer.clear();
-                // Sets the row buffer to the recently calculated queue of combined nodes
-                buffer = row;
+                    
+                    // The current row that the tree is going to be constructed out of  
+                    let mut row = VecDeque::new();
+                    // The current row of hashes
+                    let current_row = self.map.get( &current_level ).unwrap();
+                    // Iterative variable 
+                    let mut i = 0;
+                    // Iterates through the current level's nodes, the step is set to 2 because
+                    // two nodes are pulled from the queue at each iteration  
+                    while i < current_row.len()
+                    {
+                        
+                        // Gets the left and right children by pulling from the queue at i
+                        // and i + 1
+                        //
+                        // dereferencing the .unwrap() of the buffer.get( ) is used because
+                        // buffer.get( ) is returning an Option and the .unwrap() returns a
+                        // reference to that option. 
+                        let left = current_row.get( i ).unwrap();
+                        let right = current_row.get( i + 1 ).unwrap_or( left );
+                        // Sets the combined node to be a node made out of the left and right
+                        // children accessed above
+                        let combined = Tree::node( left.clone(), right.clone() );
+                        // Pushes the new combined node to the row buffer
+                        row.push_back( combined );
+                        // Increases the iterative variable 
+                        i += 2;
+
+                    }
+                    row
+
+                };
+                // Inserts the above row of hashes at the correct level  
+                self.map.insert( above_level, above_row );
                 // Decreases the level value 
                 current_level -= 1;
                 
             }
-            // Sets the root to the only element remaining in the queue
+            // Sets the root node equal to the node at the 0th level in the hash map
             //
-            // .unwrap() is used becasue buffer.pop_front() returns an Option type
-            // over the tree, this function gets rid of that. 
-            self.root = buffer.pop_front().unwrap();
+            // .unwrap() is used to get rid of the Option that is wrapped around the node type
+            // and it is cloned to get rid of any borrowed value errors 
+            self.root = self.map.get( &0 ).unwrap()[ 0 ].clone();
             
         }
         
     }
     
     // Calculates the height of the tree given the leaves
+    #[allow(dead_code)]
     pub fn calculate_height( &self ) -> usize
     {
         
         // The number of leaves in the tree
         let leaf_count = self.leaf_count();
         // If there are leaves in the tree, calculate the height 
-        if( leaf_count > 0 )
+        if leaf_count > 0 
         {
             // Sets the height to be the base 2 logarithm ( natural log ) of the number
             // of leaves in the tree 
@@ -283,11 +307,12 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Removes a leaf node from the Merkle Tree, returns true if successful and false otherwise
+    #[allow(dead_code)]
     pub fn remove( &mut self, index: usize ) -> bool
     {
 
         // If the index of the node to remove is within the length of the vector 
-        if( index < self.leaf_count() )
+        if index < self.leaf_count() 
         {
 
             // Remove the node
@@ -308,8 +333,30 @@ impl<T: Clone + fmt::Display> Merkle<T>
         }
         
     }
+
+    // Finds a hash at a specific level of the tree
+    #[allow(dead_code)]
+    pub fn hash_found_at_level( &mut self, level: usize, hash: String ) -> bool
+    {
+
+        let target_level = self.map.get( &level ).unwrap();
+        for i in 0 .. target_level.len() 
+        {
+
+            let current_node =  target_level[ i ].clone();
+            if *current_node.hash() == hash
+            {
+
+                return true;
+                
+            }
+            
+        }
+        false   
+    }
     
     // Inserts a node into the Merkle Tree
+    #[allow(dead_code)]
     pub fn insert( &mut self, value: T )
     {
 
@@ -324,6 +371,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
     
     // Gets the leaf corresponding with an input index
+    #[allow(dead_code)]
     pub fn get( &self, index: usize ) -> Option<&T>
     {
 
@@ -337,6 +385,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Determines whether or not the Merkle Tree is empty
+    #[allow(dead_code)]
     pub fn is_empty( &self ) -> bool
     {
 
@@ -345,6 +394,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Returns the height of the tree
+    #[allow(dead_code)]
     pub fn height( &self ) -> usize
     {
         
@@ -353,14 +403,16 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Returns the leaf count of the tree
+    #[allow(dead_code)]
     pub fn leaf_count( &self ) -> usize
     {
 
         self.leaf_count
         
     }
-
+    
     // Returns the root hash of a given tree
+    #[allow(dead_code)]
     pub fn root_hash( &self ) -> &String
     {
 

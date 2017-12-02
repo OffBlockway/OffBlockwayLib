@@ -53,7 +53,7 @@ pub fn create_node_hash< T: ToString >( left: &T, right: &T ) -> String
 
 
 /* Block specific hashing functions */
-
+#[allow(dead_code)]
 pub fn generate_header_hash( block: &Block ) -> String
 {
 
