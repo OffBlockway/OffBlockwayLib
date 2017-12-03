@@ -339,11 +339,16 @@ impl<T: Clone + fmt::Display> Merkle<T>
     pub fn hash_found_at_level( &mut self, level: usize, hash: String ) -> bool
     {
 
+        // The vector of tree nodes at the target level 
         let target_level = self.map.get( &level ).unwrap();
+        // We then iterate over the length of the target level's vector 
         for i in 0 .. target_level.len() 
         {
 
+            // At each index in the target level, we pull the node from the vector 
             let current_node =  target_level[ i ].clone();
+            // This node's hash is then compared with the target hash entered by the user,
+            // if they are the same, the boolean true is returned. 
             if *current_node.hash() == hash
             {
 
@@ -352,6 +357,8 @@ impl<T: Clone + fmt::Display> Merkle<T>
             }
             
         }
+        // If the for loop completes its iteration without returning true, that means that the
+        // hash was not found at the target level in the tree so the boolean false is returned.
         false   
     }
     
