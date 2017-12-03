@@ -32,7 +32,7 @@ pub fn create_leaf_hash< T: ToString >( value: &T ) -> String
     // Initialize a hasher and input the value as a byte array ref
     let mut hasher = Sha3_256::default();
     hasher.input( &value.to_string().as_ref() );
-    // Return the hash of the value as a vector
+    // Return the hash of the value as a string
     format!( "{:x}", hasher.result() )
         
 }
@@ -46,7 +46,7 @@ pub fn create_node_hash< T: ToString >( left: &T, right: &T ) -> String
     // Feed the hasher the two children strings
     hasher.input( &left.to_string().as_ref() );
     hasher.input( &right.to_string().as_ref() );
-    // Return the hash as a vector
+    // Return the hash as a string 
     format!( "{:x}", hasher.result() )
     
 }
@@ -63,7 +63,6 @@ pub fn generate_header_hash( block: &Block ) -> String
     temp += &block.timestamp().to_string().as_ref();
     temp += &block.merkle_root().as_ref();
     temp += &block.previous_hash().as_ref();
-    
     // Create a new string to add everything to
     let mut hasher = Sha3_256::default();
     // Concat the items of the block

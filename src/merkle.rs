@@ -6,6 +6,8 @@ use std::*;
 use tree::*;
 // Used for vector queue when loading nodes in to a temporary buffer for building the tree
 use std::collections::VecDeque;
+// Used for the hash map the represents the hashes on each level of the tree
+use std::collections::BTreeMap;
 
 /*
  *
@@ -30,7 +32,9 @@ pub struct Merkle<T>
     // The hash of the root node
     hash: String,
     // A vector of nodes representing the leaves of the tree
-    nodes: Vec<T>
+    nodes: Vec<T>,
+    // A hash map of the hashes on each level of the tree
+    map: BTreeMap<usize, VecDeque<Tree<T>>>
     
 }
 
@@ -59,7 +63,9 @@ impl<T: Clone + fmt::Display> Merkle<T>
             // The hash of an empty tree
             hash: ::hash_util::empty_hash(),
             // The nodes of the empty tree
-            nodes: Vec::new()
+            nodes: Vec::new(),
+            // The hash map of hashes on each level of the tree
+            map: BTreeMap::new()
 
         }
 
@@ -91,7 +97,8 @@ impl<T: Clone + fmt::Display> Merkle<T>
                 height: 0,
                 leaf_count: 0,
                 hash: ::hash_util::empty_hash(),
-                nodes: nodes
+                nodes: nodes,
+                map: BTreeMap::new(),
                 
             };
             // Constructs and returns the tree
@@ -165,6 +172,8 @@ impl<T: Clone + fmt::Display> Merkle<T>
         // The current level of the tree that's being constructed ( initially this is the leaf
         // leve ).
         let mut current_level = self.height;
+        // Clears the hash map
+        self.map.clear();
         // If there are leaf nodes, execute the tree building algorithm 
         if !self.is_empty() 
         {
@@ -183,46 +192,61 @@ impl<T: Clone + fmt::Display> Merkle<T>
                 buffer.push_back( current_node );
                 
             }
+            // 
+            self.map.insert( current_level, buffer );
             // Tree construction algorithm ( detailed above ), executes until the root level
             // is reached. 
             while current_level > 0 
             {
 
-                // The current row that is going to be constructed out of the 
-                let mut row = VecDeque::new();
-                // Iterates through the current level's nodes, the step is set to 2 because
-                // two nodes are pulled from the queue at each iteration 
-                let mut i = 0;
-                while i < buffer.len()
+                // The level above the current one
+                let above_level = current_level - 1;
+                // The row of hashes above the current one 
+                let above_row =
                 {
-                    // Gets the left and right children by pulling from the queue at i
-                    // and i + 1
-                    //
-                    // dereferencing the .unwrap() of the buffer.get( ) is used because
-                    // buffer.get( ) is returning an Option and the .unwrap() returns a
-                    // reference to that option. 
-                    let left = buffer.get( i ).unwrap();
-                    let right = buffer.get( i + 1 ).unwrap_or( left );
-                    // Sets the combined node to be a node made out of the left and right
-                    // children accessed above
-                    let combined = Tree::node( left.clone(), right.clone() );
-                    // Pushes the new combined node to the row buffer
-                    row.push_back( combined );
-                    i += 2;
-                }   
-                // Clears the previous row buffer
-                buffer.clear();
-                // Sets the row buffer to the recently calculated queue of combined nodes
-                buffer = row;
+                    
+                    // The current row that the tree is going to be constructed out of  
+                    let mut row = VecDeque::new();
+                    // The current row of hashes
+                    let current_row = self.map.get( &current_level ).unwrap();
+                    // Iterative variable 
+                    let mut i = 0;
+                    // Iterates through the current level's nodes, the step is set to 2 because
+                    // two nodes are pulled from the queue at each iteration  
+                    while i < current_row.len()
+                    {
+                        
+                        // Gets the left and right children by pulling from the queue at i
+                        // and i + 1
+                        //
+                        // dereferencing the .unwrap() of the buffer.get( ) is used because
+                        // buffer.get( ) is returning an Option and the .unwrap() returns a
+                        // reference to that option. 
+                        let left = current_row.get( i ).unwrap();
+                        let right = current_row.get( i + 1 ).unwrap_or( left );
+                        // Sets the combined node to be a node made out of the left and right
+                        // children accessed above
+                        let combined = Tree::node( left.clone(), right.clone() );
+                        // Pushes the new combined node to the row buffer
+                        row.push_back( combined );
+                        // Increases the iterative variable 
+                        i += 2;
+
+                    }
+                    row
+
+                };
+                // Inserts the above row of hashes at the correct level  
+                self.map.insert( above_level, above_row );
                 // Decreases the level value 
                 current_level -= 1;
                 
             }
-            // Sets the root to the only element remaining in the queue
+            // Sets the root node equal to the node at the 0th level in the hash map
             //
-            // .unwrap() is used becasue buffer.pop_front() returns an Option type
-            // over the tree, this function gets rid of that. 
-            self.root = buffer.pop_front().unwrap();
+            // .unwrap() is used to get rid of the Option that is wrapped around the node type
+            // and it is cloned to get rid of any borrowed value errors 
+            self.root = self.map.get( &0 ).unwrap()[ 0 ].clone();
             
         }
         
@@ -308,6 +332,34 @@ impl<T: Clone + fmt::Display> Merkle<T>
             
         }
         
+    }
+
+    // Finds a hash at a specific level of the tree
+    #[allow(dead_code)]
+    pub fn hash_found_at_level( &mut self, level: usize, hash: String ) -> bool
+    {
+
+        // The vector of tree nodes at the target level 
+        let target_level = self.map.get( &level ).unwrap();
+        // We then iterate over the length of the target level's vector 
+        for i in 0 .. target_level.len() 
+        {
+
+            // At each index in the target level, we pull the node from the vector 
+            let current_node =  target_level[ i ].clone();
+            // This node's hash is then compared with the target hash entered by the user,
+            // if they are the same, the boolean true is returned. 
+            if *current_node.hash() == hash
+            {
+
+                return true;
+                
+            }
+            
+        }
+        // If the for loop completes its iteration without returning true, that means that the
+        // hash was not found at the target level in the tree so the boolean false is returned.
+        false   
     }
     
     // Inserts a node into the Merkle Tree

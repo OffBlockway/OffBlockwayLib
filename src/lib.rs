@@ -100,8 +100,6 @@ mod tree_tests
 
 }
 
-
-
 // Test flag indicating this module contains test methods
 #[cfg(test)]
 //Module for block unit testing
@@ -164,13 +162,14 @@ mod hash_util_tests
     fn node_hash_test() -> ()
     {
 
+        // Creates a hash with the hashes for 0 and 1
         let hash = hash_util::create_node_hash( &"f9e2eaaa42d9fe9e558a9b8ef1bf366f190aacaa83bad2641ee106e9041096e4", &"67b176705b46206614219f47a05aee7ae6a3edbe850bbbe214c536b989aea4d2" );
+        // Asserts that the created hash is equal to the true hash 
         assert_eq!( hash, "b6698473bbe17ece4f1bdb6ade7218f775c4a53120c5d98c0ec0e354806f8c7f".to_string() );
         
     }
     
 }
-
 
 // Test flag indicating this module contains test methods
 #[cfg(test)]
@@ -452,6 +451,76 @@ mod merkle_tests
         assert_eq!( 0, merkle.leaf_count() );
         // Makes sure the height is 0 
         assert_eq!( 0, merkle.height() );
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Verifies that the hash map is being constructed correctly
+    pub fn test_hash_map()
+    {
+
+        // Creates a list of values to be hashed and constructed into a Merkle Tree
+        let values = Vec::new();
+        // Creates a new full Merkle Tree with these values
+        let mut merkle = merkle::Merkle::new( values );
+        // Inserts values into the Merkle Tree
+        for i in 0 .. 8
+        {
+            
+            merkle.insert( i );
+            
+        }
+        /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+         *                                                                                     *
+         * The tree currently looks like the following ( imagine the numbers are actually the  *
+         * hashes of the numbers ):                                                            *
+         *                                                                                     *
+         *         LEVEL 0:           01234567                                                 *
+         *                             /    \                                                  *  
+         *         LEVEL 1:         0123    4567                                               *
+         *                          / \     / \                                                *
+         *         LEVEL 2:       01  23   45  67                                              *
+         *                        /\  /\   /\  /\                                              * 
+         *         LEVEL 3:      0 1 2 3  4 5 6  7                                             *
+         *                                                                                     *
+         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
+        // We get the hashes at levels one and two and store them in variables
+        // The hashes below are the true SHA3 hash values of the numbers 0 - 7
+        let level_two_hash_a: String = hash_util::create_node_hash( &"f9e2eaaa42d9fe9e558a9b8ef1bf366f190aacaa83bad2641ee106e9041096e4".to_string(), &"67b176705b46206614219f47a05aee7ae6a3edbe850bbbe214c536b989aea4d2".to_string() );
+        let level_two_hash_b: String = hash_util::create_node_hash( &"b1b1bd1ed240b1496c81ccf19ceccf2af6fd24fac10ae42023628abbe2687310".to_string(), &"1bf0b26eb2090599dd68cbb42c86a674cb07ab7adc103ad3ccdf521bb79056b9".to_string() );
+        let level_two_hash_c: String = hash_util::create_node_hash( &"b410677b84ed73fac43fcf1abd933151dd417d932a0ef9b0260ecf8b7b72ecb9".to_string(), &"86bc56fc56af4c3cde021282f6b727ee9f90dd636e0b0c712a85d416c75e652d".to_string() );
+        let level_two_hash_d: String = hash_util::create_node_hash( &"0c67354981e9068905680b57898ad4f04b993c63eb66aa3f19cdfdc71d88077e".to_string(), &"8f9b51ce624f01b0a40c9f68ba8bb0a2c06aa7f95d1ed27d6b1b5e1e99ee5e4d".to_string() );
+        // For the level one hashes we just concatenate the level two hashes
+        let level_one_hash_a: String = hash_util::create_node_hash( &level_two_hash_a, &level_two_hash_b );
+        let level_one_hash_b: String = hash_util::create_node_hash( &level_two_hash_c, &level_two_hash_d );
+        // We then make use of the hash_found_at_level function wich ensures that a certain
+        // hash can be found at a given level in the Merkle Tree. All of these boolean values
+        // for each hash are then stored in variables. 
+        let level_two_a_return = merkle.hash_found_at_level( 2, level_two_hash_a );
+        let level_two_b_return = merkle.hash_found_at_level( 2, level_two_hash_b );
+        let level_two_c_return = merkle.hash_found_at_level( 2, level_two_hash_c );
+        let level_two_d_return = merkle.hash_found_at_level( 2, level_two_hash_d );
+        let level_one_a_return = merkle.hash_found_at_level( 1, level_one_hash_a );
+        let level_one_b_return = merkle.hash_found_at_level( 1, level_one_hash_b );
+        // Finally, all the hashes are compared with the true boolean to ensure that they have
+        // been found in the tree. 
+        assert_eq!( true, level_two_a_return );
+        assert_eq!( true, level_two_b_return );
+        assert_eq!( true, level_two_c_return );
+        assert_eq!( true, level_two_d_return );
+        assert_eq!( true, level_one_a_return );
+        assert_eq!( true, level_one_b_return );
+        // To ensure that hashes not found within the tree return a false value when searched
+        // for, we create a hash out of the hashes for our names ( "zac" and "ezra" ).
+        let zac: String = "f296b0a2ba1d206049d67ce9e6cbabedcecf63b6b4b86742b6ab94e305e64991".to_string();
+        let ezra: String = "7c06507a16cabd54e266c3e9b33d2b059575cdbb9c54d5d345a5d99959194e69".to_string();
+        // We then search for the hashes in the tree
+        let zac_return = merkle.hash_found_at_level( 3, zac );
+        let ezra_return = merkle.hash_found_at_level( 3, ezra );
+        // Then we ensure these return values are both false
+        assert_eq!( false, zac_return );
+        assert_eq!( false, ezra_return );
         
     }
 
