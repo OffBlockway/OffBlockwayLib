@@ -25,6 +25,11 @@ mod merkle;
  *     - This file is used for unit testing methods within the src folder, tests can 
  *       be compiled and ran with:
  *                              >>> cargo test
+ *
+ * Hashing:
+ *     - The predetermined hashes we use are obtained from Decrane.io 
+ *       ( https://www.decrane.io/sha-3 ) with the SHA3-256 variant. Non-leaf  
+ *       hashes are made by hashing the concatenation of the child hashes.
  * 
  */
 
