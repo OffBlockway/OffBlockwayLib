@@ -130,23 +130,23 @@ impl<T: Clone + fmt::Display> Merkle<T>
      * Repeat the process until the trivial case is hit.                                       *
      *                                                                                         *
      * First pass:                                                                             *
-     * [ 12,  34,  56,  78 ]                                                                   *
-     *  /\    /\   /\   /\                                                                     *
-     * 1  2  3  4 5  6 7  8                                                                    *
+     *  [ 12,  34,  56,  78 ]                                                                   *
+     *   /\    /\   /\   /\                                                                     *
+     *  1  2  3  4 5  6 7  8                                                                    *
      *                                                                                         *
      * Second pass:                                                                            *
-     * [ 1234,   5678 ]                                                                        *
-     *    /\      /\                                                                           *
-     *  12  34  56 78                                                                          *
+     *  [ 1234,   5678 ]                                                                        *
+     *     /\      /\                                                                           *
+     *   12  34  56 78                                                                          *
      *                                                                                         *
      * Third ( final ) pass:                                                                   *
-     * [ 12345678 ]                                                                            *
-     *      /   \                                                                              *
-     *  1234     5678                                                                          *
-     *   / \      / \                                                                          *
-     * 12  34   56   78                                                                        *
-     * /\  /\   /\   /\                                                                        *
-     *1 2 3  4 5 6  7  8                                                                       *
+     *  [ 12345678 ]                                                                            *
+     *       /   \                                                                              *
+     *   1234     5678                                                                          *
+     *    / \      / \                                                                          *
+     *  12  34   56   78                                                                        *
+     *  /\  /\   /\   /\                                                                        *
+     * 1 2 3  4 5 6  7  8                                                                       *
      *                                                                                         *
      * Note: The root node of each tree is the only part of the tree stored in the vector,     * 
      *       the children of each node are shown above for explanatory purposes but are not    * 
