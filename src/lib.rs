@@ -471,18 +471,18 @@ mod merkle_tests
             merkle.insert( i );
             
         }
-        let level_two_hash_a = hash_util::create_node_hash( &"f9e2eaaa42d9fe9e558a9b8ef1bf366f190aacaa83bad2641ee106e9041096e4", &"67b176705b46206614219f47a05aee7ae6a3edbe850bbbe214c536b989aea4d2" ).into();
-        let level_two_hash_b = hash_util::create_node_hash( &"b1b1bd1ed240b1496c81ccf19ceccf2af6fd24fac10ae42023628abbe2687310", &"1bf0b26eb2090599dd68cbb42c86a674cb07ab7adc103ad3ccdf521bb79056b9" ).into();
-        let level_two_hash_c = hash_util::create_node_hash( &"b410677b84ed73fac43fcf1abd933151dd417d932a0ef9b0260ecf8b7b72ecb9", &"86bc56fc56af4c3cde021282f6b727ee9f90dd636e0b0c712a85d416c75e652d" ).into();
-        let level_two_hash_d = hash_util::create_node_hash( &"0c67354981e9068905680b57898ad4f04b993c63eb66aa3f19cdfdc71d88077e", &"8f9b51ce624f01b0a40c9f68ba8bb0a2c06aa7f95d1ed27d6b1b5e1e99ee5e4d" ).into();        
-        let level_one_hash_a = hash_util::create_node_hash( &level_two_hash_a, &level_two_hash_b ).into();
-        let level_one_hash_b = hash_util::create_node_hash( &level_two_hash_c, &level_two_hash_d ).into();
-        let level_two_a_return = merkle.hash_found_at_level( 2, *level_two_hash_a );
-        let level_two_b_return = merkle.hash_found_at_level( 2, *level_two_hash_b );
-        let level_two_c_return = merkle.hash_found_at_level( 2, *level_two_hash_c );
-        let level_two_d_return = merkle.hash_found_at_level( 2, *level_two_hash_d );
-        let level_one_a_return = merkle.hash_found_at_level( 1, *level_one_hash_a );
-        let level_one_b_return = merkle.hash_found_at_level( 1, *level_one_hash_b );
+        let level_two_hash_a: String = hash_util::create_node_hash( "f9e2eaaa42d9fe9e558a9b8ef1bf366f190aacaa83bad2641ee106e9041096e4", "67b176705b46206614219f47a05aee7ae6a3edbe850bbbe214c536b989aea4d2" );
+        let level_two_hash_b: String = hash_util::create_node_hash( "b1b1bd1ed240b1496c81ccf19ceccf2af6fd24fac10ae42023628abbe2687310", "1bf0b26eb2090599dd68cbb42c86a674cb07ab7adc103ad3ccdf521bb79056b9" );
+        let level_two_hash_c: String = hash_util::create_node_hash( "b410677b84ed73fac43fcf1abd933151dd417d932a0ef9b0260ecf8b7b72ecb9", "86bc56fc56af4c3cde021282f6b727ee9f90dd636e0b0c712a85d416c75e652d" );
+        let level_two_hash_d: String = hash_util::create_node_hash( "0c67354981e9068905680b57898ad4f04b993c63eb66aa3f19cdfdc71d88077e", "8f9b51ce624f01b0a40c9f68ba8bb0a2c06aa7f95d1ed27d6b1b5e1e99ee5e4d" );        
+        let level_one_hash_a: String = hash_util::create_node_hash( &level_two_hash_a, &level_two_hash_b );
+        let level_one_hash_b: String = hash_util::create_node_hash( &level_two_hash_c, &level_two_hash_d );
+        let level_two_a_return = merkle.hash_found_at_level( 2, level_two_hash_a );
+        let level_two_b_return = merkle.hash_found_at_level( 2, level_two_hash_b );
+        let level_two_c_return = merkle.hash_found_at_level( 2, level_two_hash_c );
+        let level_two_d_return = merkle.hash_found_at_level( 2, level_two_hash_d );
+        let level_one_a_return = merkle.hash_found_at_level( 1, level_one_hash_a );
+        let level_one_b_return = merkle.hash_found_at_level( 1, level_one_hash_b );
         assert_eq!( true, level_two_a_return );
         assert_eq!( true, level_two_b_return );
         assert_eq!( true, level_two_c_return );
