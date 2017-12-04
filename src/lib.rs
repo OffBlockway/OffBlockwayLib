@@ -18,6 +18,7 @@ mod tree;
 mod hash_util;
 mod block;
 mod merkle;
+mod proof;
 
 /*
  *
@@ -25,14 +26,18 @@ mod merkle;
  *     - This file is used for unit testing methods within the src folder, tests can 
  *       be compiled and ran with:
  *                              >>> cargo test
+*
+ */
+
+/*
  *
  * Hashing:
  *     - The predetermined hashes we use are obtained from Decrane.io 
  *       ( https://www.decrane.io/sha-3 ) with the SHA3-256 variant. Non-leaf  
  *       hashes are made by hashing the concatenation of the child hashes.
  * 
+ *
  */
-
 
 // Test flag indicating this module contains test methods
 #[cfg(test)]
@@ -529,4 +534,43 @@ mod merkle_tests
         
     }
 
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Unit test ensuring that get_hash_index returns the proper index for a hash
+    // at a given level and -1 otherwise.
+    pub fn test_get_hash_index()
+    {
+
+        // Creates a new full Merkle Tree with empty values
+        let mut merkle = merkle::Merkle::new( Vec::new() );
+        // Inserts values into the Merkle Tree
+        #[allow(unused_variables)]
+        for i in 0 .. 4
+        {
+
+            merkle.insert( i );
+            
+        }
+        // The hash of the concatenation of the hashes for 0 and 1
+        let first: String = "b6698473bbe17ece4f1bdb6ade7218f775c4a53120c5d98c0ec0e354806f8c7f".to_string();
+        // The hash of the concatenation of the hashes for 2 and 3 
+        let second: String = "79b8675105ea422bc156e01d38de34f87ba3816fbbe4e914fd073b2e09cbc21d".to_string();
+        // The hash for the word "false"
+        let false_hash: String = "d8afd1b9d2994e4ada90eb012e23e8b6e028fa95ccaf5abdf0da7a429241d503".to_string();
+        // The index ( return value ) of the hash's index 
+        let first_return: i32 = merkle.get_hash_index( 1, first );
+        // The index ( return value ) of the second hash's index
+        let second_return: i32 = merkle.get_hash_index( 1, second );
+        // The index( return value ) of the false hash's index 
+        let false_return: i32 = merkle.get_hash_index( 1, false_hash );
+        // Verifies the first hash is found at index 0 on level 1
+        assert_eq!( 0, first_return );
+        // Verifies the second hash is found at index 1 on level 1 
+        assert_eq!( 1, second_return );
+        // Verifies the false hash wasn't found at level 1 as the function
+        // returns -1 on a false hash
+        assert_eq!( -1, false_return );
+            
+    }
+    
 }

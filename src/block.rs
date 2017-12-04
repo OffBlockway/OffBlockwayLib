@@ -12,6 +12,14 @@ use std::string::String;
 use hash_util::*;
 // For merkle root
 
+/*
+ *
+ * Block:
+ *     - This file contains the structs and impls associated with creating blocks in
+ *       the chain.
+ *
+ *
+ */    
 
 // Block struct
 #[derive(Clone)]

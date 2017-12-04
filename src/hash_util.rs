@@ -71,5 +71,3 @@ pub fn generate_header_hash( block: &Block ) -> String
     format!( "{:x}", hasher.result() )
     
 }
-
-
