@@ -296,35 +296,37 @@ impl<T: Clone + fmt::Display> Merkle<T>
         {
 
             // The index of the next hash 
-            let mut hash_index = self.get_hash_index( current_level, next );
+            //let mut hash_index = self.get_hash_index( current_level, &next );
             // If this index exists ( is a non negative integer ) then assess the hashes 
-            if hash_index >= 0 
+            //if hash_index >= 0 
+            let hash_index = self.get_hash_index( current_level, next );
+            if hash_index >= 0
             {
 
                 // The nodes on the current level 
-                let current_nodes = self.nodes.get( &current_level ).unwrap();
+                let current_nodes = self.map.get( &current_level ).unwrap();
                 // Match case on the node returned from the hash index 
-                match current_nodes.get( hash_index )
+                match current_nodes.get( hash_index as usize )
                 {
 
                     // Checks to make sure the type is either a tree leaf or tree node, otherwise
                     // these operations are ignored 
-                    Some( &Tree::leaf{ ref hash, .. } ) |
-                    Some( &Tree::node{ ref hash, .. } ) =>
+                    Some( &Tree::Leaf{ ref hash, .. } ) |
+                    Some( &Tree::Node{ ref hash, .. } ) =>
                     {
 
                         // If the hash index is even
-                        if hash_index & 2 == 0
+                        if hash_index % 2 == 0
                         {
 
                             // If a node is returned from index + 1
-                            if let Some( next_node ) = current_nodes.get( hash_index + 1)
+                            if let Some( next_node ) = current_nodes.get( ( hash_index + 1 ) as usize )
                             {
 
                                 // Push the right hash onto the vector 
-                                hashes.push( Node::Right( next_node.hash().unwrap().clone() ) );
+                                hashes.push( Node::Right( next_node.hash().clone() ) );
                                 // Reset next to be the hash of the current and next hashes 
-                                next = ::hash_util::create_node_hash( hash, next_node.hash().unwrap() );
+                                next = ::hash_util::create_node_hash( hash, next_node.hash() );
                                 
                             }
                             // If a node isn't returned from index + 1
@@ -344,13 +346,13 @@ impl<T: Clone + fmt::Display> Merkle<T>
                         {
 
                             // If a node is returned from index - 1
-                            if let Some( next_node ) = current_nodes.get( hash_index - 1 )
+                            if let Some( next_node ) = current_nodes.get( ( hash_index - 1 ) as usize )
                             {
 
                                 // Push the left hash onto the vector 
-                                hashes.push( Node::Left( next_node.hash().unwrap().clone() ) );
+                                hashes.push( Node::Left( next_node.hash().clone() ) );
                                 // Reset the next to be the hash of the next hash and the current hash 
-                                next = ::hash_util::create_node_hash( next_node.hash().unwrap(), hash );
+                                next = ::hash_util::create_node_hash( next_node.hash(), hash );
                                 
                             }
                             
