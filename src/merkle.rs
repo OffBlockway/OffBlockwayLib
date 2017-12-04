@@ -1,14 +1,42 @@
 // Use statements
 //
 // Standard library
+#[allow(unused_imports)]
 use std::*;
 // Using tree for the skeleton of the Merkle Tree
+#[allow(unused_imports)]
 use tree::*;
 // Used for vector queue when loading nodes in to a temporary buffer for building the tree
+#[allow(unused_imports)]
 use std::collections::VecDeque;
 // Used for the hash map the represents the hashes on each level of the tree
+#[allow(unused_imports)]
 use std::collections::BTreeMap;
+// Used for getting the nodes needed for proof verification
+#[allow(unused_imports)]
+use proof::*;
+// Used for creating hashes
+#[allow(unused_imports)]
+use hash_util::*;
 
+/*
+ *
+ * Proof Node( Node ):
+ *     - The left or right traversal direction containing the hash value 
+ *
+ */
+#[derive(Debug)]
+#[allow(dead_code)]
+pub enum Node
+{
+
+    // Left traversal and hash
+    Left( String ),
+    // Right traversal and hash
+    Right( String )
+    
+}
+    
 /*
  *
  * Merkle:
@@ -251,7 +279,100 @@ impl<T: Clone + fmt::Display> Merkle<T>
         }
         
     }
-    
+
+    // Gets the hashes needed for a proof on a given value 
+    #[allow(dead_code)]
+    pub fn get_proof_hashes( &self, value: &T ) -> Vec<Node> 
+    {
+
+        // The current level in the tree that the traversal is on 
+        let mut current_level = self.height();
+        // The next hash to be examined, originally this is the leaf hash of the given value 
+        let mut next = ::hash_util::create_leaf_hash( &value );
+        // The hashes needed for a proof on this value 
+        let mut hashes = Vec::new();
+        // Traverses up the tree until the root has been reached 
+        while current_level > 0
+        {
+
+            // The index of the next hash 
+            let mut hash_index = self.get_hash_index( current_level, next );
+            // If this index exists ( is a non negative integer ) then assess the hashes 
+            if hash_index >= 0 
+            {
+
+                // The nodes on the current level 
+                let current_nodes = self.nodes.get( &current_level ).unwrap();
+                // Match case on the node returned from the hash index 
+                match current_nodes.get( hash_index )
+                {
+
+                    // Checks to make sure the type is either a tree leaf or tree node, otherwise
+                    // these operations are ignored 
+                    Some( &Tree::leaf{ ref hash, .. } ) |
+                    Some( &Tree::node{ ref hash, .. } ) =>
+                    {
+
+                        // If the hash index is even
+                        if hash_index & 2 == 0
+                        {
+
+                            // If a node is returned from index + 1
+                            if let Some( next_node ) = current_nodes.get( hash_index + 1)
+                            {
+
+                                // Push the right hash onto the vector 
+                                hashes.push( Node::Right( next_node.hash().unwrap().clone() ) );
+                                // Reset next to be the hash of the current and next hashes 
+                                next = ::hash_util::create_node_hash( hash, next_node.hash().unwrap() );
+                                
+                            }
+                            // If a node isn't returned from index + 1
+                            else
+                            {
+
+                                // Push the right hash onto the vector 
+                                hashes.push( Node::Right( hash.clone() ) );
+                                // Reset next to be the hash of the current hash with itself 
+                                next = ::hash_util::create_node_hash( hash, hash );
+
+                            }
+                            
+                        }
+                        // Otherwise if the index is odd 
+                        else
+                        {
+
+                            // If a node is returned from index - 1
+                            if let Some( next_node ) = current_nodes.get( hash_index - 1 )
+                            {
+
+                                // Push the left hash onto the vector 
+                                hashes.push( Node::Left( next_node.hash().unwrap().clone() ) );
+                                // Reset the next to be the hash of the next hash and the current hash 
+                                next = ::hash_util::create_node_hash( next_node.hash().unwrap(), hash );
+                                
+                            }
+                            
+                        }
+                        
+                    }
+                    // If the Some case returned none then none of the operations with hashing should
+                    // be executed and the while loop should just continue 
+                    _ => continue,
+                    
+                };
+                
+            }
+            // Decreases the current level 
+            current_level -= 1;
+            
+        }
+        // Returns the hashes 
+        hashes
+        
+    }
+        
     // Calculates the height of the tree given the leaves
     #[allow(dead_code)]
     pub fn calculate_height( &self ) -> usize
@@ -334,19 +455,53 @@ impl<T: Clone + fmt::Display> Merkle<T>
         
     }
 
+    // Finds the index of a hash on a specific level of the tree
+    #[allow(dead_code)]
+    pub fn get_hash_index( &mut self, level: usize, hash: String ) -> i32
+    {
+
+        // The vector of tree nodes at the target level
+        //
+        // .unwrap() used to unwrap the Option returned by get
+        let target_level = self.map.get( &level ).unwrap();
+        // We then iterate over the length of the target level's vector
+        for i in 0 .. target_level.len()
+        {
+
+            // At each index in the target level, we pull the node from the vector
+            let current_node = target_level[ i ].clone();
+            // This node's hash is then compared with the target hash entered by the user,
+            // if they are the same, the index is returned. 
+            if *current_node.hash() == hash
+            {
+
+                // The index as a 32 sized integer 
+                return i as i32;
+                
+            }
+            
+        }
+        // If the hash wasn't found at this level, -1 ( representing a false value )
+        // is returned
+        return -1;
+        
+    }
+
     // Finds a hash at a specific level of the tree
     #[allow(dead_code)]
     pub fn hash_found_at_level( &mut self, level: usize, hash: String ) -> bool
     {
 
-        // The vector of tree nodes at the target level 
+        // The vector of tree nodes at the target level
+        //
+        // .unwrap() used to unwrap the Option returned by get 
         let target_level = self.map.get( &level ).unwrap();
         // We then iterate over the length of the target level's vector 
         for i in 0 .. target_level.len() 
         {
 
             // At each index in the target level, we pull the node from the vector 
-            let current_node =  target_level[ i ].clone();
+            let current_node = target_level[ i ].clone();
             // This node's hash is then compared with the target hash entered by the user,
             // if they are the same, the boolean true is returned. 
             if *current_node.hash() == hash

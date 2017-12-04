@@ -10,9 +10,9 @@ use hash_util::*;
 
 /*
  *
- * Merkle:
- *     - This file contains enums, structs, and impls for creating binary trees, merkle trees,
- *       and iterators to traverse them and access their information.
+ * Tree:
+ *     - This file contains enums, structs, and impls for creating binary trees, and 
+ *       and methods for accessing their information.
  *
  */
 
