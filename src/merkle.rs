@@ -48,6 +48,7 @@ pub enum Node
 
 // Merkle Tree struct, defines the elements needed for each instance
 #[allow(dead_code)]
+#[derive(Clone)]
 pub struct Merkle<T>
 {
 
@@ -70,7 +71,7 @@ pub struct Merkle<T>
 // and extracting information from them.
 //
 // T: Clone is added to the generics here so that we can clone the nodes vector when
-// constructing the tree. 
+// constructing the tree.
 impl<T: Clone + fmt::Display> Merkle<T>
 {
 
@@ -282,7 +283,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
 
     // Gets the hashes needed for a proof on a given value 
     #[allow(dead_code)]
-    pub fn get_proof_hashes( &self, value: &T ) -> Vec<Node> 
+    pub fn get_proof_hashes( &mut self, value: &T ) -> Vec<Node> 
     {
 
         // The current level in the tree that the traversal is on 
@@ -298,8 +299,9 @@ impl<T: Clone + fmt::Display> Merkle<T>
             // The index of the next hash 
             //let mut hash_index = self.get_hash_index( current_level, &next );
             // If this index exists ( is a non negative integer ) then assess the hashes 
-            //if hash_index >= 0 
-            let hash_index = self.get_hash_index( current_level, next );
+            //if hash_index >= 0
+            let next_copy = next.clone();
+            let hash_index = self.get_hash_index( current_level, next_copy );
             if hash_index >= 0
             {
 
