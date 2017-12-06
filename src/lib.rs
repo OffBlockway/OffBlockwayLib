@@ -618,7 +618,8 @@ mod chain_tests
         assert_eq!( *block.hash(), empty_hash() );
         
     }
-    
+
+    // Test flag indicating the next function contains tests
     #[allow(dead_code)]
     #[test]
     // Test the contain function for the chain
@@ -635,15 +636,20 @@ mod chain_tests
         assert!(  chain.contains( &String::from("9") ) == false );
         
     }
-    
-    // Test the json serialization of the chain
+
+    // Test flag indicating the next function contains tests
     #[allow(dead_code)]
     #[test]
+    // Test the json serialization of the chain
     fn test_print()
     {
 
+        #[allow(unused_must_use)]
+        // Creates a new chain 
         let mut chain = chain::Chain::new();
+        // Creates a previous hash out of the chain's origin hash 
         let mut previous_hash = chain.origin().hash().clone();
+        // Creates new blocks and adds them to the chain 
         for i in 1 .. 8
         {
             
@@ -653,8 +659,10 @@ mod chain_tests
             previous_hash = block_hash;
             
         }
-
+        #[allow(unused_must_use)]
+        // Prints the chain 
         chain.print_chain();
+
     }
     
 }

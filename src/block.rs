@@ -13,6 +13,7 @@ use std::string::String;
 // For hashing necessities
 use hash_util::*;
 // For JSON functionality
+#[allow(unused_imports)]
 use self::serde_json::Error;
 
 /*
