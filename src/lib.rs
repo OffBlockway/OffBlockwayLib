@@ -580,50 +580,44 @@ mod merkle_tests
 
 }
 
-// Chain tests
+// Test flag indicating this module contains tests 
 #[cfg(test)]
+// Module for testing the chain 
 mod chain_tests
 {
+
+    // Includes super directory 
     use super::*;
 
-    // Test the chain constructor
+    // Test flag indicating the next function contains tests
     #[allow(dead_code)]
     #[test]
+    // Test the chain constructor 
     fn test_new()
     {
-        
+
+        // Creates a new chain 
         let chain = chain::Chain::new();
+        // Verifies the unique id of this chain is equal to an empty hash 
         assert_eq!( *chain.uid(), empty_hash() );
         
     }
 
-    // Check the origin construction
+    // Test flag indicating the next function contains tests
     #[allow(dead_code)]
     #[test]
+    // Check the origin construction
     fn test_origin()
     {
 
+        // Creates a new chain 
         let chain = chain::Chain::new();
+        // Creates a block with the chain's origin 
         let block = &*chain.origin();
+        // Verifies that the block hash is the same as the empty hash 
         assert_eq!( *block.hash(), empty_hash() );
         
     }
-
-    
-    // Test pushing a block onto the chain
-    #[allow(dead_code)]
-    #[test]
-    fn test_push()
-    {
-
-        let mut chain = chain::Chain::new();
-        let block = block::Block::new( 0, empty_hash(), empty_hash() );
-        let key = block.hash().clone();
-        chain.push( block );
-        assert_eq!( *got.hash(), key );
-        
-    }
-    
     
 }
 
