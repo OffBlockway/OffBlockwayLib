@@ -381,7 +381,9 @@ impl<T: Clone + fmt::Display> Merkle<T>
     #[allow(dead_code)]
     pub fn calculate_height( &self ) -> usize
     {
-        
+
+        #[allow(unused_assignments)]
+        let mut tree_height: f64 = 0.0;
         // The number of leaves in the tree
         let leaf_count = self.leaf_count();
         // If there are leaves in the tree, calculate the height 
@@ -389,7 +391,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
         {
             // Sets the height to be the base 2 logarithm ( natural log ) of the number
             // of leaves in the tree 
-            let tree_height = ( leaf_count as f64 ).log2();
+            tree_height = ( leaf_count as f64 ).log2();
             if tree_height - tree_height.floor() > 0.0
             {
                 
@@ -425,7 +427,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
         else
         {
             
-            0
+            tree_height as usize
                 
         }
         
@@ -519,6 +521,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
         // If the for loop completes its iteration without returning true, that means that the
         // hash was not found at the target level in the tree so the boolean false is returned.
         false   
+
     }
     
     // Inserts a node into the Merkle Tree
