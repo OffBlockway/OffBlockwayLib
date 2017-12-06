@@ -13,8 +13,8 @@ use std::string::String;
 use block::Block;
 // Hash utilities
 use hash_util::*;
-// Bool
-use std::bool;
+// Everything else
+use std::*;
 
 // The chain struct
 #[allow(dead_code)]
@@ -34,19 +34,23 @@ pub struct Chain
 impl Chain
 {
 
+    // Constructor for a new chain
     #[allow(dead_code)]
     pub fn new() -> Chain
     {
 
-        let mut chain = Chain {
+        // Sets the fields to be all empty 
+        let mut chain = Chain
+        {
+            
             uid: empty_hash(),
             chain: HashMap::new(),
             tail_hash: empty_hash(),
-        };
 
+        };
         // Insert the origin block into the chain
         chain.chain.insert( String::from("0"), Block::origin() );
-        
+        // Returns the chain 
         return chain;
         
     }
@@ -73,7 +77,7 @@ impl Chain
         
     }
 
-    // Getters
+    // Gets the unique id of a chain 
     #[allow(dead_code)]
     pub fn uid( &self ) -> &String
     {
@@ -100,30 +104,48 @@ impl Chain
         
     }
 
-
+    // Verifies whether or not a block is contained within the chain 
     pub fn contains( &self, hash: &String ) -> bool
     {
 
         // Hash of each block to check against the parameter
-        let mut hash_check = "0";
-        let mut current_block = Block::new( 0, "-1", "-1" );
+        let mut hash_check = String::from("0");
+        let null_block = Block::new( 0, String::from("-1"), String::from("-1") );
+        let mut current_block = null_block.clone();
         // The check loop through the chain
         while hash_check != self.tail_hash
         {
 
             // Get the block mapping of the current hash check (start at origin)
-            current_block = match self.chain.get( hash_check );
-            
-            if *current_block.hash() == hash_check
-            {
-                return true;
-            }
+            current_block = self.chain.get( &hash_check ).unwrap_or( &null_block.clone() ).clone();
                 
-        }
+            if *current_block.hash() == *hash
+            {
+                
+                return true;
 
+            }
+
+            hash_check = current_block.hash().clone();
+            
+        }
         // The hash was not found 
         return false;
         
     }
+
+
+    // Print the chain
+    pub fn print_chain( &self ) -> Result< (), Error >
+    {
+
+        let json_chain = serde_json::to_string( &self )?;
+        println!( "{}", json_chain );
+
+        Ok(())
+        
+    }
+
+    
     
 }
