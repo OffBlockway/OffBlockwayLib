@@ -661,7 +661,7 @@ mod chain_tests
         }
         #[allow(unused_must_use)]
         // Prints the chain 
-        chain.print_chain();
+        chain.print_chain().unwrap()
 
     }
     
