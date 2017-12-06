@@ -34,19 +34,23 @@ pub struct Chain
 impl Chain
 {
 
+    // Constructor for a new chain
     #[allow(dead_code)]
     pub fn new() -> Chain
     {
 
-        let mut chain = Chain {
+        // Sets the fields to be all empty 
+        let mut chain = Chain
+        {
+            
             uid: empty_hash(),
             chain: HashMap::new(),
             tail_hash: empty_hash(),
-        };
 
+        };
         // Insert the origin block into the chain
         chain.chain.insert( String::from("0"), Block::origin() );
-        
+        // Returns the chain 
         return chain;
         
     }
@@ -73,7 +77,7 @@ impl Chain
         
     }
 
-    // Getters
+    // Gets the unique id of a chain 
     #[allow(dead_code)]
     pub fn uid( &self ) -> &String
     {
@@ -100,8 +104,7 @@ impl Chain
         
     }
 
-
-    // Check whether or not a given block exists in the chain by its hash
+    // Verifies whether or not a block is contained within the chain 
     pub fn contains( &self, hash: &String ) -> bool
     {
 
@@ -118,13 +121,14 @@ impl Chain
                 
             if *current_block.hash() == *hash
             {
+                
                 return true;
+
             }
 
             hash_check = current_block.hash().clone();
             
         }
-
         // The hash was not found 
         return false;
         
