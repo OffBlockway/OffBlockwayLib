@@ -105,12 +105,14 @@ impl Chain
     }
 
     // Verifies whether or not a block is contained within the chain 
+    #[allow(dead_code)]
     pub fn contains( &self, hash: &String ) -> bool
     {
 
         // Hash of each block to check against the parameter
         let mut hash_check = String::from("0");
         let null_block = Block::new( 0, String::from("-1"), String::from("-1") );
+        #[allow(unused_assignments)]
         let mut current_block = null_block.clone();
         // The check loop through the chain
         while hash_check != self.tail_hash
@@ -136,13 +138,14 @@ impl Chain
 
 
     // Print the chain
+    #[allow(dead_code)]
     pub fn print_chain( &self ) -> Result< (), Error >
     {
 
         let json_chain = serde_json::to_string( &self )?;
         println!( "{}", json_chain );
 
-        Ok(())
+        Ok( () )
         
     }
 
