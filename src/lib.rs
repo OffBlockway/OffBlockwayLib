@@ -1,5 +1,8 @@
-// Extern crate inclusion 
+// Extern cArate inclusion 
 extern crate sha3;
+
+#[macro_use]
+extern crate serde_derive;
 
 // Use statements
 #[allow(unused_imports)]
@@ -19,6 +22,7 @@ mod hash_util;
 mod block;
 mod merkle;
 mod proof;
+mod chain;
 
 /*
  *
@@ -144,7 +148,7 @@ mod hash_util_tests
     // Test flag indicating the next function contains tests
     #[test]
     // Test the creation of an empty hash (hash of a nullptr)
-    fn empty_hash_test() -> ()
+    fn empty_hash_test()
     {
 
         // Creates an empty hash value 
@@ -157,7 +161,7 @@ mod hash_util_tests
     // Test flag indicating the next function contains tests
     #[test]
     // Test the creation of a hash for a value
-    fn leaf_hash_test() -> ()
+    fn leaf_hash_test() 
     {
 
         // Creates a hash with the value 9 
@@ -169,7 +173,7 @@ mod hash_util_tests
     // Test flag indicating the next function contains tests
     #[test]
     // Tests the creation of a node hash 
-    fn node_hash_test() -> ()
+    fn node_hash_test() 
     {
 
         // Creates a hash with the hashes for 0 and 1
@@ -183,7 +187,7 @@ mod hash_util_tests
 
 // Test flag indicating this module contains test methods
 #[cfg(test)]
-//Module for merkle tree unit testing
+//Module for Merkle Tree unit testing
 mod merkle_tests
 {
 
@@ -571,6 +575,112 @@ mod merkle_tests
         // returns -1 on a false hash
         assert_eq!( -1, false_return );
             
+    }
+    
+
+}
+
+// Chain tests
+#[cfg(test)]
+mod chain_tests
+{
+    use super::*;
+
+    // Test the chain constructor
+    #[allow(dead_code)]
+    #[test]
+    fn test_new()
+    {
+        
+        let chain = chain::Chain::new();
+        assert_eq!( *chain.uid(), empty_hash() );
+        
+    }
+
+    // Check the origin construction
+    #[allow(dead_code)]
+    #[test]
+    fn test_origin()
+    {
+
+        let chain = chain::Chain::new();
+        let block = &*chain.origin();
+        assert_eq!( *block.hash(), empty_hash() );
+        
+    }
+
+    
+    // Test pushing a block onto the chain
+    #[allow(dead_code)]
+    #[test]
+    fn test_push()
+    {
+
+        let mut chain = chain::Chain::new();
+        let block = block::Block::new( 0, empty_hash(), empty_hash() );
+        let key = block.hash().clone();
+        chain.push( block );
+        assert_eq!( *got.hash(), key );
+        
+    }
+    
+    
+}
+
+// Test flag indicating this module contains test methods
+#[cfg(test)]
+//Module for unit testing proofs
+mod proof_tests
+{
+
+    // Includes super directory
+    use super::*;
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Verifies that the proof process is working for small trees
+    pub fn small_tree_proof_test()
+    {
+
+        // The Merkle Tree to test against
+        let mut merkle = merkle::Merkle::new( Vec::new() );
+        // Inserts strings into the tree
+        merkle.insert( "merkle" );
+        merkle.insert( "tree" );
+        merkle.insert( "proof" );
+        merkle.insert( "test" );
+        // The proof for the value we are trying to verify 
+        let proof = merkle.get_proof( "merkle" );
+        // The return value of the proof
+        let return_val = proof.verify( merkle.root_hash() );
+        // Verifies that this hash was found in the tree
+        assert_eq!( true, return_val );
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Verifies that the proof process won't accept a false value
+    pub fn false_proof_test()
+    {
+        
+        // The Merkle Tree to test against
+        let mut merkle = merkle::Merkle::new( Vec::new() );
+        // Inserts strings into the tree
+        merkle.insert( "merkle" );
+        merkle.insert( "tree" );
+        merkle.insert( "proof" );
+        merkle.insert( "test" );
+   	    // The proof for the value we are trying to verify
+        //
+        // The string "false" was not entered into the tree so it should return false when
+        // trying to verify this proof. 
+        let proof = merkle.get_proof( "false" );
+        // The return value of the proof
+        let return_val = proof.verify( merkle.root_hash() );
+        // Verifies that this hash was found in the tree
+        assert_eq!( false, return_val );
+        
     }
     
 }

@@ -7,3 +7,7 @@ authors = ["Ezra Goss <ezragoss@me.com>"]
 sha3 = "0.6.0"
 generic-array = "0.9.0"
 chrono = "0.4.0"
+
+serde = "1.0"
+serde_derive = "1.0"
+serde_json = "1.0.7"

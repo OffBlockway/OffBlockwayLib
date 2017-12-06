@@ -71,3 +71,15 @@ pub fn generate_header_hash( block: &Block ) -> String
     format!( "{:x}", hasher.result() )
     
 }
+
+
+/* Chain hash utilities */
+#[allow(dead_code)]
+pub fn generate_unique_id( token: u64 ) -> String
+{
+
+    let mut hasher = Sha3_256::default();
+    hasher.input( token.to_string().as_ref() );
+    format!( "{:x}", hasher.result() )
+    
+}
