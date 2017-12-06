@@ -615,12 +615,37 @@ mod chain_tests
     #[test]
     fn test_push()
     {
-
+        // The chain should be mutable to add to it
         let mut chain = chain::Chain::new();
         let block = block::Block::new( 0, empty_hash(), empty_hash() );
         let key = block.hash().clone();
         chain.push( block );
-        assert_eq!( *got.hash(), key );
+        // This should be true because we just added this block                     
+        assert!( chain.contains( &key ) );
+        // This should be false (should not be in the tree)
+        assert!(  chain.contains( &String::from("9") ) == false );
+        
+    }
+
+    // Test the json serialization of the chain
+    #[allow(dead_code)]
+    #[test]
+    fn test_print()
+    {
+
+        let mut chain = chain::Chain::new();
+        let mut previous_hash = chain.origin().hash().clone();
+        for i in 1 .. 8
+        {
+
+            let block = block::Block::new( i, empty_hash(), previous_hash.clone() );
+            let block_hash = block.hash().clone();
+            chain.push( block );
+            previous_hash = block_hash;
+            
+        }
+
+        chain.print_chain();
         
     }
     
