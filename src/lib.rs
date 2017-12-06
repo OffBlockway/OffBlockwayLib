@@ -1,5 +1,8 @@
-// Extern crate inclusion 
+// Extern cArate inclusion 
 extern crate sha3;
+
+#[macro_use]
+extern crate serde_derive;
 
 // Use statements
 #[allow(unused_imports)]
@@ -19,6 +22,7 @@ mod hash_util;
 mod block;
 mod merkle;
 mod proof;
+mod chain;
 
 /*
  *
@@ -572,5 +576,53 @@ mod merkle_tests
         assert_eq!( -1, false_return );
             
     }
+    
+
+}
+
+// Chain tests
+#[cfg(test)]
+mod chain_tests
+{
+    use super::*;
+
+    // Test the chain constructor
+    #[allow(dead_code)]
+    #[test]
+    fn test_new()
+    {
+        
+        let chain = chain::Chain::new();
+        assert_eq!( *chain.uid(), empty_hash() );
+        
+    }
+
+    // Check the origin construction
+    #[allow(dead_code)]
+    #[test]
+    fn test_origin()
+    {
+
+        let chain = chain::Chain::new();
+        let block = &*chain.origin();
+        assert_eq!( *block.hash(), empty_hash() );
+        
+    }
+
+    
+    // Test pushing a block onto the chain
+    #[allow(dead_code)]
+    #[test]
+    fn test_push()
+    {
+
+        let mut chain = chain::Chain::new();
+        let block = block::Block::new( 0, empty_hash(), empty_hash() );
+        let key = block.hash().clone();
+        chain.push( block );
+        assert_eq!( *got.hash(), key );
+        
+    }
+    
     
 }

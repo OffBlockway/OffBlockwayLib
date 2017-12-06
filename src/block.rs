@@ -1,16 +1,19 @@
 #[allow(dead_code)]
 // Included crates
 extern crate chrono;
+extern crate serde;
+extern crate serde_json;
+
 
 // Use statements
-//
 // Used for timestamping 
-use self::chrono::{ DateTime, Utc };
+use self::chrono::Utc;
 // Standard libraries used for Strings and Vectors
 use std::string::String;
 // For hashing necessities
 use hash_util::*;
-// For merkle root
+// For JSON functionality
+use self::serde_json::Error;
 
 /*
  *
@@ -22,7 +25,7 @@ use hash_util::*;
  */    
 
 // Block struct
-#[derive(Clone)]
+#[derive(Clone, Serialize, Deserialize)]
 pub struct Block
 {
 
@@ -31,7 +34,7 @@ pub struct Block
     // The block's previous hash 
     pub previous_hash: String,
     // The time the block was created 
-    pub timestamp: DateTime<Utc>,
+    pub timestamp: String,
     // Merkle Root
     pub merkle_root: String,
     // The block's hash
@@ -47,17 +50,18 @@ impl Block
     #[allow(dead_code)]
     pub fn new( index: u64, merkle_root: String,  previous_hash: String  ) -> Block
     {
-        
+
+        // Generate a default block
         let mut block = Block{
             index: index,
             previous_hash: previous_hash,
-            timestamp: Utc::now(),
+            timestamp: Utc::now().to_string(),
             merkle_root: merkle_root,
             hash: empty_hash(),
         };
-
+        // Generate a hash from all of the fields of this block
         block.hash = generate_header_hash( &block );
-        
+        // Return the block
         return block;
         
     }
@@ -68,7 +72,8 @@ impl Block
     {
         
         // Create a new block and make the hash equal the empty hash
-        let block : Block = Block::new( 0, empty_hash(), empty_hash() );
+        let mut block : Block = Block::new( 0, empty_hash(), empty_hash() );
+        block.hash = empty_hash();
         return block;
 
     }
@@ -83,7 +88,7 @@ impl Block
     }
 
     #[allow(dead_code)]
-    pub fn timestamp( &self ) -> &DateTime<Utc>
+    pub fn timestamp( &self ) -> &String
     {
         
         &self.timestamp
