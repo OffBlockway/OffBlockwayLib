@@ -30,7 +30,7 @@ mod chain;
  *     - This file is used for unit testing methods within the src folder, tests can 
  *       be compiled and ran with:
  *                              >>> cargo test
-*
+ *
  */
 
 /*
