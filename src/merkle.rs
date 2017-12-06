@@ -376,7 +376,19 @@ impl<T: Clone + fmt::Display> Merkle<T>
         hashes
         
     }
+
+    // Returns a Proof given the leaf value to verify
+    #[allow(dead_code)]
+    pub fn get_proof( &mut self, value: T ) -> Proof<T>
+    {
+
+        // Finds the path for the proof
+        let path = self.get_proof_hashes( &value );
+        // Returns a new proof with this path
+        Proof::new( value.clone(), self.root_hash().clone(), path )
         
+    }
+    
     // Calculates the height of the tree given the leaves
     #[allow(dead_code)]
     pub fn calculate_height( &self ) -> usize
