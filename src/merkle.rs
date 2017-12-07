@@ -281,7 +281,59 @@ impl<T: Clone + fmt::Display> Merkle<T>
         
     }
 
-    // Gets the hashes needed for a proof on a given value 
+    // Gets the hashes needed to execute a proof on a given leaf value 
+    /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
+     *                                                                                       *
+     * The algorithm for getting proof hashes is as follows:                                 *
+     *                                                                                       *
+     * 1. Set the initial current level to be the height of the tree as we are               *
+     *    from the bottom of the tree up, set the next hash to be a leaf hash with the       *
+     *    input value and create the vector of Nodes to store the path in.                   *
+     *                                                                                       *
+     * 2. Provided that the current level is > 0                                             *
+     *                                                                                       *
+     * 3. Call the hash index function on the next hash, if the index returned is >= 0       *
+     *    then this hash exists at the current level indexed at the return value,            *
+     *    otherwise the function returns -1 and this step in the process is skipped.         *
+     *                                                                                       *
+     * 4. Provided the next hash is found at this level, store all the nodes on the          *
+     *    current level. If the Tree type of the node with this hash is a Leaf or a          *
+     *    Tree, add the appropriate hash to the vector and then create a node hash           *
+     *    with the current hash and the hash just added to the vector, set the next          *
+     *    hash equal to this result. If the Tree type was not a Leaf or a Tree               *
+     *    ( empty ) then do nothing.                                                         *
+     *                                                                                       *
+     * 4.1 For deciding which hash to add into the vector we assess where we are in          * 
+     *     the current level of the tree in the following way:                               * 
+     *                                                                                       *
+     *                        Is the index of the current hash even?                         *
+     *                                 /                       \                             *
+     *                              yes                         no                           *
+     *                              /                             \                          *
+     *                    are there are more                 are there more hashes           *
+     *                    hashes on this                     on this level before this one?  *
+     *                    level after this one?                      /        \              *
+     *                     /               \                      yes          no            *
+     *                  yes                 no                    /              \           *
+     *                  /                     \            then push the       do nothing.   *
+     *          then push the next     then push this      previous hash to                  *
+     *          hash onto the          hash onto the       the vector and set                *
+     *          vector and sets the    vector and set the  the next hash to be               *
+     *          next hash to be a      next hash to be a   a node hash with the              *
+     *          node hash of the       node hash of the    previous hash and                 *
+     *          current and next       current hash with   the current hash.                 *
+     *          hashes.                itself.                                               *
+     *                                                                                       *
+     *     This process with checking indicies and boundaries is used so that the algorithm  *
+     *     chooses the right neighboring node with the current node that make up the         *
+     *     children of the parent node needed to get to the root with this hash.             *
+     *                                                                                       *
+     * 5. Decrease the current level and repeat steps 2 through 5 until the root of the      *
+     *    tree has been reached.                                                             *
+     *                                                                                       *
+     * 6. Return the vector of Nodes                                                         *
+     *                                                                                       * 
+     * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     #[allow(dead_code)]
     pub fn get_proof_hashes( &mut self, value: &T ) -> Vec<Node> 
     {
