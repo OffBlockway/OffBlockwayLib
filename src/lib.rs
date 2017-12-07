@@ -5,6 +5,7 @@ extern crate sha3;
 extern crate serde_derive;
 
 // Use statements
+//
 #[allow(unused_imports)]
 // Standard library
 use std::*;
@@ -168,6 +169,7 @@ mod hash_util_tests
         let hash = hash_util::create_leaf_hash( &9 );
         // Asserts that this is equal with the predetermined hash value 
         assert_eq!( hash , "7609430974b087595488c154bf5c079887ead0e8efd4055cd136fda96a5ccbf8".to_string() );
+        
     }
 
     // Test flag indicating the next function contains tests
@@ -496,7 +498,7 @@ mod merkle_tests
          *                          / \     / \                                                *
          *         LEVEL 2:       01  23   45  67                                              *
          *                        /\  /\   /\  /\                                              * 
-         *         LEVEL 3:      0 1 2 3  4 5 6  7                                             *
+         *         LEVEL 3:      0 1 2 3  4 5  6 7                                             *
          *                                                                                     *
          * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
         // We get the hashes at levels one and two and store them in variables
@@ -652,16 +654,20 @@ mod chain_tests
         // Creates new blocks and adds them to the chain 
         for i in 1 .. 8
         {
-            
+
+            // Creates a block with the iterative index and the previous hash 
             let block = block::Block::new( i, empty_hash(), previous_hash.clone() );
+            // Store the block's hash 
             let block_hash = block.hash().clone();
+            // Push the block onto the chain 
             chain.push( block );
+            // Redirect the previous hash 
             previous_hash = block_hash;
             
         }
         #[allow(unused_must_use)]
         // Prints the chain 
-        chain.print_chain();
+        chain.print_chain().unwrap()
 
     }
     

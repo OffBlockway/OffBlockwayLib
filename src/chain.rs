@@ -1,4 +1,3 @@
-/* Implementation of the Blockchain structure */
 extern crate serde;
 extern crate serde_json;
 
@@ -15,6 +14,14 @@ use block::Block;
 use hash_util::*;
 // Everything else
 use std::*;
+
+/*
+ *
+ * Chain:
+ *     - This file contains the functionality for constructing and maintaining chains   
+ *       ( allows the creation of a blockchain )
+ *
+ */
 
 // The chain struct
 #[allow(dead_code)]
