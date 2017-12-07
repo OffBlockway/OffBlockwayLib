@@ -71,6 +71,7 @@ impl Chain
         // Clone the tail hash value into a key variable for looking up the block
         let key1 = self.tail_hash.clone();
         let key2 = self.tail_hash.clone();
+        block.set_previous_hash( &self.tail_hash );
         self.chain.insert( key1, block );
         // This is some rust spaghetti but I'll break down this line for you
         /* Obviously the tail hash is being given a new value
@@ -118,7 +119,7 @@ impl Chain
 
         // Hash of each block to check against the parameter
         let mut hash_check = String::from("0");
-        let null_block = Block::new( 0, String::from("-1"), String::from("-1") );
+        let null_block = Block::new( 0, String::from("-1") );
         #[allow(unused_assignments)]
         let mut current_block = null_block.clone();
         // The check loop through the chain
@@ -155,6 +156,7 @@ impl Chain
         Ok( () )
         
     }
+
 
     
     

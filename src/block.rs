@@ -50,13 +50,13 @@ impl Block
 
     // Constructor for a new block
     #[allow(dead_code)]
-    pub fn new( index: u64, merkle_root: String,  previous_hash: String  ) -> Block
+    pub fn new( index: u64, merkle_root: String ) -> Block
     {
 
         // Generate a default block
         let mut block = Block{
             index: index,
-            previous_hash: previous_hash,
+            previous_hash: empty_hash(),
             timestamp: Utc::now().to_string(),
             merkle_root: merkle_root,
             hash: empty_hash(),
@@ -74,7 +74,7 @@ impl Block
     {
         
         // Create a new block and make the hash equal the empty hash
-        let mut block : Block = Block::new( 0, empty_hash(), empty_hash() );
+        let mut block : Block = Block::new( 0, empty_hash() );
         block.hash = empty_hash();
         return block;
 
@@ -118,6 +118,18 @@ impl Block
     {
 
         &self.hash
+        
+    }
+
+
+    // Setter
+    #[allow(dead_code)]
+    pub fn set_previous_hash( &mut self, hash: &String )
+    {
+
+        self.previous_hash = hash.clone();
+        // Recalculate the header of the block with the new previous hash
+        self.hash = generate_header_hash( &self );
         
     }
     

@@ -130,7 +130,7 @@ mod block_tests
     fn create_block()
     {
         
-        let block = block::Block::new( 0, create_leaf_hash( &9 ), empty_hash() );
+        let block = block::Block::new( 0, create_leaf_hash( &9 ) );
         assert_eq!( block.merkle_root, "7609430974b087595488c154bf5c079887ead0e8efd4055cd136fda96a5ccbf8" );
         
     }
@@ -629,7 +629,7 @@ mod chain_tests
     {
         // The chain should be mutable to add to it
         let mut chain = chain::Chain::new();
-        let block = block::Block::new( 0, empty_hash(), empty_hash() );
+        let block = block::Block::new( 0, empty_hash() );
         let key = block.hash().clone();
         chain.push( block );
         // This should be true because we just added this block                     
@@ -654,7 +654,6 @@ mod chain_tests
         // Creates new blocks and adds them to the chain 
         for i in 1 .. 8
         {
-
             // Creates a block with the iterative index and the previous hash 
             let block = block::Block::new( i, empty_hash(), previous_hash.clone() );
             // Store the block's hash 
