@@ -70,7 +70,7 @@ pub struct Merkle<T>
 // Merkle Tree impl, defines the methods associated with constructing Merkle Trees
 // and extracting information from them.
 //
-// T: Clone is added to the generics here so that we can clone the nodes vector when
+// T: Clone and Display are added to the generics here so that we can clone the nodes vector when
 // constructing the tree.
 impl<T: Clone + fmt::Display> Merkle<T>
 {
@@ -159,23 +159,23 @@ impl<T: Clone + fmt::Display> Merkle<T>
      * Repeat the process until the trivial case is hit.                                       *
      *                                                                                         *
      * First pass:                                                                             *
-     *  [ 12,  34,  56,  78 ]                                                                   *
-     *   /\    /\   /\   /\                                                                     *
-     *  1  2  3  4 5  6 7  8                                                                    *
+     *  [ 12,  34,  56,  78 ]                                                                  *
+     *   /\    /\   /\   /\                                                                    *
+     *  1  2  3  4 5  6 7  8                                                                   *
      *                                                                                         *
      * Second pass:                                                                            *
-     *  [ 1234,   5678 ]                                                                        *
-     *     /\      /\                                                                           *
-     *   12  34  56 78                                                                          *
+     *  [ 1234,   5678 ]                                                                       *
+     *     /\      /\                                                                          *
+     *   12  34  56 78                                                                         *
      *                                                                                         *
      * Third ( final ) pass:                                                                   *
-     *  [ 12345678 ]                                                                            *
-     *       /   \                                                                              *
-     *   1234     5678                                                                          *
-     *    / \      / \                                                                          *
-     *  12  34   56   78                                                                        *
-     *  /\  /\   /\   /\                                                                        *
-     * 1 2 3  4 5 6  7  8                                                                       *
+     *  [ 12345678 ]                                                                           *
+     *       /   \                                                                             *
+     *   1234     5678                                                                         *
+     *    / \      / \                                                                         *
+     *  12  34   56   78                                                                       *
+     *  /\  /\   /\   /\                                                                       *
+     * 1 2 3  4 5 6  7  8                                                                      *
      *                                                                                         *
      * Note: The root node of each tree is the only part of the tree stored in the vector,     * 
      *       the children of each node are shown above for explanatory purposes but are not    * 
@@ -303,8 +303,8 @@ impl<T: Clone + fmt::Display> Merkle<T>
      *    hash equal to this result. If the Tree type was not a Leaf or a Tree               *
      *    ( empty ) then do nothing.                                                         *
      *                                                                                       *
-     * 4.1 For deciding which hash to add into the vector we assess where we are in          * 
-     *     the current level of the tree in the following way:                               * 
+     * Note: For deciding which hash to add into the vector we assess where we are in        * 
+     *       the current level of the tree in the following way:                             * 
      *                                                                                       *
      *                        Is the index of the current hash even?                         *
      *                                 /                       \                             *
@@ -331,10 +331,10 @@ impl<T: Clone + fmt::Display> Merkle<T>
      *     Consider any level in the tree, it will have nodes indexed from 0 to n where n    *
      *     is the number of nodes on the level. Since the process of checking an even index  *
      *     is checking the index % 2, 0 and all other even indicies will make up the left    *
-     *    child of their parent root, so to get its corresponding hash look at the index     *
+     *     child of their parent root, so to get its corresponding hash look at the index    *
      *     that follows the current one. Odd indicies will be the right hand children of     *
      *     the parent node so to get teh corresponding hash look at the index that precedes  *
-     *      the current one.                                                                 *
+     *     the current one.                                                                  *
      *                                                                                       *
      * 5. Decrease the current level and repeat steps 2 through 5 until the root of the      *
      *    tree has been reached.                                                             *
@@ -454,6 +454,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     pub fn calculate_height( &self ) -> usize
     {
 
+        // The variable height of the tree 
         #[allow(unused_assignments)]
         let mut tree_height: f64 = 0.0;
         // The number of leaves in the tree
