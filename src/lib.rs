@@ -649,19 +649,13 @@ mod chain_tests
         #[allow(unused_must_use)]
         // Creates a new chain 
         let mut chain = chain::Chain::new();
-        // Creates a previous hash out of the chain's origin hash 
-        let mut previous_hash = chain.origin().hash().clone();
         // Creates new blocks and adds them to the chain 
         for i in 1 .. 8
         {
             // Creates a block with the iterative index and the previous hash 
-            let block = block::Block::new( i, empty_hash(), previous_hash.clone() );
-            // Store the block's hash 
-            let block_hash = block.hash().clone();
+            let block = block::Block::new( i, empty_hash() );
             // Push the block onto the chain 
             chain.push( block );
-            // Redirect the previous hash 
-            previous_hash = block_hash;
             
         }
         #[allow(unused_must_use)]

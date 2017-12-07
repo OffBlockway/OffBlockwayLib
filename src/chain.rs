@@ -65,7 +65,7 @@ impl Chain
     // Push a block onto the chain
     // let old = :td::mem::replace(&mut self.tail_hash, *block.hash());  self.chain.insert(old, block);
     #[allow(dead_code)]
-    pub fn push( &mut self,  block: Block )  
+    pub fn push( &mut self,  mut block: Block )  
     {
 
         // Clone the tail hash value into a key variable for looking up the block
@@ -149,13 +149,15 @@ impl Chain
     #[allow(dead_code)]
     pub fn print_chain( &self ) -> Result< (), Error >
     {
-
+        
         let json_chain = serde_json::to_string( &self )?;
         println!( "{}", json_chain );
 
         Ok( () )
         
     }
+
+    
 
 
     
