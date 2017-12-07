@@ -132,5 +132,7 @@ impl Block
         self.hash = generate_header_hash( &self );
         
     }
+
+    
     
 }
