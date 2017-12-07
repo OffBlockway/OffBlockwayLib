@@ -328,6 +328,14 @@ impl<T: Clone + fmt::Display> Merkle<T>
      *     chooses the right neighboring node with the current node that make up the         *
      *     children of the parent node needed to get to the root with this hash.             *
      *                                                                                       *
+     *     Consider any level in the tree, it will have nodes indexed from 0 to n where n    *
+     *     is the number of nodes on the level. Since the process of checking an even index  *
+     *     is checking the index % 2, 0 and all other even indicies will make up the left    *
+     *    child of their parent root, so to get its corresponding hash look at the index     *
+     *     that follows the current one. Odd indicies will be the right hand children of     *
+     *     the parent node so to get teh corresponding hash look at the index that precedes  *
+     *      the current one.                                                                 *
+     *                                                                                       *
      * 5. Decrease the current level and repeat steps 2 through 5 until the root of the      *
      *    tree has been reached.                                                             *
      *                                                                                       *
