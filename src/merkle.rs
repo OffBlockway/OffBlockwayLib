@@ -454,6 +454,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     pub fn calculate_height( &self ) -> usize
     {
 
+        // The variable height of the tree 
         #[allow(unused_assignments)]
         let mut tree_height: f64 = 0.0;
         // The number of leaves in the tree
