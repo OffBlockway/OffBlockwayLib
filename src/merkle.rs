@@ -303,8 +303,8 @@ impl<T: Clone + fmt::Display> Merkle<T>
      *    hash equal to this result. If the Tree type was not a Leaf or a Tree               *
      *    ( empty ) then do nothing.                                                         *
      *                                                                                       *
-     * 4.1 For deciding which hash to add into the vector we assess where we are in          * 
-     *     the current level of the tree in the following way:                               * 
+     * Note: For deciding which hash to add into the vector we assess where we are in        * 
+     *       the current level of the tree in the following way:                             * 
      *                                                                                       *
      *                        Is the index of the current hash even?                         *
      *                                 /                       \                             *
@@ -331,10 +331,10 @@ impl<T: Clone + fmt::Display> Merkle<T>
      *     Consider any level in the tree, it will have nodes indexed from 0 to n where n    *
      *     is the number of nodes on the level. Since the process of checking an even index  *
      *     is checking the index % 2, 0 and all other even indicies will make up the left    *
-     *    child of their parent root, so to get its corresponding hash look at the index     *
+     *     child of their parent root, so to get its corresponding hash look at the index    *
      *     that follows the current one. Odd indicies will be the right hand children of     *
      *     the parent node so to get teh corresponding hash look at the index that precedes  *
-     *      the current one.                                                                 *
+     *     the current one.                                                                  *
      *                                                                                       *
      * 5. Decrease the current level and repeat steps 2 through 5 until the root of the      *
      *    tree has been reached.                                                             *
