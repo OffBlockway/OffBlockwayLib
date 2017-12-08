@@ -1,3 +1,6 @@
+// Crate inclusion
+//
+// Serde used for serialization 
 extern crate serde;
 extern crate serde_json;
 
@@ -128,14 +131,13 @@ impl Chain
 
             // Get the block mapping of the current hash check (start at origin)
             current_block = self.chain.get( &hash_check ).unwrap_or( &null_block.clone() ).clone();
-                
             if *current_block.hash() == *hash
             {
-                
+
+                // If the hash was found return true 
                 return true;
 
             }
-
             hash_check = current_block.hash().clone();
             
         }
@@ -144,22 +146,17 @@ impl Chain
         
     }
 
-
     // Print the chain
     #[allow(dead_code)]
     pub fn print_chain( &self ) -> Result< (), Error >
     {
-        
-        let json_chain = serde_json::to_string( &self )?;
-        println!( "{}", json_chain );
 
+        // Stores the serialized json 
+        let json_chain = serde_json::to_string( &self )?;
+        // Displays the serialized chain 
+        println!( "{}", json_chain );
         Ok( () )
         
-    }
-
-    
-
-
-    
+    }    
     
 }
