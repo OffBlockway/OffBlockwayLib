@@ -1,6 +1,3 @@
-// Tells the compiler not to throw warnings for unused code
-#[allow(dead_code)]
-
 // Use statements
 //
 // Standard library
@@ -24,6 +21,7 @@ use hash_util::*;
  *
  */
 #[derive(Clone)]
+#[derive( Serialize, Deserialize )]
 pub enum Tree<T>
 {
 

@@ -1,3 +1,9 @@
+// Crate inclusion
+//
+// Used for serialization
+extern crate serde;
+extern crate serde_json;
+
 // Use statements
 //
 // Standard library
@@ -18,6 +24,9 @@ use proof::*;
 // Used for creating hashes
 #[allow(unused_imports)]
 use hash_util::*;
+// Used for serialization
+#[allow(unused_imports)]
+use self::serde_json::Error;
 
 /*
  *
@@ -49,20 +58,26 @@ pub enum Node
 // Merkle Tree struct, defines the elements needed for each instance
 #[allow(dead_code)]
 #[derive(Clone)]
+#[derive( Serialize, Deserialize )]
 pub struct Merkle<T>
 {
-
+    
     // The binary tree representing the root node of the Merkle Tree
+     #[serde(skip_serializing)]
     root: Tree<T>,
     // The height of the Merkle Tree
+     #[serde(skip_serializing)]
     height: usize,
     // The number of leaves in the tree
+     #[serde(skip_serializing)]
     leaf_count: usize,
     // The hash of the root node
+     #[serde(skip_serializing)]
     hash: String,
     // A vector of nodes representing the leaves of the tree
     nodes: Vec<T>,
     // A hash map of the hashes on each level of the tree
+     #[serde(skip_serializing)]
     map: BTreeMap<usize, VecDeque<Tree<T>>>
     
 }
@@ -624,6 +639,22 @@ impl<T: Clone + fmt::Display> Merkle<T>
         // is then used to return the correct Option of this. 
         Some( self.nodes.get( index ) ).unwrap() 
 
+    }
+
+    // Prints and serializes the Merkle Tree
+    //
+    // Where statement included to make sure the type T is serializable 
+    #[allow(dead_code)]
+    pub fn print_merkle( &self ) -> Result< (), Error >
+        where T: self::serde::Serialize,
+    {
+
+        // Stores the serialized json 
+        let json_merkle = serde_json::to_string( &self )?;
+        // Displays the serialized Merkle Tree
+        println!( "{}", json_merkle );
+        Ok( () )
+        
     }
 
     // Determines whether or not the Merkle Tree is empty

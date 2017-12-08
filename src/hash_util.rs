@@ -1,4 +1,6 @@
 // Crate inclusion 
+//
+// Sha3 used for hashing 
 extern crate sha3;
 
 // Use statements
@@ -79,8 +81,11 @@ pub fn generate_header_hash( block: &Block ) -> String
 pub fn generate_unique_id( token: u64 ) -> String
 {
 
+    // Sets the hasher to the SHA 256 default 
     let mut hasher = Sha3_256::default();
+    // Uses the given token as input for the hasher 
     hasher.input( token.to_string().as_ref() );
+    // Formats the hasher 
     format!( "{:x}", hasher.result() )
     
 }
