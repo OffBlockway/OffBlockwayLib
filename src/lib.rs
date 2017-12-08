@@ -1,6 +1,8 @@
-// Extern cArate inclusion 
+// Extern crate inclusion 
+//
+// Sha3 used for hashing 
 extern crate sha3;
-
+// Serde used for serialization 
 #[macro_use]
 extern crate serde_derive;
 
@@ -10,11 +12,7 @@ extern crate serde_derive;
 // Standard library
 use std::*;
 #[allow(unused_imports)]
-// Gives access to the binary tree file
-//use tree::Tree;
-// Gives acces to the Merkle Tree file
-//use merkle::Merkle;
-// Gives acces to the hash utilities
+// Used for hash utilities 
 use hash_util::*;
 
 // Mod statements
