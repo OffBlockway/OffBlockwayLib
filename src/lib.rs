@@ -18,12 +18,12 @@ use std::*;
 use hash_util::*;
 
 // Mod statements
-mod tree;
-mod hash_util;
-mod block;
-mod merkle;
-mod proof;
-mod chain;
+pub mod tree;
+pub mod hash_util;
+pub mod block;
+pub mod merkle;
+pub mod proof;
+pub mod chain;
 
 /*
  *
