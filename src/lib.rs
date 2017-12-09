@@ -16,11 +16,18 @@ use std::*;
 use hash_util::*;
 
 // Mod statements
+//
+// Access to tree functionality 
 mod tree;
+// Access to the hash utilities 
 mod hash_util;
+// Access to block functionality 
 mod block;
+// Access to Merkle Tree functionality
 mod merkle;
+// Access to proof functionality
 mod proof;
+// Access to chain functionality 
 mod chain;
 
 /*
