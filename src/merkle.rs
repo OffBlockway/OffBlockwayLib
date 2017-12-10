@@ -481,7 +481,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
         // Serializes the json
         let json_merkle = serde_json::to_string( &self )?;
         // Creates the new file with the given name
-        let file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
+        let mut file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
         // Appends the json to the file
         file.write( json_merkle.as_ref() );
         // Returns the result or Error 
@@ -489,32 +489,16 @@ impl<T: Clone + fmt::Display> Merkle<T>
         
     }
 
-    // Reads a file with serialized json as a String 
-    #[allow(dead_code)]
-    pub fn read_json( file_name: &str ) -> Result< String, Error >
-    {
-
-        // Opens the file with the specified name  
-        let file = OpenOptions::new().read( true ).open( file_name ).unwrap();
-        // Creates an emtpy string
-        let mut json = String::new();
-        // Reads the file as a string 
-        file.read_to_string( &mut json ); 
-        // Returns the String or Error 
-        Ok( ( json ) )
-        
-    }
-
     // Reads json and constructs a block from the information
     #[allow(dead_code)]
     pub fn read_and_construct( file_name: &str ) -> Result< Merkle<T>, Error >
-        where T: self::serde::Deserialize,
+        where T: self::serde::Deserialize<'static>,
     {
 
         // Constructs the Merkle
-        let merkle = serde_json::from_str( &Merkle::read_json( file_name )? );
+        let merkle = serde_json::from_str( &read_json( file_name )? );
         // Returns the Merkle or Error
-        Ok( merkle.unwrap() )
+        Ok( merkle )
         
     }
         
@@ -748,4 +732,20 @@ impl<T: Clone + fmt::Display> Merkle<T>
         
     }
     
+}
+
+// Reads a file with serialized json as a String
+#[allow(dead_code)]
+pub fn read_json( file_name: &str ) -> Result< String, Error >
+{
+    
+    // Opens the file with the specified name
+    let mut file = OpenOptions::new().read( true ).open( file_name ).unwrap();
+    // Creates an emtpy string
+    let mut json = String::new();
+    // Reads the file as a string
+    file.read_to_string( &mut json );
+    // Returns the String or Error
+    Ok( ( json ) )
+
 }

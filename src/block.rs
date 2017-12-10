@@ -113,7 +113,7 @@ impl Block
         // Serializes the json
         let json_block = serde_json::to_string( &self )?;
         // Creates the new file with the given name
-        let file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
+        let mut file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
         // Appends the json to the file
         file.write_all( json_block.as_ref() );
         // Returns the result or Error
@@ -127,7 +127,7 @@ impl Block
     {
 
         // Opens the file with the specified name
-        let file = OpenOptions::new().read( true ).open( file_name ).unwrap();
+        let mut file = OpenOptions::new().read( true ).open( file_name ).unwrap();
         // Creates an emtpy string
         let mut json = String::new();
         // Reads the file as a string
