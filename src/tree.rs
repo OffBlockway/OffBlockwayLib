@@ -4,6 +4,8 @@
 use std::*;
 // Gives access to hash utilities 
 use hash_util::*;
+// Transaction access
+use transaction::*;
 
 /*
  *
@@ -22,7 +24,7 @@ use hash_util::*;
  */
 #[derive(Clone)]
 #[derive( Serialize, Deserialize )]
-pub enum Tree<T>
+pub enum Tree
 {
 
     // Empty tree definition
@@ -39,7 +41,7 @@ pub enum Tree<T>
 
         // Leaves act as a node with a hash and value but no children
         hash: String,
-        value: T
+        value: Transaction 
 
     },
     // Node ( tree definiton )
@@ -53,15 +55,15 @@ pub enum Tree<T>
 
         // Nodes have a hash and left and right children 
         hash: String,
-        left: Box<Tree<T>>,
-        right: Box<Tree<T>>
+        left: Box<Tree>,
+        right: Box<Tree>
 
     }
 
 }
 
 // Tree impl 
-impl<T: fmt::Display> Tree<T>
+impl Tree
 {
 
     // Empty tree constructor
@@ -76,12 +78,12 @@ impl<T: fmt::Display> Tree<T>
     
     // Leaf node constructor
     #[allow(dead_code)]
-    pub fn leaf( value: T ) -> Tree<T>
+    pub fn leaf( value: Transaction ) -> Tree
     {
 
         // Creates the hash given the leaf's value, create_leaf_hash() takes in
         // a reference to the value so we pass in value.as_ref()
-        let leaf_hash = create_leaf_hash( &value );
+        let leaf_hash = create_leaf_hash( &value.get_value() );
         // Returns a tree leaf with the given hash and value
         Tree::Leaf
         {
@@ -92,9 +94,10 @@ impl<T: fmt::Display> Tree<T>
         }
         
     }
+    
     // Tree node constructor
     #[allow(dead_code)]
-    pub fn node( left: Tree<T>, right: Tree<T> ) -> Tree<T>
+    pub fn node( left: Tree, right: Tree ) -> Tree
     {
 
         // Creates the node hash using the children's hashes.
@@ -113,6 +116,7 @@ impl<T: fmt::Display> Tree<T>
         }   
 
     }
+    
     // Retrieve the hash of a given tree
     #[allow(dead_code)]
     pub fn hash( &self ) -> &String
