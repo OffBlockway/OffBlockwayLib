@@ -44,7 +44,7 @@ impl Transaction
 {
 
     // Constructor for a new transaction 
-    pub fn new( uid: u64, username: String, content: String, timestamp: String ) -> Transaction
+    pub fn new( uid: u64, username: String, content: String, timestamp: String ) -> Self
     {
 
         Transaction
@@ -103,11 +103,27 @@ impl Transaction
 
     // Returns the transactions value
     #[allow(dead_code)]
-    pub fn get_value( &self ) -> String
+    pub fn get_value( &self ) -> &String
     {
 
-        self.content
+        &self.content
         
     }
 
+}
+
+// Returns a dummy transaction
+pub fn dummy() -> Transaction
+{
+
+    Transaction
+    {
+
+        uid: 5,
+        username: "name".to_string(),
+        content: "hello".to_string(),
+        timestamp: "now".to_string()
+            
+    }
+    
 }
