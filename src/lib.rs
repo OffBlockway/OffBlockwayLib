@@ -82,7 +82,7 @@ mod tree_tests
         // The hash value for an empty byte array 
         let digest_hash = hash_util::empty_hash();
         // The empty tree constructed with this hash 
-        let empty_tree: tree::Tree<u8> = tree::Tree::empty( );
+        let empty_tree: tree::Tree = tree::Tree::empty( );
         // Compaing the tree's hash with the computed hash
         assert_eq!( *empty_tree.hash(), digest_hash );
 
@@ -97,9 +97,11 @@ mod tree_tests
         // The hash value for the leaf
         let digest_hash = hash_util::create_leaf_hash( &9 );
         // Arbitrary u8 value for the leaf  
-        let value: u8 = 9; 
+        let value: u8 = 9;
+        // The transaction
+        let transaction = transaction::Transaction::new( 0, "zac".to_string(),  "9".to_string(), "now".to_string() );
         // The tree leaf constructed with this hash and value 
-        let tree_leaf: tree::Tree<u8> = tree::Tree::leaf( value );
+        let tree_leaf: tree::Tree = tree::Tree::leaf( transaction );
         // Comparing the tree's hash with the computed hash
         assert_eq!( *tree_leaf.hash(), digest_hash );
 
@@ -119,15 +121,21 @@ mod tree_tests
         // Arbitrary u8 values for the left and right children
         let left_value: u8 = 0;
         let right_value: u8 = 1;
+        // Left transaction 
+        let left_transaction = transaction::Transaction::new( 0, "zac".to_string(),
+                                                              "0".to_string(), "now".to_string() );
+        // Right transaction 
+        let right_transaction = transaction::Transaction::new( 0, "zac".to_string(),
+      "1".to_string(), "now".to_string() );
         // The tree's left and right children 
-        let left_child: tree::Tree<u8> = tree::Tree::leaf( left_value );
+        let left_child: tree::Tree = tree::Tree::leaf( left_transaction );
         // Comparing the left child's hash with its computed hash
         assert_eq!( *left_child.hash(), left_hash );
-        let right_child: tree::Tree<u8> = tree::Tree::leaf( right_value );
+        let right_child: tree::Tree = tree::Tree::leaf( right_transaction );
         // Comparing the right child's hash with its computed hash
         assert_eq!( *right_child.hash(), right_hash );
         // The root node with the calculated hash and left and right children 
-        let root_node: tree::Tree<u8> = tree::Tree::node( left_child, right_child );
+        let root_node: tree::Tree = tree::Tree::node( left_child, right_child );
         // Comparing the root's hash with the computed hash 
         assert_eq!( *root_node.hash(), digest_hash );
 
@@ -184,7 +192,7 @@ mod block_tests
         block.write_to( &file_name );
         // Reads in the file with serialization to make sure it has been
         // properly created.
-        let file = File::open( file_name ).unwrap();
+        let mut file = File::open( file_name ).unwrap();
         // Creates the String to write to 
         let mut json = String::new();
         // Writes the file to this String 
@@ -262,7 +270,7 @@ mod merkle_tests
     {
 
         // Creates a new type u8 Merkle Tree 
-        let merkle: merkle::Merkle<u8> = merkle::Merkle::empty();
+        let merkle: merkle::Merkle = merkle::Merkle::empty();
         // Confirms the height method returns 0 
         assert_eq!( 0, merkle.height() );
         
@@ -275,7 +283,7 @@ mod merkle_tests
     {
 
         // Creates a new type u8 Merkle Tree
-        let merkle: merkle::Merkle<u8> = merkle::Merkle::empty();
+        let merkle: merkle::Merkle = merkle::Merkle::empty();
         // Confirms the leaf_count method returns 0
         assert_eq!( 0, merkle.leaf_count() );
         
@@ -288,7 +296,7 @@ mod merkle_tests
     {
 
         // Creates a new type u8 Merkle Tree
-        let merkle: merkle::Merkle<u8> = merkle::Merkle::empty();
+        let merkle: merkle::Merkle = merkle::Merkle::empty();
         // Confirms that is_empty returns true
         assert_eq!( true, merkle.is_empty() );
         
@@ -302,7 +310,7 @@ mod merkle_tests
     {
 
         // Creates a new type u8 Merkle Tree
-        let merkle: merkle::Merkle<u8> = merkle::Merkle::empty();
+        let merkle: merkle::Merkle = merkle::Merkle::empty();
         // Creates an empty hash
         let empty_hash = hash_util::empty_hash();
         // Confirms that the tree's hash is the same as a calculated empty hash
@@ -317,12 +325,12 @@ mod merkle_tests
     // Unit test for verifying the construction and hash of a full Merkle Tree
     fn test_small_full_merkle()
     {
-
+        
         // Creates a list of values to be hashed and constructed into a Merkle Tree
         let mut values = Vec::new();
         // Pushes our names ( zac and ezra ) to the vector 
-        values.push( "zac" );
-        values.push( "ezra" );
+        values.push( transaction::dummy() );
+        values.push( transaction::dummy() );
         // Creates a new full Merkle Tree with these values
         let merkle = merkle::Merkle::new( values );
         // Makes sure the Merkle Tree isn't empty 
@@ -332,7 +340,7 @@ mod merkle_tests
         // Verifies the leaf count
         assert_eq!( 2, merkle.leaf_count() );
         // Verifies the root hash ( thereby verifying the hashes on all other levels )
-        assert_eq!( "a380ecb83540c785c01d5e19dd821907a5170482983a1bf7338b354e92fe92b7", merkle.root_hash() );
+        assert_eq!( "4529305fcf7c742e1b531bb2e743ca8450c9c6ac7423317c662f8ca62c506548", merkle.root_hash() );
         
     }
 
@@ -348,7 +356,7 @@ mod merkle_tests
         for i in 0 .. 16 
         {
             
-            values.push(i);
+            values.push( transaction::dummy() );
             
         }
         // Creates a new full Merkle Tree with these values
@@ -360,7 +368,7 @@ mod merkle_tests
         // Verifies the leaf count
         assert_eq!( 16, merkle.leaf_count() );
         // Verifies the root hash ( thereby verifying the hashes on all other levels )
-        assert_eq!( "27da51063c03ad6fb6278a7ccb129a68d069be396550eedf5f2369603524e7e0",
+        assert_eq!( "08afda110d1caedcde7c9bde98232e01fd44ff2d4e89bf2bed8d6c38aecf6bae",
       merkle.root_hash() );
         
     }
@@ -375,7 +383,7 @@ mod merkle_tests
         // Creates an empty hash
         let empty_hash = hash_util::empty_hash();
         // Creates an empty vector to be input into the constructor
-        let values: Vec<u8> = Vec::new();
+        let values: Vec<transaction::Transaction> = Vec::new();
         // Passes it to the constructor and makes a Merkle Tree
         let merkle = merkle::Merkle::new( values );
         // Verifies it created an empty Merkle Tree by checking the size and
@@ -397,7 +405,7 @@ mod merkle_tests
         for i in 0 .. 8 
         {
             
-            values.push(i);
+            values.push( transaction::dummy() );
             
         }
         // Creates a new full Merkle Tree with these values
@@ -418,7 +426,7 @@ mod merkle_tests
         for i in 0 .. 8
         {
             
-            values.push(i);
+            values.push( transaction::dummy() );
             
         }
         // Creates a new full Merkle Tree with these values
@@ -439,7 +447,7 @@ mod merkle_tests
         for i in 0 .. 8 
         {
             
-            values.push(i);
+            values.push( transaction::dummy() );
             
         }
         // Creates a new full Merkle Tree with these values
@@ -450,7 +458,7 @@ mod merkle_tests
 
             // At each step in the iteration we assert that the value from get is
             // the same as the value of the i ( the for loop iterator )
-            assert_eq!( i, *merkle.get( i ).unwrap() );
+            assert_eq!( "hello".to_string(), *merkle.get( i ).unwrap().get_value() );
             
         }
         
@@ -470,7 +478,7 @@ mod merkle_tests
         for i in 0 .. 8 
         {
 
-            merkle.insert( i );
+            merkle.insert( transaction::dummy() );
             
         }
         // Makes sure the values can be accessed correctly 
@@ -479,7 +487,7 @@ mod merkle_tests
             
             // At each step in the iteration we assert that the value from get is
             // the same as the value of the i ( the for loop iterator )
-            assert_eq!( i, *merkle.get( i ).unwrap() );
+            assert_eq!( "hello", *merkle.get( i ).unwrap().get_value() );
                
         }
         // Makes sure the height is correct
@@ -503,7 +511,7 @@ mod merkle_tests
         for i in 0 .. 8
         {
             
-            merkle.insert( i );
+            merkle.insert( transaction::dummy() );
             
         }
         // Makes sure false is returned for invalid indicies
@@ -543,49 +551,15 @@ mod merkle_tests
         for i in 0 .. 8
         {
             
-            merkle.insert( i );
+            merkle.insert( transaction::dummy() );
             
         }
-        /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
-         *                                                                                     *
-         * The tree currently looks like the following ( imagine the numbers are actually the  *
-         * hashes of the numbers ):                                                            *
-         *                                                                                     *
-         *         LEVEL 0:           01234567                                                 *
-         *                             /    \                                                  *  
-         *         LEVEL 1:         0123    4567                                               *
-         *                          / \     / \                                                *
-         *         LEVEL 2:       01  23   45  67                                              *
-         *                        /\  /\   /\  /\                                              * 
-         *         LEVEL 3:      0 1 2 3  4 5  6 7                                             *
-         *                                                                                     *
-         * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
-        // We get the hashes at levels one and two and store them in variables
-        // The hashes below are the true SHA3 hash values of the numbers 0 - 7
-        let level_two_hash_a: String = hash_util::create_node_hash( &"f9e2eaaa42d9fe9e558a9b8ef1bf366f190aacaa83bad2641ee106e9041096e4".to_string(), &"67b176705b46206614219f47a05aee7ae6a3edbe850bbbe214c536b989aea4d2".to_string() );
-        let level_two_hash_b: String = hash_util::create_node_hash( &"b1b1bd1ed240b1496c81ccf19ceccf2af6fd24fac10ae42023628abbe2687310".to_string(), &"1bf0b26eb2090599dd68cbb42c86a674cb07ab7adc103ad3ccdf521bb79056b9".to_string() );
-        let level_two_hash_c: String = hash_util::create_node_hash( &"b410677b84ed73fac43fcf1abd933151dd417d932a0ef9b0260ecf8b7b72ecb9".to_string(), &"86bc56fc56af4c3cde021282f6b727ee9f90dd636e0b0c712a85d416c75e652d".to_string() );
-        let level_two_hash_d: String = hash_util::create_node_hash( &"0c67354981e9068905680b57898ad4f04b993c63eb66aa3f19cdfdc71d88077e".to_string(), &"8f9b51ce624f01b0a40c9f68ba8bb0a2c06aa7f95d1ed27d6b1b5e1e99ee5e4d".to_string() );
-        // For the level one hashes we just concatenate the level two hashes
-        let level_one_hash_a: String = hash_util::create_node_hash( &level_two_hash_a, &level_two_hash_b );
-        let level_one_hash_b: String = hash_util::create_node_hash( &level_two_hash_c, &level_two_hash_d );
-        // We then make use of the hash_found_at_level function wich ensures that a certain
-        // hash can be found at a given level in the Merkle Tree. All of these boolean values
-        // for each hash are then stored in variables. 
-        let level_two_a_return = merkle.hash_found_at_level( 2, level_two_hash_a );
-        let level_two_b_return = merkle.hash_found_at_level( 2, level_two_hash_b );
-        let level_two_c_return = merkle.hash_found_at_level( 2, level_two_hash_c );
-        let level_two_d_return = merkle.hash_found_at_level( 2, level_two_hash_d );
-        let level_one_a_return = merkle.hash_found_at_level( 1, level_one_hash_a );
-        let level_one_b_return = merkle.hash_found_at_level( 1, level_one_hash_b );
-        // Finally, all the hashes are compared with the true boolean to ensure that they have
-        // been found in the tree. 
-        assert_eq!( true, level_two_a_return );
-        assert_eq!( true, level_two_b_return );
-        assert_eq!( true, level_two_c_return );
-        assert_eq!( true, level_two_d_return );
-        assert_eq!( true, level_one_a_return );
-        assert_eq!( true, level_one_b_return );
+        // Hash for the string hello 
+        let hello: String = "3338be694f50c5f338814986cdf0686453a888b84f424d792af4b9202398f392".to_string();
+        // Return value for hello
+        let hello_return = merkle.hash_found_at_level( 3, hello );
+        // Makes sure the value was found
+        assert_eq!( true, hello_return );
         // To ensure that hashes not found within the tree return a false value when searched
         // for, we create a hash out of the hashes for our names ( "zac" and "ezra" ).
         let zac: String = "f296b0a2ba1d206049d67ce9e6cbabedcecf63b6b4b86742b6ab94e305e64991".to_string();
@@ -613,25 +587,15 @@ mod merkle_tests
         for i in 0 .. 4
         {
 
-            merkle.insert( i );
+            merkle.insert( transaction::dummy() );
             
         }
-        // The hash of the concatenation of the hashes for 0 and 1
-        let first: String = "b6698473bbe17ece4f1bdb6ade7218f775c4a53120c5d98c0ec0e354806f8c7f".to_string();
-        // The hash of the concatenation of the hashes for 2 and 3 
-        let second: String = "79b8675105ea422bc156e01d38de34f87ba3816fbbe4e914fd073b2e09cbc21d".to_string();
-        // The hash for the word "false"
-        let false_hash: String = "d8afd1b9d2994e4ada90eb012e23e8b6e028fa95ccaf5abdf0da7a429241d503".to_string();
         // The index ( return value ) of the hash's index 
-        let first_return: i32 = merkle.get_hash_index( 1, first );
-        // The index ( return value ) of the second hash's index
-        let second_return: i32 = merkle.get_hash_index( 1, second );
+        let first_return: i32 = merkle.get_hash_index( 2, "3338be694f50c5f338814986cdf0686453a888b84f424d792af4b9202398f392".to_string() );
         // The index( return value ) of the false hash's index 
-        let false_return: i32 = merkle.get_hash_index( 1, false_hash );
+        let false_return: i32 = merkle.get_hash_index( 1, "08afda110d1caedcde7c9bde98232e01fd44ff2d4e89bf2bed8d6c38aecf6bae".to_string() );
         // Verifies the first hash is found at index 0 on level 1
         assert_eq!( 0, first_return );
-        // Verifies the second hash is found at index 1 on level 1 
-        assert_eq!( 1, second_return );
         // Verifies the false hash wasn't found at level 1 as the function
         // returns -1 on a false hash
         assert_eq!( -1, false_return );
@@ -651,7 +615,7 @@ mod merkle_tests
         for i in 0 .. 4
         {
             
-            merkle.insert( i );
+            merkle.insert( transaction::dummy() );
             
         }
         // Prints the json serialization
@@ -790,12 +754,12 @@ mod proof_tests
         // The Merkle Tree to test against
         let mut merkle = merkle::Merkle::new( Vec::new() );
         // Inserts strings into the tree
-        merkle.insert( "merkle" );
-        merkle.insert( "tree" );
-        merkle.insert( "proof" );
-        merkle.insert( "test" );
+        merkle.insert( transaction::dummy() );
+        merkle.insert( transaction::dummy() );
+        merkle.insert( transaction::dummy() );
+        merkle.insert( transaction::dummy() );
         // The proof for the value we are trying to verify 
-        let proof = merkle.get_proof( "merkle" );
+        let proof = merkle.get_proof( transaction::dummy() );
         // The return value of the proof
         let return_val = proof.verify( merkle.root_hash() );
         // Verifies that this hash was found in the tree
@@ -812,15 +776,18 @@ mod proof_tests
         // The Merkle Tree to test against
         let mut merkle = merkle::Merkle::new( Vec::new() );
         // Inserts strings into the tree
-        merkle.insert( "merkle" );
-        merkle.insert( "tree" );
-        merkle.insert( "proof" );
-        merkle.insert( "test" );
+        merkle.insert( transaction::dummy() );
+        merkle.insert( transaction::dummy() );
+        merkle.insert( transaction::dummy() );
+        merkle.insert( transaction::dummy() );
+        // False transaction
+        let false_transaction = transaction::Transaction::new( 0, "zac".to_string(),
+      "false".to_string(), "now".to_string() );
    	    // The proof for the value we are trying to verify
         //
         // The string "false" was not entered into the tree so it should return false when
         // trying to verify this proof. 
-        let proof = merkle.get_proof( "false" );
+        let proof = merkle.get_proof( false_transaction );
         // The return value of the proof
         let return_val = proof.verify( merkle.root_hash() );
         // Verifies that this hash was found in the tree

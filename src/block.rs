@@ -13,6 +13,7 @@ extern crate serde_json;
 // Used for timestamping 
 use self::chrono::Utc;
 // Standard libraries used for Strings and Vectors
+#[allow(unused_imports)]
 use std::string::String;
 // For hashing necessities
 use hash_util::*;
@@ -23,6 +24,7 @@ use self::serde_json::Error;
 #[allow(unused_imports)]
 use std::fs::{ OpenOptions, File };
 // Uses standard input / output
+#[allow(unused_imports)]
 use std::io::prelude::*;
 
 /*
@@ -115,6 +117,7 @@ impl Block
         // Creates the new file with the given name
         let mut file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
         // Appends the json to the file
+        #[allow(unused_must_use)]
         file.write_all( json_block.as_ref() );
         // Returns the result or Error
         Ok( () )
