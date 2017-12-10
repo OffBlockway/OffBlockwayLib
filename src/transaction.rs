@@ -1,12 +1,29 @@
+// Crate inclusion
+//
+// For serialization 
 extern crate serde;
 extern crate serde_json;
 
+// Use statements
+//
+// Standard error 
 use std::io::Error;
+// String functionality
+#[allow(unused_imports)]
 use std::string::{ String, ToString };
 // For File io
+#[allow(unused_imports)]
 use std::fs::{ File, OpenOptions };
 use std::io::prelude::*;
 
+/*
+ *
+ * Transaction:
+ *     - This file holds the functionality for creating and using transactions 
+ *
+ */
+
+// Transaction struct 
 #[derive(PartialEq, Debug, Clone, Serialize, Deserialize)]
 pub struct Transaction
 {
@@ -26,22 +43,24 @@ pub struct Transaction
 impl Transaction
 {
 
-    // Constructor
-    pub fn new( uid: u64, username: String, content: String, timestamp: String ) -> Transaction
+    // Constructor for a new transaction 
+    pub fn new( uid: u64, username: String, content: String, timestamp: String ) -> Self
     {
 
         Transaction
         {
+            
             uid: uid,
             username: username,
             content: content,
             timestamp: timestamp
+
         }
         
     }
     
     // Write the transaction to a file
-    #[allow(unused_code)]
+    #[allow(dead_code)]
     pub fn write_to( &self, filename: &str ) -> Result< (), Error >
     {
 
@@ -49,13 +68,13 @@ impl Transaction
         let mut file = OpenOptions::new(  ).append( true ).create( true ).open( filename )?;
         // Write the json to the filepath
         file.write_all( serde_json::to_string( &self )?.as_ref() );
-
+        // Return the result 
         Ok( () )
         
     }
 
     // Read in from json 
-    #[allow(unused_code)]
+    #[allow(dead_code)]
     pub fn read_json( filename: &str ) -> Result< String, Error >
     {
 
@@ -70,7 +89,7 @@ impl Transaction
     }
 
     // Read in from json and construct transaction
-    #[allow(unused_code)]
+    #[allow(dead_code)]
     pub fn read_and_construct( filename: &str ) -> Result< Transaction, Error >
     {
 
@@ -82,5 +101,29 @@ impl Transaction
         
     }
 
+    // Returns the transactions value
+    #[allow(dead_code)]
+    pub fn get_value( &self ) -> &String
+    {
 
+        &self.content
+        
+    }
+
+}
+
+// Returns a dummy transaction
+pub fn dummy() -> Transaction
+{
+
+    Transaction
+    {
+
+        uid: 5,
+        username: "name".to_string(),
+        content: "hello".to_string(),
+        timestamp: "now".to_string()
+            
+    }
+    
 }

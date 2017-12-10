@@ -4,13 +4,16 @@
 extern crate serde;
 extern crate serde_json;
 
-
+// Use statements
+//
 // The underlying structure will be a hash map
 use std::collections::HashMap;
 // Output of the chain data will be done using JSON
-//use self::serde_json::Error;
+#[allow(unused_imports)]
 use std::fs::{ OpenOptions, File };
+// Prelude
 use std::io::prelude::*;
+// Standard error
 use std::io::Error;
 // Hashes
 use std::string::String;
@@ -165,7 +168,7 @@ impl Chain
 
     
     // Write the transaction to a file
-    #[allow(unused_code)]
+    #[allow(dead_code)]
     pub fn write_to( &self, filename: &str ) -> Result< (), Error >
     {
 
@@ -179,7 +182,7 @@ impl Chain
     }
 
     // Read in from json 
-    #[allow(unused_code)]
+    #[allow(dead_code)]
     pub fn read_json( filename: &str ) -> Result< String, Error >
     {
 
@@ -194,7 +197,7 @@ impl Chain
     }
 
     // Read in from json and construct transaction
-    #[allow(unused_code)]
+    #[allow(dead_code)]
     pub fn read_and_construct( filename: &str ) -> Result< Chain, Error >
     {
 
