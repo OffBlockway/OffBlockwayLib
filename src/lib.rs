@@ -1,4 +1,4 @@
-// Extern cArate inclusion 
+// Extern crate inclusion 
 extern crate sha3;
 
 #[macro_use]
@@ -9,6 +9,10 @@ extern crate serde_derive;
 #[allow(unused_imports)]
 // Standard library
 use std::*;
+use std::fs::{ OpenOptions, File };
+use std::io::prelude::*;
+use std::io::*;
+use std::process::Command;
 #[allow(unused_imports)]
 // Gives access to the binary tree file
 //use tree::Tree;
@@ -24,6 +28,7 @@ pub mod block;
 pub mod merkle;
 pub mod proof;
 pub mod chain;
+pub mod transaction;
 
 /*
  *
@@ -639,29 +644,44 @@ mod chain_tests
         
     }
 
-    // Test flag indicating the next function contains tests
-    #[allow(dead_code)]
+    // JSON tests
     #[test]
-    // Test the json serialization of the chain
-    fn test_print()
+    pub fn test_write_to( )
     {
 
-        #[allow(unused_must_use)]
-        // Creates a new chain 
         let mut chain = chain::Chain::new();
-        // Creates new blocks and adds them to the chain 
         for i in 1 .. 8
         {
-            // Creates a block with the iterative index and the previous hash 
-            let block = block::Block::new( i, empty_hash() );
-            // Push the block onto the chain 
-            chain.push( block );
-            
+            chain.push( block::Block::new( i, create_leaf_hash( &i ) ) );
         }
-        #[allow(unused_must_use)]
-        // Prints the chain 
-        chain.print_chain().unwrap()
+        chain.write_to( "testing-chain.json" );
 
+        let mut file = File::open( "testing-chain.json" ).unwrap();
+        let mut string = String::new();
+        file.read_to_string( &mut string );
+        println!( "{}", string );
+        
+        
+    }
+
+    #[test]
+    pub fn test_read_and_construct( )
+    {
+
+        // Erase the currently existing file 
+        let status = Command::new( "rm" ).args( &[ "-rf", "testing-chain.json" ] ).status().expect( "Process failed ");
+        
+        let mut chain = chain::Chain::new();
+        for i in 1 .. 8
+        {
+            chain.push( block::Block::new( i, create_leaf_hash( &i ) ) );
+        }
+        chain.write_to( "testing-chain.json" );
+
+        // Build a chain from its json
+        let d_chain = chain::Chain::read_and_construct( "testing-chain.json" ).expect("Did not convert to d_chain");
+
+        
     }
     
 }
@@ -719,7 +739,55 @@ mod proof_tests
         let return_val = proof.verify( merkle.root_hash() );
         // Verifies that this hash was found in the tree
         assert_eq!( false, return_val );
-        
+       
     }
+    
+}
+
+
+// Tests for transaction class
+mod transaction_tests
+{
+    use super::*;
+
+    // Test
+    #[test]
+    pub fn test_write_to()
+    {
+
+        let username = "zacsucks";
+        let content = "Hi my name is Zac and I just sort of suck. Any advice?";
+        let timestamp = "all day every day";
+        let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string() );
+        transaction.write_to( "testing-write.json" );
+
+        let mut file = File::open( "testing-write.json" ).unwrap();
+        let mut info = String::new();
+        file.read_to_string( &mut info );
+        println!("{}", info );
+            
+    }
+
+    // Test read_json
+    #[test]
+    pub fn test_read_and_construct()
+    {
+
+        // Erase the currently existing file 
+        let status = Command::new( "rm" ).args( &[ "testing-write.json" ] ).status().expect( "Filed to delete the json files" );
+        
+        let username = "zacsucks";
+        let content = "Hi my name is Zac and I just sort of suck. Any advice?";
+        let timestamp = "all day every day";
+        let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string() );
+        transaction.write_to( "testing-write.json" );
+        
+        // Get the deserialized transaction
+        let d_transaction = transaction::Transaction::read_and_construct( "testing-write.json" ).expect( "Oh no not the type we wanted" );
+
+        assert_eq!( transaction, d_transaction );
+            
+    }
+    
     
 }

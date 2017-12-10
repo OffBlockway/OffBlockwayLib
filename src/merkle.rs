@@ -116,6 +116,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Constructs a new Merkle tree with the given nodes
+    
     #[allow(dead_code)]
     pub fn new( nodes: Vec<T> ) -> Self
     {

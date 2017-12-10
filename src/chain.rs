@@ -8,7 +8,10 @@ extern crate serde_json;
 // The underlying structure will be a hash map
 use std::collections::HashMap;
 // Output of the chain data will be done using JSON
-use self::serde_json::Error;
+//use self::serde_json::Error;
+use std::fs::{ OpenOptions, File };
+use std::io::prelude::*;
+use std::io::Error;
 // Hashes
 use std::string::String;
 // Blocks for the blockchain
@@ -158,5 +161,49 @@ impl Chain
         Ok( () )
         
     }    
+
+    
+    // Write the transaction to a file
+    #[allow(unused_code)]
+    pub fn write_to( &self, filename: &str ) -> Result< (), Error >
+    {
+
+        // Open the filepath with append specification
+        let mut file = OpenOptions::new(  ).append( true ).create( true ).open( filename )?;
+        // Write the json to the filepath
+        file.write_all( serde_json::to_string( &self )?.as_ref() );
+
+        Ok( () )
+        
+    }
+
+    // Read in from json 
+    #[allow(unused_code)]
+    pub fn read_json( filename: &str ) -> Result< String, Error >
+    {
+
+        // Open a readable file at the filepath
+        let mut file = OpenOptions::new( ).read( true ).open( filename )?;
+        // Read in json
+        let mut json = String::new();
+        file.read_to_string( &mut json );
+        // Return the string
+        Ok( json )
+        
+    }
+
+    // Read in from json and construct transaction
+    #[allow(unused_code)]
+    pub fn read_and_construct( filename: &str ) -> Result< Chain, Error >
+    {
+
+        // Construct the transaction
+        let string = Chain::read_json( filename ).expect("Failed to read in the json");
+        let chain : Chain = serde_json::from_str( string.as_ref() ).expect("Failed to conver the json to chain");
+        // Return the transaction
+        Ok( chain )
+        
+    }
+
     
 }
