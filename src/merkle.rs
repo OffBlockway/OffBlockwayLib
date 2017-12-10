@@ -27,6 +27,11 @@ use hash_util::*;
 // Used for serialization
 #[allow(unused_imports)]
 use self::serde_json::Error;
+// Used for writing to output files
+#[allow(unused_imports)]
+use std::fs::{ OpenOptions, File };
+// Uses standard input / output
+use std::io::prelude::*;
 
 /*
  *
@@ -464,7 +469,56 @@ impl<T: Clone + fmt::Display> Merkle<T>
         Proof::new( value.clone(), self.root_hash().clone(), path )
         
     }
-    
+
+    // Writes the serialization of a Merkle Tree to a specified output file
+    //
+    // Where statement allows for only serializable types to call this function
+    // succesfully. 
+    #[allow(dead_code)]
+    pub fn write_to( &self, file_name: &str ) -> Result< (), Error >
+        where T: self::serde::Serialize,
+    {
+
+        // Serializes the json
+        let json_merkle = serde_json::to_string( &self )?;
+        // Creates the new file with the given name
+        let file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
+        // Appends the json to the file
+        file.write( json_merkle.as_ref() );
+        // Returns the result or Error 
+        Ok( () )
+        
+    }
+
+    // Reads a file with serialized json as a String 
+    #[allow(dead_code)]
+    pub fn read_json( file_name: &str ) -> Result< String, Error >
+    {
+
+        // Opens the file with the specified name  
+        let file = OpenOptions::new().read( true ).open( file_name ).unwrap();
+        // Creates an emtpy string
+        let mut json = String::new();
+        // Reads the file as a string 
+        file.read_to_string( &mut json ); 
+        // Returns the String or Error 
+        Ok( ( json ) )
+        
+    }
+
+    // Reads json and constructs a block from the information
+    #[allow(dead_code)]
+    pub fn read_and_construct( file_name: &str ) -> Result< Merkle<T>, Error >
+        where T: self::serde::Deserialize<'static>,
+    {
+
+        // Constructs the Merkle
+        let merkle = serde_json::from_str( &Merkle::read_json( file_name )? );
+        // Returns the Merkle or Error
+        Ok( merkle.unwrap() )
+        
+    }
+        
     // Calculates the height of the tree given the leaves
     #[allow(dead_code)]
     pub fn calculate_height( &self ) -> usize
@@ -654,6 +708,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
         let json_merkle = serde_json::to_string( &self )?;
         // Displays the serialized Merkle Tree
         println!( "{}", json_merkle );
+        // Returns 
         Ok( () )
         
     }

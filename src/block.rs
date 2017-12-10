@@ -19,6 +19,11 @@ use hash_util::*;
 // For JSON functionality
 #[allow(unused_imports)]
 use self::serde_json::Error;
+// Used for writing to output files
+#[allow(unused_imports)]
+use std::fs::{ OpenOptions, File };
+// Uses standard input / output
+use std::io::prelude::*;
 
 /*
  *
@@ -92,10 +97,55 @@ impl Block
     {
 
         // Stores the serialized json
-        let json_merkle = serde_json::to_string( &self )?;
+        let json_block = serde_json::to_string( &self )?;
         // Displays the serialized block 
-        println!( "{}", json_merkle );
+        println!( "{}", json_block );
+        // Returns
         Ok( () )
+        
+    }
+
+    // Writes the serialization of a block to a specified output file
+    #[allow(dead_code)]
+    pub fn write_to( &self, file_name: &str ) -> Result< (), Error >
+    {
+
+        // Serializes the json
+        let json_block = serde_json::to_string( &self )?;
+        // Creates the new file with the given name
+        let mut file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
+        // Appends the json to the file
+        file.write_all( json_block.as_ref() );
+        // Returns the result or Error
+        Ok( () )
+        
+    }
+
+    // Reads a file with serialized json as a String
+    #[allow(dead_code)]
+    pub fn read_json( file_name: &str ) -> Result< String, Error >
+    {
+
+        // Opens the file with the specified name
+        let mut file = OpenOptions::new().read( true ).open( file_name ).unwrap();
+        // Creates an emtpy string
+        let mut json = String::new();
+        // Reads the file as a string
+        file.read_to_string( &mut json );
+        // Returns the String or Error
+        Ok( ( json ) )
+        
+    }
+
+    // Reads json and constructs a block from the information 
+    #[allow(dead_code)]
+    pub fn read_and_construct( file_name: &str ) -> Result< Block, Error >
+    {
+
+        // Constructs the block
+        let block = serde_json::from_str( &Block::read_json( file_name )? );
+        // Returns the block or Error
+        Ok( block.unwrap() )
         
     }
 

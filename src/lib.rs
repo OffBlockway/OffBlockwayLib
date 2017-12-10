@@ -1,6 +1,6 @@
 // Extern crate inclusion 
 extern crate sha3;
-
+// Serde used for serialization 
 #[macro_use]
 extern crate serde_derive;
 
@@ -14,11 +14,7 @@ use std::io::prelude::*;
 use std::io::*;
 use std::process::Command;
 #[allow(unused_imports)]
-// Gives access to the binary tree file
-//use tree::Tree;
-// Gives acces to the Merkle Tree file
-//use merkle::Merkle;
-// Gives acces to the hash utilities
+// Used for hash utilities 
 use hash_util::*;
 
 // Mod statements
@@ -36,6 +32,9 @@ pub mod transaction;
  *     - This file is used for unit testing methods within the src folder, tests can 
  *       be compiled and ran with:
  *                              >>> cargo test
+ * 
+ *     - Some of these tests use std out to display information, to show that run with:
+ *                              >>> cargo test -- --nocapture
  *
  */
 
@@ -134,12 +133,51 @@ mod block_tests
     // Test the creation of an arbitrary block
     fn create_block()
     {
-        
+
+        // Creates a new block with the leaf hash of 9  
         let block = block::Block::new( 0, create_leaf_hash( &9 ) );
+        // Asserts that the block's Merkle root has the proper hash 
         assert_eq!( block.merkle_root, "7609430974b087595488c154bf5c079887ead0e8efd4055cd136fda96a5ccbf8" );
         
     }
 
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Test the json serialization of a block
+    fn test_print()
+    {
+
+        // Creates a new block with the leaf hash of 9 
+        let block = block::Block::new( 0, create_leaf_hash( &9 ) );
+        // Prints the json serialization
+        block.print_block().unwrap()
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Test the writing of json serialization
+    fn test_write_to()
+    {
+
+        // Creates a new block with the leaf hash of 9
+        let block = block::Block::new( 0, create_leaf_hash( &9 ) );
+        // Creates the file name
+        let file_name = "output";
+        // Writes the serialization to the output file
+        block.write( &file_name );
+        // Reads in the file with serialization to make sure it has been
+        // properly created.
+        let file = File::open( file_name );
+        // Creates the String to write to 
+        let mut json = String::new();
+        // Writes the file to this String 
+        file.read_to_string( json );
+        // Outputs the string
+        println!( "{}", json );
+        
+    }
+    
 }
 
 // Test flag indicating this module contains test methods
@@ -583,8 +621,28 @@ mod merkle_tests
         assert_eq!( -1, false_return );
             
     }
-    
 
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Tests the json serialization of a Merkle Tree
+    fn test_print()
+    {
+
+        // Creates a new full Merkle Tree with empty values
+        let mut merkle = merkle::Merkle::new( Vec::new() );
+        // Inserts values into the Merkle Tree
+        #[allow(unused_variables)]
+        for i in 0 .. 4
+        {
+            
+            merkle.insert( i );
+            
+        }
+        // Prints the json serialization
+        merkle.print_merkle().unwrap()
+        
+    }
+    
 }
 
 // Test flag indicating this module contains tests 

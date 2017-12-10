@@ -158,6 +158,7 @@ impl Chain
         let json_chain = serde_json::to_string( &self )?;
         // Displays the serialized chain 
         println!( "{}", json_chain );
+        // Returns 
         Ok( () )
         
     }    
