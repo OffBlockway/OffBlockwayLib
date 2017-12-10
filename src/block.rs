@@ -1,6 +1,9 @@
 #[allow(dead_code)]
 // Included crates
+//
+// Chrono used for timestamping 
 extern crate chrono;
+// Serde used for serialization 
 extern crate serde;
 extern crate serde_json;
 
@@ -54,12 +57,15 @@ impl Block
     {
 
         // Generate a default block
-        let mut block = Block{
+        let mut block = Block
+        {
+
             index: index,
             previous_hash: empty_hash(),
             timestamp: Utc::now().to_string(),
             merkle_root: merkle_root,
             hash: empty_hash(),
+
         };
         // Generate a hash from all of the fields of this block
         block.hash = generate_header_hash( &block );
@@ -80,7 +86,20 @@ impl Block
 
     }
 
-    // Getters
+    // Prints the serialized block
+    #[allow(dead_code)]
+    pub fn print_block( &self ) -> Result< (), Error >
+    {
+
+        // Stores the serialized json
+        let json_merkle = serde_json::to_string( &self )?;
+        // Displays the serialized block 
+        println!( "{}", json_merkle );
+        Ok( () )
+        
+    }
+
+    // Returns the index of the block 
     #[allow(dead_code)]
     pub fn index( &self ) -> &u64
     {
@@ -89,6 +108,7 @@ impl Block
         
     }
 
+    // Returns the timestamp of the block 
     #[allow(dead_code)]
     pub fn timestamp( &self ) -> &String
     {
@@ -97,6 +117,7 @@ impl Block
         
     }
 
+    // Returns the hash of the previous block 
     #[allow(dead_code)]
     pub fn previous_hash( &self ) -> &String
     {
@@ -105,6 +126,7 @@ impl Block
         
     }
 
+    // Returns the Merkle Root of the block 
     #[allow(dead_code)]
     pub fn merkle_root( &self ) -> &String
     {
@@ -113,6 +135,7 @@ impl Block
         
     }
 
+    // Returns the hash of the block 
     #[allow(dead_code)]
     pub fn hash( &self ) -> &String
     {
@@ -122,17 +145,16 @@ impl Block
     }
 
 
-    // Setter
+    // Sets the previous hash 
     #[allow(dead_code)]
     pub fn set_previous_hash( &mut self, hash: &String )
     {
 
+        // Clones the current hash and sets it to the previous hash 
         self.previous_hash = hash.clone();
         // Recalculate the header of the block with the new previous hash
         self.hash = generate_header_hash( &self );
         
-    }
-
-    
+    }    
     
 }

@@ -90,6 +90,5 @@ impl<T: fmt::Display> Proof<T>
         hash == *root
         
     }
-
     
 }
