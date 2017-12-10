@@ -32,6 +32,8 @@ use self::serde_json::Error;
 use std::fs::{ OpenOptions, File };
 // Uses standard input / output
 use std::io::prelude::*;
+// Uses transactions
+use transaction::*;
 
 /*
  *
@@ -64,12 +66,12 @@ pub enum Node
 #[allow(dead_code)]
 #[derive(Clone)]
 #[derive( Serialize, Deserialize )]
-pub struct Merkle<T>
+pub struct Merkle
 {
     
     // The binary tree representing the root node of the Merkle Tree
      #[serde(skip_serializing)]
-    root: Tree<T>,
+    root: Tree,
     // The height of the Merkle Tree
      #[serde(skip_serializing)]
     height: usize,
@@ -80,19 +82,16 @@ pub struct Merkle<T>
      #[serde(skip_serializing)]
     hash: String,
     // A vector of nodes representing the leaves of the tree
-    nodes: Vec<T>,
+    nodes: Vec<Transaction>,
     // A hash map of the hashes on each level of the tree
-     #[serde(skip_serializing)]
-    map: BTreeMap<usize, VecDeque<Tree<T>>>
+    #[serde(skip_serializing)]
+    map: BTreeMap<usize, VecDeque<Tree>>
     
 }
 
 // Merkle Tree impl, defines the methods associated with constructing Merkle Trees
 // and extracting information from them.
-//
-// T: Clone and Display are added to the generics here so that we can clone the nodes vector when
-// constructing the tree.
-impl<T: Clone + fmt::Display> Merkle<T>
+impl Merkle
 {
 
     // New empty Merkle Tree constructor
@@ -123,7 +122,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     // Constructs a new Merkle tree with the given nodes
     
     #[allow(dead_code)]
-    pub fn new( nodes: Vec<T> ) -> Self
+    pub fn new( nodes: Vec<Transaction> ) -> Self
     {
 
         // If the input nodes are empty, the empty tree constructor is called 
@@ -364,13 +363,13 @@ impl<T: Clone + fmt::Display> Merkle<T>
      *                                                                                       * 
      * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
     #[allow(dead_code)]
-    pub fn get_proof_hashes( &mut self, value: &T ) -> Vec<Node> 
+    pub fn get_proof_hashes( &mut self, value: &Transaction ) -> Vec<Node> 
     {
 
         // The current level in the tree that the traversal is on 
         let mut current_level = self.height();
         // The next hash to be examined, originally this is the leaf hash of the given value 
-        let mut next = ::hash_util::create_leaf_hash( &value );
+        let mut next = ::hash_util::create_leaf_hash( &value.get_value() );
         // The hashes needed for a proof on this value 
         let mut hashes = Vec::new();
         // Traverses up the tree until the root has been reached 
@@ -460,7 +459,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
 
     // Returns a Proof given the leaf value to verify
     #[allow(dead_code)]
-    pub fn get_proof( &mut self, value: T ) -> Proof<T>
+    pub fn get_proof( &mut self, value: Transaction ) -> Proof
     {
 
         // Finds the path for the proof
@@ -471,18 +470,14 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Writes the serialization of a Merkle Tree to a specified output file
-    //
-    // Where statement allows for only serializable types to call this function
-    // succesfully. 
     #[allow(dead_code)]
     pub fn write_to( &self, file_name: &str ) -> Result< (), Error >
-        where T: self::serde::Serialize,
     {
 
         // Serializes the json
         let json_merkle = serde_json::to_string( &self )?;
         // Creates the new file with the given name
-        let file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
+        let mut file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
         // Appends the json to the file
         file.write( json_merkle.as_ref() );
         // Returns the result or Error 
@@ -496,7 +491,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     {
 
         // Opens the file with the specified name  
-        let file = OpenOptions::new().read( true ).open( file_name ).unwrap();
+        let mut file = OpenOptions::new().read( true ).open( file_name ).unwrap();
         // Creates an emtpy string
         let mut json = String::new();
         // Reads the file as a string 
@@ -508,8 +503,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
 
     // Reads json and constructs a block from the information
     #[allow(dead_code)]
-    pub fn read_and_construct( file_name: &str ) -> Result< Merkle<T>, Error >
-        where T: self::serde::Deserialize<'static>,
+    pub fn read_and_construct( file_name: &str ) -> Result< Merkle, Error >
     {
 
         // Constructs the Merkle
@@ -669,7 +663,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     
     // Inserts a node into the Merkle Tree
     #[allow(dead_code)]
-    pub fn insert( &mut self, value: T )
+    pub fn insert( &mut self, value: Transaction )
     {
 
         // Inserts the new value into the nodes at the last index ( # of leaves currently
@@ -684,7 +678,7 @@ impl<T: Clone + fmt::Display> Merkle<T>
     
     // Gets the leaf corresponding with an input index
     #[allow(dead_code)]
-    pub fn get( &self, index: usize ) -> Option<&T>
+    pub fn get( &self, index: usize ) -> Option<&Transaction>
     {
 
         // The get function for vectors in rust returns the option ( optional value ) of a
@@ -697,11 +691,8 @@ impl<T: Clone + fmt::Display> Merkle<T>
     }
 
     // Prints and serializes the Merkle Tree
-    //
-    // Where statement included to make sure the type T is serializable 
     #[allow(dead_code)]
     pub fn print_merkle( &self ) -> Result< (), Error >
-        where T: self::serde::Serialize,
     {
 
         // Stores the serialized json 

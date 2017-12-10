@@ -9,21 +9,37 @@ extern crate serde_derive;
 #[allow(unused_imports)]
 // Standard library
 use std::*;
+// Gives file access
+#[allow(unused_imports)]
 use std::fs::{ OpenOptions, File };
+// Access to prelude
+#[allow(unused_imports)]
 use std::io::prelude::*;
+// Standard input / output
+#[allow(unused_imports)]
 use std::io::*;
+// Command Access
+#[allow(unused_imports)]
 use std::process::Command;
 #[allow(unused_imports)]
 // Used for hash utilities 
 use hash_util::*;
 
 // Mod statements
+//
+// Tree access
 pub mod tree;
+// Hash utilities access
 pub mod hash_util;
+// Block access
 pub mod block;
+// Merkle acces 
 pub mod merkle;
+// Proof access
 pub mod proof;
+// Chain access 
 pub mod chain;
+// Transaction acces 
 pub mod transaction;
 
 /*
@@ -165,14 +181,14 @@ mod block_tests
         // Creates the file name
         let file_name = "output";
         // Writes the serialization to the output file
-        block.write( &file_name );
+        block.write_to( &file_name );
         // Reads in the file with serialization to make sure it has been
         // properly created.
-        let file = File::open( file_name );
+        let file = File::open( file_name ).unwrap();
         // Creates the String to write to 
         let mut json = String::new();
         // Writes the file to this String 
-        file.read_to_string( json );
+        file.read_to_string( &mut json );
         // Outputs the string
         println!( "{}", json );
         
@@ -702,44 +718,56 @@ mod chain_tests
         
     }
 
-    // JSON tests
+    // Test flag indicating the next function contains tests
     #[test]
-    pub fn test_write_to( )
+    // JSON tests 
+    pub fn test_write_to()
     {
 
+        // Creates a new chain 
         let mut chain = chain::Chain::new();
+        // Inserts blocks into the chain 
         for i in 1 .. 8
         {
+            
             chain.push( block::Block::new( i, create_leaf_hash( &i ) ) );
-        }
-        chain.write_to( "testing-chain.json" );
 
+        }
+        // Writes to the file 
+        chain.write_to( "testing-chain.json" );
+        // Allows the file to be opened 
         let mut file = File::open( "testing-chain.json" ).unwrap();
+        // String to store file data 
         let mut string = String::new();
+        // Reads file data 
         file.read_to_string( &mut string );
+        // Displays file data 
         println!( "{}", string );
-        
         
     }
 
+    // Test flag indicating the next function contains tests
     #[test]
+    // Tests the read and construction method 
     pub fn test_read_and_construct( )
     {
 
         // Erase the currently existing file 
         let status = Command::new( "rm" ).args( &[ "-rf", "testing-chain.json" ] ).status().expect( "Process failed ");
-        
+        // Creates a new chain 
         let mut chain = chain::Chain::new();
+        // Inserts blocks into the chain 
         for i in 1 .. 8
         {
+            
             chain.push( block::Block::new( i, create_leaf_hash( &i ) ) );
-        }
-        chain.write_to( "testing-chain.json" );
 
+        }
+        // Writes to the output file 
+        chain.write_to( "testing-chain.json" );
         // Build a chain from its json
         let d_chain = chain::Chain::read_and_construct( "testing-chain.json" ).expect("Did not convert to d_chain");
 
-        
     }
     
 }
@@ -806,46 +834,61 @@ mod proof_tests
 // Tests for transaction class
 mod transaction_tests
 {
+
+    #[allow(unused_imports)]
+    // Includes super directory 
     use super::*;
 
-    // Test
+    // Test flag indicating the next function contains tests
     #[test]
+    // Write to test 
     pub fn test_write_to()
     {
 
-        let username = "zacsucks";
-        let content = "Hi my name is Zac and I just sort of suck. Any advice?";
+        // Sample username 
+        let username = "ezrasucks";
+        // Sample content 
+        let content = "Hi my name is Ezra and I just sort of suck. Any advice?";
+        // Sample timestamp 
         let timestamp = "all day every day";
+        // Creates a new transaction with the sample data 
         let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string() );
+        // Writes to output file 
         transaction.write_to( "testing-write.json" );
-
+        // Opens output file 
         let mut file = File::open( "testing-write.json" ).unwrap();
+        // String to store output file information 
         let mut info = String::new();
+        // Builds string from efile 
         file.read_to_string( &mut info );
+        // Displays string 
         println!("{}", info );
             
     }
 
-    // Test read_json
+    // Test flag indicating the next function contains tests
     #[test]
+    // Tests reading the JSON
     pub fn test_read_and_construct()
     {
 
         // Erase the currently existing file 
         let status = Command::new( "rm" ).args( &[ "testing-write.json" ] ).status().expect( "Filed to delete the json files" );
-        
-        let username = "zacsucks";
-        let content = "Hi my name is Zac and I just sort of suck. Any advice?";
+        // Sample username 
+        let username = "ezrasucks";
+        // Sample content
+        let content = "Hi my name is Ezra and I just sort of suck. Any advice?";
+        // Sample timestamp 
         let timestamp = "all day every day";
+        // Creates a transaction from the sample data 
         let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string() );
+        // Writes the transaction to output file 
         transaction.write_to( "testing-write.json" );
-        
         // Get the deserialized transaction
         let d_transaction = transaction::Transaction::read_and_construct( "testing-write.json" ).expect( "Oh no not the type we wanted" );
-
+        // Verifies the transactions were created correctly 
         assert_eq!( transaction, d_transaction );
             
     }
-    
     
 }
