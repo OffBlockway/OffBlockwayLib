@@ -12,6 +12,9 @@ use merkle::Node;
 // Hash utilities file access
 #[allow(unused_imports)]
 use hash_util::*;
+// Transaction acess
+#[allow(unused_imports)]
+use transaction::*;
 
 /*
  *
@@ -26,11 +29,11 @@ use hash_util::*;
 // value's leaf hash would be in the tree.
 #[derive(Debug)]
 #[allow(dead_code)]
-pub struct Proof<T: fmt::Display>
+pub struct Proof
 {
 
     // The leaf value attempting verification
-    value: T,
+    value: Transaction,
     // The hash of the Merkle Tree's root node
     hash: String,
     // The vector containing the path from the root hash to the value leaf
@@ -40,11 +43,11 @@ pub struct Proof<T: fmt::Display>
 
 // The impl for a proof
 #[allow(dead_code)]
-impl<T: fmt::Display> Proof<T>
+impl Proof
 {
 
     // New proof constructor
-    pub fn new( value: T, hash: String, path: Vec<Node> ) -> Self
+    pub fn new( value: Transaction, hash: String, path: Vec<Node> ) -> Self
     {
 
         // Creates a new proof with the given value hash and path
@@ -66,7 +69,7 @@ impl<T: fmt::Display> Proof<T>
     {
 
         // The leaf hash value for the value attempting verification 
-        let mut hash = ::hash_util::create_leaf_hash( &self.value );
+        let mut hash = ::hash_util::create_leaf_hash( &self.value.get_value() );
         // The verification system works by iterating through the path list which allows us to trace a
         // hash up through the tree to the root. At each instance in the path a new node hash is
         // constructed with the Node enum ( proof ) and the current hash marker ( hash ).

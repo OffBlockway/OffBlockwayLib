@@ -1,6 +1,6 @@
 // Extern crate inclusion 
 extern crate sha3;
-
+// Serde used for serialization 
 #[macro_use]
 extern crate serde_derive;
 
@@ -9,25 +9,37 @@ extern crate serde_derive;
 #[allow(unused_imports)]
 // Standard library
 use std::*;
+// Gives file access
+#[allow(unused_imports)]
 use std::fs::{ OpenOptions, File };
+// Access to prelude
+#[allow(unused_imports)]
 use std::io::prelude::*;
+// Standard input / output
+#[allow(unused_imports)]
 use std::io::*;
+// Command Access
+#[allow(unused_imports)]
 use std::process::Command;
 #[allow(unused_imports)]
-// Gives access to the binary tree file
-//use tree::Tree;
-// Gives acces to the Merkle Tree file
-//use merkle::Merkle;
-// Gives acces to the hash utilities
+// Used for hash utilities 
 use hash_util::*;
 
 // Mod statements
+//
+// Tree access
 pub mod tree;
+// Hash utilities access
 pub mod hash_util;
+// Block access
 pub mod block;
+// Merkle acces 
 pub mod merkle;
+// Proof access
 pub mod proof;
+// Chain access 
 pub mod chain;
+// Transaction acces 
 pub mod transaction;
 
 /*
@@ -36,6 +48,9 @@ pub mod transaction;
  *     - This file is used for unit testing methods within the src folder, tests can 
  *       be compiled and ran with:
  *                              >>> cargo test
+ * 
+ *     - Some of these tests use std out to display information, to show that run with:
+ *                              >>> cargo test -- --nocapture
  *
  */
 
@@ -134,12 +149,51 @@ mod block_tests
     // Test the creation of an arbitrary block
     fn create_block()
     {
-        
+
+        // Creates a new block with the leaf hash of 9  
         let block = block::Block::new( 0, create_leaf_hash( &9 ) );
+        // Asserts that the block's Merkle root has the proper hash 
         assert_eq!( block.merkle_root, "7609430974b087595488c154bf5c079887ead0e8efd4055cd136fda96a5ccbf8" );
         
     }
 
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Test the json serialization of a block
+    fn test_print()
+    {
+
+        // Creates a new block with the leaf hash of 9 
+        let block = block::Block::new( 0, create_leaf_hash( &9 ) );
+        // Prints the json serialization
+        block.print_block().unwrap()
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Test the writing of json serialization
+    fn test_write_to()
+    {
+
+        // Creates a new block with the leaf hash of 9
+        let block = block::Block::new( 0, create_leaf_hash( &9 ) );
+        // Creates the file name
+        let file_name = "output";
+        // Writes the serialization to the output file
+        block.write_to( &file_name );
+        // Reads in the file with serialization to make sure it has been
+        // properly created.
+        let file = File::open( file_name ).unwrap();
+        // Creates the String to write to 
+        let mut json = String::new();
+        // Writes the file to this String 
+        file.read_to_string( &mut json );
+        // Outputs the string
+        println!( "{}", json );
+        
+    }
+    
 }
 
 // Test flag indicating this module contains test methods
@@ -583,8 +637,28 @@ mod merkle_tests
         assert_eq!( -1, false_return );
             
     }
-    
 
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Tests the json serialization of a Merkle Tree
+    fn test_print()
+    {
+
+        // Creates a new full Merkle Tree with empty values
+        let mut merkle = merkle::Merkle::new( Vec::new() );
+        // Inserts values into the Merkle Tree
+        #[allow(unused_variables)]
+        for i in 0 .. 4
+        {
+            
+            merkle.insert( i );
+            
+        }
+        // Prints the json serialization
+        merkle.print_merkle().unwrap()
+        
+    }
+    
 }
 
 // Test flag indicating this module contains tests 
@@ -644,44 +718,56 @@ mod chain_tests
         
     }
 
-    // JSON tests
+    // Test flag indicating the next function contains tests
     #[test]
-    pub fn test_write_to( )
+    // JSON tests 
+    pub fn test_write_to()
     {
 
+        // Creates a new chain 
         let mut chain = chain::Chain::new();
+        // Inserts blocks into the chain 
         for i in 1 .. 8
         {
+            
             chain.push( block::Block::new( i, create_leaf_hash( &i ) ) );
-        }
-        chain.write_to( "testing-chain.json" );
 
+        }
+        // Writes to the file 
+        chain.write_to( "testing-chain.json" );
+        // Allows the file to be opened 
         let mut file = File::open( "testing-chain.json" ).unwrap();
+        // String to store file data 
         let mut string = String::new();
+        // Reads file data 
         file.read_to_string( &mut string );
+        // Displays file data 
         println!( "{}", string );
-        
         
     }
 
+    // Test flag indicating the next function contains tests
     #[test]
+    // Tests the read and construction method 
     pub fn test_read_and_construct( )
     {
 
         // Erase the currently existing file 
         let status = Command::new( "rm" ).args( &[ "-rf", "testing-chain.json" ] ).status().expect( "Process failed ");
-        
+        // Creates a new chain 
         let mut chain = chain::Chain::new();
+        // Inserts blocks into the chain 
         for i in 1 .. 8
         {
+            
             chain.push( block::Block::new( i, create_leaf_hash( &i ) ) );
-        }
-        chain.write_to( "testing-chain.json" );
 
+        }
+        // Writes to the output file 
+        chain.write_to( "testing-chain.json" );
         // Build a chain from its json
         let d_chain = chain::Chain::read_and_construct( "testing-chain.json" ).expect("Did not convert to d_chain");
 
-        
     }
     
 }
@@ -748,46 +834,61 @@ mod proof_tests
 // Tests for transaction class
 mod transaction_tests
 {
+
+    #[allow(unused_imports)]
+    // Includes super directory 
     use super::*;
 
-    // Test
+    // Test flag indicating the next function contains tests
     #[test]
+    // Write to test 
     pub fn test_write_to()
     {
 
-        let username = "zacsucks";
-        let content = "Hi my name is Zac and I just sort of suck. Any advice?";
+        // Sample username 
+        let username = "ezrasucks";
+        // Sample content 
+        let content = "Hi my name is Ezra and I just sort of suck. Any advice?";
+        // Sample timestamp 
         let timestamp = "all day every day";
+        // Creates a new transaction with the sample data 
         let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string() );
+        // Writes to output file 
         transaction.write_to( "testing-write.json" );
-
+        // Opens output file 
         let mut file = File::open( "testing-write.json" ).unwrap();
+        // String to store output file information 
         let mut info = String::new();
+        // Builds string from efile 
         file.read_to_string( &mut info );
+        // Displays string 
         println!("{}", info );
             
     }
 
-    // Test read_json
+    // Test flag indicating the next function contains tests
     #[test]
+    // Tests reading the JSON
     pub fn test_read_and_construct()
     {
 
         // Erase the currently existing file 
         let status = Command::new( "rm" ).args( &[ "testing-write.json" ] ).status().expect( "Filed to delete the json files" );
-        
-        let username = "zacsucks";
-        let content = "Hi my name is Zac and I just sort of suck. Any advice?";
+        // Sample username 
+        let username = "ezrasucks";
+        // Sample content
+        let content = "Hi my name is Ezra and I just sort of suck. Any advice?";
+        // Sample timestamp 
         let timestamp = "all day every day";
+        // Creates a transaction from the sample data 
         let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string() );
+        // Writes the transaction to output file 
         transaction.write_to( "testing-write.json" );
-        
         // Get the deserialized transaction
         let d_transaction = transaction::Transaction::read_and_construct( "testing-write.json" ).expect( "Oh no not the type we wanted" );
-
+        // Verifies the transactions were created correctly 
         assert_eq!( transaction, d_transaction );
             
     }
-    
     
 }
