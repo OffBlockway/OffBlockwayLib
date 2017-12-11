@@ -475,7 +475,7 @@ impl Merkle
     {
 
         // Serializes the json
-        let json_merkle = serde_json::to_string( &self )?;
+        let json_merkle = serde_json::to_string( &self.nodes )?;
         // Creates the new file with the given name
         let mut file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
         // Appends the json to the file
@@ -506,10 +506,12 @@ impl Merkle
     pub fn read_and_construct( file_name: &str ) -> Result< Vec<Transaction>, Error >
     {
 
+        // Constructs the JSON string
+        let string = Merkle::read_json( file_name ).expect( "Failed to read in the JSON" );
         // Constructs the vector
-        let vec = serde_json::from_str( &Merkle::read_json( file_name )? );
+        let vec: Vec<Transaction> = serde_json::from_str( string.as_ref() ).expect( "Failed to conver the JSON to a vector" );
         // Returns the vector or Error
-        Ok( vec.unwrap() )
+        Ok( vec )
         
     }
         
