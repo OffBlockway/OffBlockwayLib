@@ -173,7 +173,7 @@ impl Chain
     {
 
         // Open the filepath with append specification
-        let mut file = OpenOptions::new(  ).append( true ).create( true ).open( filename )?;
+        let mut file = OpenOptions::new(  ).write( true ).create( true ).open( filename )?;
         // Write the json to the filepath
         file.write_all( serde_json::to_string( &self )?.as_ref() );
 

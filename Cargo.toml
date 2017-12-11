@@ -1,6 +1,6 @@
 [package]
 name = "off_blockway"
-version = "0.0.2"
+version = "0.0.3"
 authors = ["Ezra Goss <ezragoss@me.com>"]
 description = "Custom library for the OffBlockway project. I wouldn't use this if I were you :("
 license = "MIT"

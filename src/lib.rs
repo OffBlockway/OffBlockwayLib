@@ -725,7 +725,7 @@ mod chain_tests
         {
             
             chain.push( block::Block::new( i, create_leaf_hash( &i ) ) );
-
+            
         }
         // Writes to the output file 
         chain.write_to( "testing-chain.json" );
@@ -733,8 +733,7 @@ mod chain_tests
         let d_chain = chain::Chain::read_and_construct( "testing-chain.json" ).expect("Did not convert to d_chain");
 
     }
-    
-}
+
 
 // Test flag indicating this module contains test methods
 #[cfg(test)]
