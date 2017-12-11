@@ -503,13 +503,13 @@ impl Merkle
 
     // Reads json and constructs a block from the information
     #[allow(dead_code)]
-    pub fn read_and_construct( file_name: &str ) -> Result< Merkle, Error >
+    pub fn read_and_construct( file_name: &str ) -> Result< Vec<Transaction>, Error >
     {
 
-        // Constructs the Merkle
-        let merkle = serde_json::from_str( &Merkle::read_json( file_name )? );
-        // Returns the Merkle or Error
-        Ok( merkle.unwrap() )
+        // Constructs the vector
+        let vec = serde_json::from_str( &Merkle::read_json( file_name )? );
+        // Returns the vector or Error
+        Ok( vec.unwrap() )
         
     }
         

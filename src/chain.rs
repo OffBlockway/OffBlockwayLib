@@ -202,8 +202,8 @@ impl Chain
     {
 
         // Construct the transaction
-        let string = Chain::read_json( filename ).expect("Failed to read in the json");
-        let chain : Chain = serde_json::from_str( string.as_ref() ).expect("Failed to conver the json to chain");
+        let string = Chain::read_json( filename ).expect( "Failed to read in the JSON" );
+        let chain : Chain = serde_json::from_str( string.as_ref() ).expect( "Failed to convert the JSON to chain" );
         // Return the transaction
         Ok( chain )
         

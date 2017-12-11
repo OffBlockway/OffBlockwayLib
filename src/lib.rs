@@ -187,7 +187,7 @@ mod block_tests
         // Creates a new block with the leaf hash of 9
         let block = block::Block::new( 0, create_leaf_hash( &9 ) );
         // Creates the file name
-        let file_name = "output";
+        let file_name = "testing-block.json";
         // Writes the serialization to the output file
         block.write_to( &file_name );
         // Reads in the file with serialization to make sure it has been
@@ -199,6 +199,24 @@ mod block_tests
         file.read_to_string( &mut json );
         // Outputs the string
         println!( "{}", json );
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Tests JSON read and construct
+    pub fn test_read_and_construct()
+    {
+        
+        // Erase the currently existing file
+        let status = Command::new( "rm" ).args( &[ "-rf", "testing-block.json" ]
+        ).status().expect( "Process failed ");
+        // Creates a new block 
+        let block = block::Block::new( 0, create_leaf_hash( &9 ) );
+        // Writes to output file
+        block.write_to( "testing-block.json" );
+        // Build a block from the json
+        let json_block = block::Block::read_and_construct( "testing-block.json" ).expect( "Did not convert json_block" );
         
     }
     
@@ -623,6 +641,52 @@ mod merkle_tests
         
     }
     
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Test the writing of json serialization
+    fn test_write_to()
+    {
+
+        // Creates a Merkle Tree with an empty value
+        let mut merkle = merkle::Merkle::empty();
+        // Inserts dummy value
+        merkle.insert( transaction::dummy() );
+        // Creates the file name
+        let file_name = "testing-merkle.json";
+        // Writes the serialization to the output file
+        merkle.write_to( &file_name );
+        // Reads in the file with serialization to make sure it has been
+        // properly created.
+        let mut file = File::open( file_name ).unwrap();
+        // Creates the String to write to
+        let mut json = String::new();
+        // Writes the file to this String
+        file.read_to_string( &mut json );
+        // Outputs the string
+        println!( "{}", json );
+        
+    }
+
+    // Test flag indicating the next function contains tests
+    #[test]
+    // Tests the read and construction method
+    pub fn test_read_and_construct( )
+    {
+  
+        // Erase the currently existing file
+        let status = Command::new( "rm" ).args( &[ "-rf", "testing-merkle.json" ]
+        ).status().expect( "Process failed ");
+        // Creates a new Merkle Tree
+        let mut merkle = merkle::Merkle::empty();
+        // Inserts a dummy value into it
+        merkle.insert( transaction::dummy() );
+        // Writes to the output file
+        merkle.write_to( "testing-merkle.json" );
+        // Build a Merkle Tree from its json
+        let json_nodes = merkle::Merkle::read_and_construct( "testing-merkle.json" ).expect("Did not convert to json_nodes");
+
+    }
+    
 }
 
 // Test flag indicating this module contains tests 
@@ -670,6 +734,7 @@ mod chain_tests
     // Test the contain function for the chain
     fn test_contain()
     {
+
         // The chain should be mutable to add to it
         let mut chain = chain::Chain::new();
         let block = block::Block::new( 0, empty_hash() );
