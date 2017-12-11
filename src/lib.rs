@@ -733,7 +733,7 @@ mod chain_tests
         let d_chain = chain::Chain::read_and_construct( "testing-chain.json" ).expect("Did not convert to d_chain");
 
     }
-
+}
 
 // Test flag indicating this module contains test methods
 #[cfg(test)]
