@@ -475,7 +475,7 @@ impl Merkle
     {
 
         // Serializes the json
-        let json_merkle = serde_json::to_string( &self.nodes )?;
+        let json_merkle = serde_json::to_string( &self )?;
         // Creates the new file with the given name
         let mut file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
         // Appends the json to the file
