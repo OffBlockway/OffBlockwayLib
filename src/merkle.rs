@@ -89,6 +89,20 @@ pub struct Merkle
     
 }
 
+// Default impl for the Merkle Tree
+impl Default for Merkle
+{
+
+    // Default Merkle Tree
+    fn default() -> Merkle
+    {
+
+        Merkle::empty()
+        
+    }
+    
+}
+
 // Merkle Tree impl, defines the methods associated with constructing Merkle Trees
 // and extracting information from them.
 impl Merkle
@@ -509,9 +523,9 @@ impl Merkle
         // Constructs the JSON string
         let string = Merkle::read_json( file_name ).expect( "Failed to read in the JSON" );
         // Constructs the vector
-        let vec: Vec<Transaction> = serde_json::from_str( string.as_ref() ).expect( "Failed to conver the JSON to a vector" );
+        let vec: Merkle = serde_json::from_str( string.as_ref() ).expect( "Failed to conver the JSON to a vector" );
         // Returns the vector or Error
-        Ok( vec )
+        Ok( vec.nodes() )
         
     }
         
@@ -730,6 +744,15 @@ impl Merkle
     {
 
         self.leaf_count
+        
+    }
+
+    // Returns the nodes in the tree
+    #[allow(dead_code)]
+    pub fn nodes( &self ) -> Vec<Transaction>
+    {
+
+        self.nodes.clone()
         
     }
     
