@@ -70,34 +70,34 @@ pub struct Merkle
 {
     
     // The binary tree representing the root node of the Merkle Tree
-     #[serde(skip_serializing)]
+     #[serde(skip)]
     root: Tree,
     // The height of the Merkle Tree
-     #[serde(skip_serializing)]
+     #[serde(skip)]
     height: usize,
     // The number of leaves in the tree
-     #[serde(skip_serializing)]
+     #[serde(skip)]
     leaf_count: usize,
     // The hash of the root node
-     #[serde(skip_serializing)]
+     #[serde(skip)]
     hash: String,
     // A vector of nodes representing the leaves of the tree
     nodes: Vec<Transaction>,
     // A hash map of the hashes on each level of the tree
-    #[serde(skip_serializing)]
+    #[serde(skip)]
     map: BTreeMap<usize, VecDeque<Tree>>
     
 }
 
 // Default impl for the Merkle Tree
-impl Default for Merkle
+impl Default for Tree
 {
 
     // Default Merkle Tree
-    fn default() -> Merkle
+    fn default() -> Tree
     {
 
-        Merkle::empty()
+        Tree::empty()
         
     }
     
