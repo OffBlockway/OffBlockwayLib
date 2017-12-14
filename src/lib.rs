@@ -99,7 +99,7 @@ mod tree_tests
         // Arbitrary u8 value for the leaf  
         let value: u8 = 9;
         // The transaction
-        let transaction = transaction::Transaction::new( 0, "zac".to_string(),  "9".to_string(), "now".to_string() );
+        let transaction = transaction::Transaction::new( 0, "zac".to_string(),  "9".to_string(), "now".to_string(), "verified".to_string() );
         // The tree leaf constructed with this hash and value 
         let tree_leaf: tree::Tree = tree::Tree::leaf( transaction );
         // Comparing the tree's hash with the computed hash
@@ -123,10 +123,10 @@ mod tree_tests
         let right_value: u8 = 1;
         // Left transaction 
         let left_transaction = transaction::Transaction::new( 0, "zac".to_string(),
-                                                              "0".to_string(), "now".to_string() );
+                                                              "0".to_string(), "now".to_string(), "verified".to_string() );
         // Right transaction 
         let right_transaction = transaction::Transaction::new( 0, "zac".to_string(),
-      "1".to_string(), "now".to_string() );
+      "1".to_string(), "now".to_string(), "verified".to_string() );
         // The tree's left and right children 
         let left_child: tree::Tree = tree::Tree::leaf( left_transaction );
         // Comparing the left child's hash with its computed hash
@@ -846,7 +846,7 @@ mod proof_tests
         merkle.insert( transaction::dummy() );
         // False transaction
         let false_transaction = transaction::Transaction::new( 0, "zac".to_string(),
-      "false".to_string(), "now".to_string() );
+      "false".to_string(), "now".to_string(), "unverified".to_string() );
    	    // The proof for the value we are trying to verify
         //
         // The string "false" was not entered into the tree so it should return false when
@@ -882,8 +882,10 @@ mod transaction_tests
         let content = "Hi my name is Ezra and I just sort of suck. Any advice?";
         // Sample timestamp 
         let timestamp = "all day every day";
+        // Sample verification status
+        let verification = "verified";
         // Creates a new transaction with the sample data 
-        let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string() );
+        let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string(), verification.to_string() );
         // Writes to output file 
         transaction.write_to( "testing-write.json" );
         // Opens output file 
@@ -911,8 +913,10 @@ mod transaction_tests
         let content = "Hi my name is Ezra and I just sort of suck. Any advice?";
         // Sample timestamp 
         let timestamp = "all day every day";
+        // Sample verification status
+        let verification = "verified";
         // Creates a transaction from the sample data 
-        let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string() );
+        let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string(), verification.to_string() );
         // Writes the transaction to output file 
         transaction.write_to( "testing-write.json" );
         // Get the deserialized transaction
