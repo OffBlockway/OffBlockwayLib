@@ -35,8 +35,10 @@ pub struct Transaction
     // content
     content: String,
     // timestamp
-    timestamp: String
-    
+    timestamp: String,
+    // verification status
+    status: String
+        
 }
 
 // Functions for transaction
@@ -44,7 +46,7 @@ impl Transaction
 {
 
     // Constructor for a new transaction 
-    pub fn new( uid: u64, username: String, content: String, timestamp: String ) -> Self
+    pub fn new( uid: u64, username: String, content: String, timestamp: String, status: String ) -> Self
     {
 
         Transaction
@@ -53,8 +55,9 @@ impl Transaction
             uid: uid,
             username: username,
             content: content,
-            timestamp: timestamp
-
+            timestamp: timestamp,
+            status: status
+                
         }
         
     }
@@ -122,7 +125,8 @@ pub fn dummy() -> Transaction
         uid: 5,
         username: "name".to_string(),
         content: "hello".to_string(),
-        timestamp: "now".to_string()
+        timestamp: "now".to_string(),
+        status: "unverified".to_string()
             
     }
     
