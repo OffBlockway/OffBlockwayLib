@@ -115,6 +115,15 @@ impl Transaction
         
     }
 
+    // Sets the status of a transaction
+    #[allow(dead_code)]
+    pub fn verify( &mut self )
+    {
+
+        self.status = "Verified".to_string();
+        
+    }
+
 }
 
 // Returns a dummy transaction
