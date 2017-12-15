@@ -493,7 +493,8 @@ impl Merkle
         // Creates the new file with the given name
         let mut file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
         // Appends the json to the file
-        file.write( json_merkle.as_ref() );
+        #[allow(unused_variables)]
+        let temp = file.write( json_merkle.as_ref() );
         // Returns the result or Error 
         Ok( () )
         
@@ -508,8 +509,9 @@ impl Merkle
         let mut file = OpenOptions::new().read( true ).open( file_name ).unwrap();
         // Creates an emtpy string
         let mut json = String::new();
-        // Reads the file as a string 
-        file.read_to_string( &mut json ); 
+        // Reads the file as a string
+        #[allow(unused_variables)]
+        let temp = file.read_to_string( &mut json ); 
         // Returns the String or Error 
         Ok( ( json ) )
         

@@ -117,8 +117,8 @@ impl Block
         // Creates the new file with the given name
         let mut file = OpenOptions::new().write( true ).create( true ).open( file_name ).unwrap();
         // Appends the json to the file
-        #[allow(unused_must_use)]
-        file.write_all( json_block.as_ref() );
+        #[allow(unused_variables)]
+        let temp = file.write_all( json_block.as_ref() );
         // Returns the result or Error
         Ok( () )
         
@@ -134,7 +134,8 @@ impl Block
         // Creates an emtpy string
         let mut json = String::new();
         // Reads the file as a string
-        file.read_to_string( &mut json );
+        #[allow(unused_variables)]
+        let temp = file.read_to_string( &mut json );
         // Returns the String or Error
         Ok( ( json ) )
         

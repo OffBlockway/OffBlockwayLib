@@ -175,7 +175,8 @@ impl Chain
         // Open the filepath with append specification
         let mut file = OpenOptions::new(  ).write( true ).create( true ).open( filename )?;
         // Write the json to the filepath
-        file.write_all( serde_json::to_string( &self )?.as_ref() );
+        #[allow(unused_variables)]
+        let temp = file.write_all( serde_json::to_string( &self )?.as_ref() );
 
         Ok( () )
         
@@ -190,7 +191,8 @@ impl Chain
         let mut file = OpenOptions::new( ).read( true ).open( filename )?;
         // Read in json
         let mut json = String::new();
-        file.read_to_string( &mut json );
+        #[allow(unused_variables)]
+        let temp = file.read_to_string( &mut json );
         // Return the string
         Ok( json )
         
