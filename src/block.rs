@@ -37,7 +37,7 @@ use std::io::prelude::*;
  */    
 
 // Block struct
-#[derive(Clone, Serialize, Deserialize)]
+#[derive(Clone, Serialize, Deserialize, Debug)]
 pub struct Block
 {
 

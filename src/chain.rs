@@ -34,7 +34,7 @@ use std::*;
 
 // The chain struct
 #[allow(dead_code)]
-#[derive( Serialize, Deserialize )]
+#[derive( Serialize, Deserialize, Debug )]
 pub struct Chain
 {
 
