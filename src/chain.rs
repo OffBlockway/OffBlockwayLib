@@ -34,7 +34,7 @@ use std::*;
 
 // The chain struct
 #[allow(dead_code)]
-#[derive( Serialize, Deserialize )]
+#[derive( Serialize, Deserialize, Debug )]
 pub struct Chain
 {
 
@@ -44,6 +44,7 @@ pub struct Chain
     chain: HashMap< String, Block >,
     // The most recent block 
     tail_hash: String,
+
 }
 
 // Impl for Chain
@@ -103,6 +104,23 @@ impl Chain
         
     }
 
+    // Set uid
+    #[allow(dead_code)]
+    pub fn set_uid( &mut self, url: String )
+    {
+
+        self.uid =  create_leaf_hash( &url );
+        
+    }
+
+    // Get the length of the chain
+    pub fn len( &self ) -> usize
+    {
+
+        return self.chain.len();
+        
+    }
+    
     // Get the first block in the chain
     #[allow(dead_code)]
     pub fn origin( &self ) -> &Block
@@ -121,6 +139,8 @@ impl Chain
         
     }
 
+    
+    
     // Verifies whether or not a block is contained within the chain 
     #[allow(dead_code)]
     pub fn contains( &self, hash: &String ) -> bool
