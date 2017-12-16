@@ -96,8 +96,6 @@ mod tree_tests
 
         // The hash value for the leaf
         let digest_hash = hash_util::create_leaf_hash( &9 );
-        // Arbitrary u8 value for the leaf  
-        let value: u8 = 9;
         // The transaction
         let transaction = transaction::Transaction::new( 0, "zac".to_string(),  "9".to_string(), "now".to_string(), "verified".to_string() );
         // The tree leaf constructed with this hash and value 
@@ -119,7 +117,9 @@ mod tree_tests
         // The hash value for the node
         let digest_hash = hash_util::create_node_hash( &left_hash, &right_hash );
         // Arbitrary u8 values for the left and right children
+        #[allow(unused_variables)]
         let left_value: u8 = 0;
+        #[allow(unused_variables)]
         let right_value: u8 = 1;
         // Left transaction 
         let left_transaction = transaction::Transaction::new( 0, "zac".to_string(),
@@ -189,14 +189,16 @@ mod block_tests
         // Creates the file name
         let file_name = "testing-block.json";
         // Writes the serialization to the output file
-        block.write_to( &file_name );
+        #[allow(unused_variables)]
+        let temp = block.write_to( &file_name );
         // Reads in the file with serialization to make sure it has been
         // properly created.
         let mut file = File::open( file_name ).unwrap();
         // Creates the String to write to 
         let mut json = String::new();
         // Writes the file to this String 
-        file.read_to_string( &mut json );
+        #[allow(unused_variables)]
+        let temp = file.read_to_string( &mut json );
         // Outputs the string
         println!( "{}", json );
         
@@ -209,13 +211,16 @@ mod block_tests
     {
         
         // Erase the currently existing file
+        #[allow(unused_variables)]
         let status = Command::new( "rm" ).args( &[ "-rf", "testing-block.json" ]
         ).status().expect( "Process failed ");
         // Creates a new block 
         let block = block::Block::new( 0, create_leaf_hash( &9 ) );
         // Writes to output file
-        block.write_to( "testing-block.json" );
+        #[allow(unused_variables)]
+        let temp = block.write_to( "testing-block.json" );
         // Build a block from the json
+        #[allow(unused_variables)]
         let json_block = block::Block::read_and_construct( "testing-block.json" ).expect( "Did not convert json_block" );
         
     }
@@ -371,6 +376,7 @@ mod merkle_tests
         // Creates a list of values to be hashed and constructed into a Merkle Tree
         let mut values = Vec::new();
         // Pushes the numbers 0 through 7 to the vector
+        #[allow(unused_variables)]
         for i in 0 .. 16 
         {
             
@@ -420,6 +426,7 @@ mod merkle_tests
         // Creates a list of values to be hashed and constructed into a Merkle Tree
         let mut values = Vec::new();
         // Pushes the numbers 0 through 7 to the vector
+        #[allow(unused_variables)]
         for i in 0 .. 8 
         {
             
@@ -441,6 +448,7 @@ mod merkle_tests
         // Creates a list of values to be hashed and constructed into a Merkle Tree
         let mut values = Vec::new();
         // Pushes the numbers 0 through 7 to the vector
+        #[allow(unused_variables)]
         for i in 0 .. 8
         {
             
@@ -462,6 +470,7 @@ mod merkle_tests
         // Creates a list of values to be hashed and constructed into a Merkle Tree
         let mut values = Vec::new();
         // Pushes the numbers 0 through 7 to the vector
+        #[allow(unused_variables)]
         for i in 0 .. 8 
         {
             
@@ -493,6 +502,7 @@ mod merkle_tests
         // Creates a new full Merkle Tree with these values
         let mut merkle = merkle::Merkle::new( values );
         // Inserts values into the Merkle Tree
+        #[allow(unused_variables)]
         for i in 0 .. 8 
         {
 
@@ -526,6 +536,7 @@ mod merkle_tests
         // Creates a new full Merkle Tree with these values
         let mut merkle = merkle::Merkle::new( values );
         // Inserts values into the Merkle Tree
+        #[allow(unused_variables)]
         for i in 0 .. 8
         {
             
@@ -566,6 +577,7 @@ mod merkle_tests
         // Creates a new full Merkle Tree with these values
         let mut merkle = merkle::Merkle::new( values );
         // Inserts values into the Merkle Tree
+        #[allow(unused_variables)]
         for i in 0 .. 8
         {
             
@@ -654,14 +666,16 @@ mod merkle_tests
         // Creates the file name
         let file_name = "testing-merkle.json";
         // Writes the serialization to the output file
-        merkle.write_to( &file_name );
+        #[allow(unused_variables)]
+        let temp = merkle.write_to( &file_name );
         // Reads in the file with serialization to make sure it has been
         // properly created.
         let mut file = File::open( file_name ).unwrap();
         // Creates the String to write to
         let mut json = String::new();
         // Writes the file to this String
-        file.read_to_string( &mut json );
+        #[allow(unused_variables)]
+        let temp = file.read_to_string( &mut json );
         // Outputs the string
         println!( "{}", json );
         
@@ -674,6 +688,7 @@ mod merkle_tests
     {
   
         // Erase the currently existing file
+        #[allow(unused_variables)]
         let status = Command::new( "rm" ).args( &[ "-rf", "testing-merkle.json" ]
         ).status().expect( "Process failed ");
         // Creates a new Merkle Tree
@@ -681,8 +696,10 @@ mod merkle_tests
         // Inserts a dummy value into it
         merkle.insert( transaction::dummy() );
         // Writes to the output file
-        merkle.write_to( "testing-merkle.json" );
+        #[allow(unused_variables)]
+        let temp = merkle.write_to( "testing-merkle.json" );
         // Build a Merkle Tree from its json
+        #[allow(unused_variables)]
         let json_nodes = merkle::Merkle::read_and_construct( "testing-merkle.json" ).expect("Did not convert to json_nodes");
 
     }
@@ -763,13 +780,15 @@ mod chain_tests
 
         }
         // Writes to the file 
-        chain.write_to( "testing-chain.json" );
+        #[allow(unused_variables)]
+        let temp = chain.write_to( "testing-chain.json" );
         // Allows the file to be opened 
         let mut file = File::create( "testing-chain.json" ).unwrap();
         // String to store file data 
         let mut string = String::new();
-        // Reads file data 
-        file.read_to_string( &mut string );
+        // Reads file data
+        #[allow(unused_variables)]
+        let temp = file.read_to_string( &mut string );
         // Displays file data 
         println!( "{}", string );
         
@@ -781,7 +800,8 @@ mod chain_tests
     pub fn test_read_and_construct( )
     {
 
-        // Erase the currently existing file 
+        // Erase the currently existing file
+        #[allow(unused_variables)]
         let status = Command::new( "rm" ).args( &[ "-rf", "testing-chain.json" ] ).status().expect( "Process failed ");
         // Creates a new chain 
         let mut chain = chain::Chain::new();
@@ -792,9 +812,11 @@ mod chain_tests
             chain.push( block::Block::new( i, create_leaf_hash( &i ) ) );
             
         }
-        // Writes to the output file 
-        chain.write_to( "testing-chain.json" );
+        // Writes to the output file
+        #[allow(unused_variables)]
+        let temp = chain.write_to( "testing-chain.json" );
         // Build a chain from its json
+        #[allow(unused_variables)]
         let d_chain = chain::Chain::read_and_construct( "testing-chain.json" ).expect("Did not convert to d_chain");
 
     }
@@ -887,13 +909,15 @@ mod transaction_tests
         // Creates a new transaction with the sample data 
         let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string(), verification.to_string() );
         // Writes to output file 
-        transaction.write_to( "testing-write.json" );
+        #[allow(unused_variables)]
+        let temp = transaction.write_to( "testing-write.json" );
         // Opens output file 
-        let mut file = File::open( "testing-write.json" ).unwrap();
+        let mut file = File::create( "testing-write.json" ).unwrap();
         // String to store output file information 
         let mut info = String::new();
-        // Builds string from efile 
-        file.read_to_string( &mut info );
+        // Builds string from efile
+        #[allow(unused_variables)]
+        let temp = file.read_to_string( &mut info );
         // Displays string 
         println!("{}", info );
             
@@ -905,7 +929,8 @@ mod transaction_tests
     pub fn test_read_and_construct()
     {
 
-        // Erase the currently existing file 
+        // Erase the currently existing file
+        #[allow(unused_variables)]
         let status = Command::new( "rm" ).args( &[ "testing-write.json" ] ).status().expect( "Filed to delete the json files" );
         // Sample username 
         let username = "ezrasucks";
@@ -918,7 +943,8 @@ mod transaction_tests
         // Creates a transaction from the sample data 
         let transaction = transaction::Transaction::new( 0, username.to_string(), content.to_string(), timestamp.to_string(), verification.to_string() );
         // Writes the transaction to output file 
-        transaction.write_to( "testing-write.json" );
+        #[allow(unused_variables)]
+        let temp = transaction.write_to( "testing-write.json" );
         // Get the deserialized transaction
         let d_transaction = transaction::Transaction::read_and_construct( "testing-write.json" ).expect( "Oh no not the type we wanted" );
         // Verifies the transactions were created correctly 
