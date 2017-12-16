@@ -765,7 +765,7 @@ mod chain_tests
         // Writes to the file 
         chain.write_to( "testing-chain.json" );
         // Allows the file to be opened 
-        let mut file = File::open( "testing-chain.json" ).unwrap();
+        let mut file = File::create( "testing-chain.json" ).unwrap();
         // String to store file data 
         let mut string = String::new();
         // Reads file data 
